@@ -3,17 +3,17 @@ import {Text} from 'ink';
 import zod from 'zod';
 
 export const options = zod.object({
-	name: zod.string().default('Stranger').describe('Name'),
+	username: zod.string().optional().describe('Username'),
 });
 
 type Props = {
 	options: zod.infer<typeof options>;
 };
 
-export default function Index({options}: Props) {
+export default function Login({options}: Props) {
 	return (
-		<Text>
-			Hello, <Text color="green">{options.name}</Text>
+		<Text color="green">
+			LOGGED IN{options.username ? ` as ${options.username}` : ''}
 		</Text>
 	);
 }
