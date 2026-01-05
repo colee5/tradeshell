@@ -1,6 +1,6 @@
 import {Box, Text, useApp, useInput} from 'ink';
 import React, {useState} from 'react';
-import {CLI_COMMANDS} from '../lib/constants.js';
+import {CLI_COMMANDS} from '../lib/commands.js';
 
 export default function Index() {
 	const [history, setHistory] = useState<string[]>([]);
