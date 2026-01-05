@@ -11,7 +11,8 @@
 	},
 	"scripts": {
 		"build": "tsc",
-		"dev": "DEV=true tsx source/cli.tsx",
+		"dev": "./dev-watch.sh",
+		"dev:once": "DEV=true tsx source/cli.tsx",
 		"start": "tsx source/cli.tsx",
 		"shell": "tsx source/cli.tsx",
 		"check-types": "tsc --noEmit",
@@ -21,9 +22,12 @@
 		"dist"
 	],
 	"dependencies": {
-		"ink": "^4.1.0",
+		"@shikijs/cli": "^3.20.0",
+		"ink": "^6.6.0",
 		"pastel": "^2.0.0",
-		"react": "^18.2.0",
+		"react": "^19.2.3",
+		"react-shiki": "^0.9.1",
+		"shiki": "^3.20.0",
 		"zod": "^3.21.4"
 	},
 	"devDependencies": {
@@ -36,9 +40,7 @@
 		"eslint-plugin-react": "^7.32.2",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"ink-testing-library": "^3.0.0",
-		"nodemon": "^3.1.11",
 		"prettier": "^2.8.7",
-		"react-devtools-core": "^7.0.1",
 		"ts-node": "^10.9.1",
 		"tsx": "^4.7.0",
 		"typescript": "^5.0.3",

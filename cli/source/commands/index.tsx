@@ -1,30 +1,27 @@
+import {Box, Text, useApp, useInput} from 'ink';
 import React, {useState} from 'react';
-import {Box, Text, useInput, useApp} from 'ink';
+import {CLI_COMMANDS} from '../lib/constants.js';
 
-export default function Shell() {
+export default function Index() {
 	const [history, setHistory] = useState<string[]>([]);
 	const [input, setInput] = useState('');
 	const {exit} = useApp();
 
 	useInput((inputChar, key) => {
 		if (key.return) {
-			// User pressed Enter
 			const command = input.trim();
 
-			if (command === 'exit' || command === 'quit') {
+			if (command === CLI_COMMANDS.exit) {
 				exit();
 				return;
 			}
 
-			// Process the command
 			const output = processCommand(command);
 			setHistory([...history, `> ${command}`, output]);
 			setInput('');
 		} else if (key.backspace || key.delete) {
-			// Handle backspace
 			setInput(input.slice(0, -1));
 		} else if (!key.ctrl && !key.meta) {
-			// Add character to input
 			setInput(input + inputChar);
 		}
 	});
@@ -60,22 +57,23 @@ function processCommand(command: string): string {
 	const args = parts.slice(1);
 
 	switch (cmd) {
-		case 'login':
-			return args.length > 0
-				? `✓ LOGGED IN as ${args[0]}`
-				: '✓ LOGGED IN';
+		case CLI_COMMANDS.login:
+			return args.length > 0 ? `✓ LOGGED IN as ${args[0]}` : '✓ LOGGED IN';
 
-		case 'help':
-			return 'Available commands: login, help, clear, exit';
+		case CLI_COMMANDS.balance:
+			return '💰 Your balance: $0,000.000';
 
-		case 'clear':
-			// This won't work perfectly, but you could reset history
-			return '';
+		case CLI_COMMANDS.help:
+			return `Available commands: ${Object.values(CLI_COMMANDS).join(', ')}`;
+
+		case CLI_COMMANDS.r:
+			process.exit(42);
+			return '🔄 Restarting CLI...';
 
 		case '':
 			return '';
 
 		default:
-			return `❌ Unknown command: ${cmd}. Type 'help' for available commands.`;
+			return `Unknown command: ${cmd}. Type 'help' for available commands.`;
 	}
 }
