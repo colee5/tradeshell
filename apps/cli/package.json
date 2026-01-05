@@ -2,15 +2,18 @@
 	"name": "@tradeshell/cli",
 	"version": "0.0.0",
 	"license": "MIT",
-	"bin": "dist/cli.js",
+	"bin": {
+		"tradeshell": "dist/cli.js"
+	},
 	"type": "module",
 	"engines": {
 		"node": ">=16"
 	},
 	"scripts": {
 		"build": "tsc",
-		"dev": "tsx watch source/cli.tsx",
-		"start": "node dist/cli.js",
+		"dev": "DEV=true tsx source/cli.tsx",
+		"start": "tsx source/cli.tsx",
+		"shell": "tsx source/cli.tsx",
 		"check-types": "tsc --noEmit",
 		"test": "prettier --check . && xo && ava"
 	},
@@ -33,7 +36,9 @@
 		"eslint-plugin-react": "^7.32.2",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"ink-testing-library": "^3.0.0",
+		"nodemon": "^3.1.11",
 		"prettier": "^2.8.7",
+		"react-devtools-core": "^7.0.1",
 		"ts-node": "^10.9.1",
 		"tsx": "^4.7.0",
 		"typescript": "^5.0.3",

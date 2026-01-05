@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Box, Text, useInput, useApp} from 'ink';
 
-export default function Index() {
+export default function Shell() {
 	const [history, setHistory] = useState<string[]>([]);
 	const [input, setInput] = useState('');
 	const {exit} = useApp();
@@ -61,13 +61,12 @@ function processCommand(command: string): string {
 
 	switch (cmd) {
 		case 'login':
-			return args.length > 0 ? `✓ LOGGED IN as ${args[0]}` : '✓ LOGGED IN';
-
-		case 'balance':
-			return '💰 Your balance: $0,000.000';
+			return args.length > 0
+				? `✓ LOGGED IN as ${args[0]}`
+				: '✓ LOGGED IN';
 
 		case 'help':
-			return 'Available commands: login, balance, help, clear, exit';
+			return 'Available commands: login, help, clear, exit';
 
 		case 'clear':
 			// This won't work perfectly, but you could reset history

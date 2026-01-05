@@ -16,6 +16,10 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "dev#@tradeshell/cli": {
+      "cache": false,
+      "persistent": true
     }
   }
 }
