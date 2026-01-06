@@ -25,7 +25,6 @@
 		"@shikijs/cli": "^3.20.0",
 		"ink": "^6.6.0",
 		"ink-spinner": "^5.0.0",
-		"pastel": "^2.0.0",
 		"react": "^19.2.3",
 		"react-shiki": "^0.9.1",
 		"shiki": "^3.20.0",
