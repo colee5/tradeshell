@@ -8,6 +8,7 @@ export default function Index() {
 	const {exit} = useApp();
 
 	useInput((inputChar, key) => {
+		// If key === /, render and map autocomplete options
 		if (key.return) {
 			const command = input.trim();
 
@@ -73,6 +74,8 @@ function processCommand(command: string): string {
 		case '':
 			return '';
 
+		// Default should be an API request to the AI streaming endpoint. This way
+		// We can still run commands in the chat interface. Also - we need autocomplete :)
 		default:
 			return `Unknown command: ${cmd}. Type 'help' for available commands.`;
 	}
