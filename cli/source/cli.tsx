@@ -1,11 +1,8 @@
 #!/usr/bin/env node
-import Pastel from 'pastel'
+import React from 'react';
+import { render } from 'ink';
+import Index from './index.js';
 
-// Clear terminal before starting
-process.stdout.write('\x1Bc')
+process.stdout.write('\x1Bc');
 
-const app = new Pastel({
-	importMeta: import.meta
-})
-
-await app.run()
+render(<Index />);

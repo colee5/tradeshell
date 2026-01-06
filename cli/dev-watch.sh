@@ -19,7 +19,7 @@ while true; do
   else
     # Any other exit code (including normal exit) stops the loop
     echo ""
-    echo "👋 CLI stopped"
+    echo "TradeShell has exited"
     break
   fi
 done

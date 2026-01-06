@@ -1,7 +1,1 @@
-export enum CLI_COMMANDS {
-	login = 'login',
-	balance = 'balance',
-	r = 'r',
-	help = 'help',
-	exit = 'exit',
-}
+export const RELOAD_ERROR_CODE = 42;
