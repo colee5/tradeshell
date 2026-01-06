@@ -44,7 +44,7 @@ export default function Index() {
 	const handleSubmit = (command: string) => {
 		if (command === COMMANDS.exit.name || command === '/exit') {
 			exit();
-			return;
+			process.exit(0);
 		}
 
 		void processCommand(command).then((output: string) => {
