@@ -3,9 +3,9 @@ import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
 
 import { balance, chat, help, login, reload } from './commands/index.js';
-import { CommandHistory } from './components/CommandHistory.js';
-import { CommandSuggestions } from './components/CommandSuggestions.js';
-import { Header } from './components/Header.js';
+import { CommandHistory } from './components/command-history.js';
+import { CommandSuggestions } from './components/command-suggestions.js';
+import { Header } from './components/header.js';
 import { COMMANDS } from './lib/commands.js';
 import { isCommand } from './lib/utils.js';
 
