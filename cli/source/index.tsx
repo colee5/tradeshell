@@ -7,6 +7,7 @@ import { CommandHistory } from './components/CommandHistory.js';
 import { CommandSuggestions } from './components/CommandSuggestions.js';
 import { Header } from './components/Header.js';
 import { COMMANDS } from './lib/commands.js';
+import { isCommand } from './lib/utils.js';
 
 export default function Index() {
 	const [history, setHistory] = useState<string[]>([]);
@@ -14,6 +15,31 @@ export default function Index() {
 	const { exit } = useApp();
 
 	const showSuggestions = input === '/';
+
+	const processCommand = async (command: string) => {
+		const parts = command.split(' ');
+		let cmd = parts[0];
+		const args = parts.slice(1);
+
+		if (cmd === '') return '';
+
+		if (isCommand(cmd)) {
+			cmd = cmd?.slice(1);
+		}
+
+		switch (cmd) {
+			case COMMANDS.login.name:
+				return login(args);
+			case COMMANDS.balance.name:
+				return balance();
+			case COMMANDS.help.name:
+				return help();
+			case COMMANDS.r.name:
+				return reload();
+			default:
+				return chat([cmd, ...args].join(' '));
+		}
+	};
 
 	const handleSubmit = (command: string) => {
 		if (command === COMMANDS.exit.name || command === '/exit') {
@@ -31,36 +57,15 @@ export default function Index() {
 		<Box flexDirection="column">
 			<Header />
 			<CommandHistory history={history} />
-			<Box>
-				<Text color="green">&gt; </Text>
-				<TextInput value={input} onChange={setInput} onSubmit={handleSubmit} />
+			<Box flexDirection="column">
+				<Text color="#404040">{'─'.repeat(process.stdout.columns || 80)}</Text>
+				<Box paddingX={1}>
+					<Text color="green">&gt; </Text>
+					<TextInput value={input} onChange={setInput} onSubmit={handleSubmit} />
+				</Box>
+				<Text color="#404040">{'─'.repeat(process.stdout.columns || 80)}</Text>
 			</Box>
 			<CommandSuggestions show={showSuggestions} />
 		</Box>
 	);
-}
-
-async function processCommand(command: string): Promise<string> {
-	const parts = command.split(' ');
-	let cmd = parts[0];
-	const args = parts.slice(1);
-
-	if (cmd === '') return '';
-
-	if (cmd?.startsWith('/')) {
-		cmd = cmd.slice(1);
-	}
-
-	switch (cmd) {
-		case COMMANDS.login.name:
-			return login(args);
-		case COMMANDS.balance.name:
-			return balance();
-		case COMMANDS.help.name:
-			return help();
-		case COMMANDS.r.name:
-			return reload();
-		default:
-			return chat([cmd, ...args].join(' '));
-	}
 }
