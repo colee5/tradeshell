@@ -1,18 +1,27 @@
-import { Text } from 'ink';
+import { Box, Text } from 'ink';
 import React from 'react';
 
+type HistoryItem = {
+	input: string;
+	output: string;
+};
+
 type Props = {
-	history: string[];
+	history: HistoryItem[];
 };
 
 export function CommandHistory({ history }: Props) {
 	return (
-		<>
-			{history.map((line, i) => (
-				<Text key={i} color={line.startsWith('>') ? 'yellow' : 'white'}>
-					{line}
-				</Text>
+		<Box flexDirection="column">
+			{history.map((item, index) => (
+				<Box key={index} flexDirection="column">
+					<Text>
+						<Text color="green">&gt; </Text>
+						{item.input}
+					</Text>
+					<Text>{item.output}</Text>
+				</Box>
 			))}
-		</>
+		</Box>
 	);
 }

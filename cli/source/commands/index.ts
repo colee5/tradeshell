@@ -1,5 +1,6 @@
-export { login } from './login.js';
-export { balance } from './balance.js';
-export { help } from './help.js';
-export { reload } from './reload.js';
-export { chat } from './chat.js';
+export { Login } from './login.js';
+export { Balance } from './balance.js';
+export { Help } from './help.js';
+export { Reload } from './reload.js';
+export { Chat } from './chat.js';
+export { Config } from './config.js';
