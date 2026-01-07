@@ -16,7 +16,6 @@ export class ConfigService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    // Load config when the module initializes
     const exists = await this.exists();
     if (exists) {
       await this.load();
@@ -47,13 +46,10 @@ export class ConfigService implements OnModuleInit {
 
   async save(config: Config): Promise<void> {
     try {
-      // Ensure directory exists
       await fs.mkdir(this.configDir, { recursive: true });
 
-      // Validate config
       const validated = ConfigSchema.parse(config);
 
-      // Write to file
       await fs.writeFile(
         this.configPath,
         JSON.stringify(validated, null, 2),
@@ -66,7 +62,7 @@ export class ConfigService implements OnModuleInit {
     }
   }
 
-  get(): Config {
+  async get(): Promise<Config> {
     return this.config;
   }
 
@@ -78,7 +74,7 @@ export class ConfigService implements OnModuleInit {
 
   async updatePath(path: string, value: any): Promise<Config> {
     const keys = path.split('.');
-    const newConfig = JSON.parse(JSON.stringify(this.config)); // Deep clone
+    const newConfig = JSON.parse(JSON.stringify(this.config));
 
     let current: any = newConfig;
     for (let i = 0; i < keys.length - 1; i++) {

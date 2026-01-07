@@ -7,8 +7,8 @@ export class ConfigController {
   constructor(private readonly configService: ConfigService) {}
 
   @Get()
-  getConfig(): Config {
-    return this.configService.get();
+  async getConfig(): Promise<Config> {
+    return await this.configService.get();
   }
 
   @Put()
