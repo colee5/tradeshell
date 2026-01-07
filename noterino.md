@@ -10,8 +10,15 @@ What's the best way to have this type of a configurable setup - do we just save 
 
 Regarding wallet interface - we'll need to show some kind of a self contained web interface, it could be a view coming from the nestjs standard way
 
+Make a class which would load the config from a file. Then on the client we'll need to check If the user has the config AND what does it contain - This config would need to be accessible from both the server & the client
+
 TODO:
 
-Symbols -> ✓
-[] Chat Interface
-[] Autocomplete of commands when hit /
+[] Chat Interface ✓
+[] Autocomplete of commands when hit ✓
+[] Config service on the client & the server
+[] Setup API endpoint queries with Tanstack Query
+[] Onboarding config setup - Only if config is empty (default)
+[] Config set command - `/config set llm.type cloud`, `/config set llm.baseURL https://...`, `/config set chains.enabled ethereum,polygon`, etc.
+[] Private key storage - Use ethers.js encrypted keystore in ~/.tradeshell/keystore/ (password-protected, never plain text) Will be done through the server
+[] We MUST keep npm packages to the minimum, All cli and api packages must be reviewed
