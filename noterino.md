@@ -16,9 +16,11 @@ TODO:
 
 [] Chat Interface ✓
 [] Autocomplete of commands when hit ✓
-[] Config service on the client & the server
-[] Setup API endpoint queries with Tanstack Query
+[] Config service on the client & the server ✓
+[] Setup API endpoint queries with Tanstack Query ✓
 [] Onboarding config setup - Only if config is empty (default)
 [] Config set command - `/config set llm.type cloud`, `/config set llm.baseURL https://...`, `/config set chains.enabled ethereum,polygon`, etc.
+-- [] Find a way to have subcommands
 [] Private key storage - Use ethers.js encrypted keystore in ~/.tradeshell/keystore/ (password-protected, never plain text) Will be done through the server
 [] We MUST keep npm packages to the minimum, All cli and api packages must be reviewed
+[] Find a toolcall structure which the LLM can prompt user to confirm/select etc - ZOD validated
