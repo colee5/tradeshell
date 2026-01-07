@@ -1,6 +1,9 @@
-export function login(args: string[]): string {
+import { Text } from 'ink';
+import React from 'react';
+
+export function Login({ args }: { args: string[] }) {
 	if (args.length > 0) {
-		return `✓ LOGGED IN as ${args[0]}`;
+		return <Text>✓ LOGGED IN as {args[0]}</Text>;
 	}
-	return '✓ LOGGED IN';
+	return <Text>✓ LOGGED IN</Text>;
 }

@@ -2,26 +2,30 @@ import { Box, Text, useApp } from 'ink';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
 
-import { balance, chat, help, login, reload } from './commands/index.js';
-import { CommandHistory } from './components/command-history.js';
+import { Balance, Chat, Config, Help, Login, Reload } from './commands/index.js';
 import { CommandSuggestions } from './components/command-suggestions.js';
-import { Header } from './components/header.js';
+import { Header } from './components/Header.js';
 import { COMMANDS } from './lib/commands.js';
 import { isCommand } from './lib/utils.js';
 
+type HistoryItem = {
+	input: string;
+	output: React.ReactElement;
+};
+
 export default function Index() {
-	const [history, setHistory] = useState<string[]>([]);
+	const [history, setHistory] = useState<HistoryItem[]>([]);
 	const [input, setInput] = useState('');
 	const { exit } = useApp();
 
 	const showSuggestions = input === '/';
 
-	const processCommand = async (command: string) => {
+	const processCommand = (command: string): React.ReactElement | null => {
 		const parts = command.split(' ');
 		let cmd = parts[0];
 		const args = parts.slice(1);
 
-		if (cmd === '') return '';
+		if (cmd === '') return null;
 
 		if (isCommand(cmd)) {
 			cmd = cmd?.slice(1);
@@ -29,15 +33,17 @@ export default function Index() {
 
 		switch (cmd) {
 			case COMMANDS.login.name:
-				return login(args);
+				return <Login args={args} />;
 			case COMMANDS.balance.name:
-				return balance();
+				return <Balance />;
+			case COMMANDS.config.name:
+				return <Config />;
 			case COMMANDS.help.name:
-				return help();
+				return <Help />;
 			case COMMANDS.r.name:
-				return reload();
+				return <Reload />;
 			default:
-				return chat([cmd, ...args].join(' '));
+				return <Chat message={[cmd, ...args].join(' ')} />;
 		}
 	};
 
@@ -47,16 +53,29 @@ export default function Index() {
 			process.exit(0);
 		}
 
-		void processCommand(command).then((output: string) => {
-			setHistory([...history, `> ${command}`, output]);
-			setInput('');
-		});
+		const output = processCommand(command);
+
+		if (output) {
+			setHistory([...history, { input: command, output }]);
+		}
+
+		setInput('');
 	};
 
 	return (
 		<Box flexDirection="column">
 			<Header />
-			<CommandHistory history={history} />
+			<Box flexDirection="column">
+				{history.map((item, index) => (
+					<Box key={index} flexDirection="column">
+						<Text>
+							<Text color="green">&gt; </Text>
+							{item.input}
+						</Text>
+						{item.output}
+					</Box>
+				))}
+			</Box>
 			<Box flexDirection="column">
 				<Text color="#404040">{'─'.repeat(process.stdout.columns || 80)}</Text>
 				<Box paddingX={1}>
@@ -65,7 +84,13 @@ export default function Index() {
 				</Box>
 				<Text color="#404040">{'─'.repeat(process.stdout.columns || 80)}</Text>
 			</Box>
-			<CommandSuggestions show={showSuggestions} />
+			<CommandSuggestions
+				show={showSuggestions}
+				onSelect={(command) => {
+					setInput(command);
+					handleSubmit(command);
+				}}
+			/>
 		</Box>
 	);
 }
