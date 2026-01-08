@@ -24,3 +24,28 @@ TODO:
 [] Private key storage - Use ethers.js encrypted keystore in ~/.tradeshell/keystore/ (password-protected, never plain text) Will be done through the server
 [] We MUST keep npm packages to the minimum, All cli and api packages must be reviewed
 [] Find a toolcall structure which the LLM can prompt user to confirm/select etc - ZOD validated
+
+---
+
+CONFIG BRAINSTORM
+What will we need in the config?
+RPC URL, can add more and then can switch between them via the dropdown component, BUT this is tricky - how do we make the server easily prompt the client to pick options - MAYBE like this - user writes subcommand for picking between RPCs - then the client fetches all current RPCs available on the server and then maps through them via the option - then only with the PUT method updates the needed, We must also see which one is currently picked via an isActive field or something.
+
+IGNORE THIS ABOVE - Just go with one current RPC url and thats it!! - Make a command to fetch only the RPC url, and make a command to only update the RPC url via PUT - thats it.
+
+About the chains in the config - we'll have a mapping on the server of most EVM chains and then the user can make activate/disable them via the isActive field on the config - something like:
+
+```json
+Chains[
+    {
+        "name" : "arbitrum",
+        "isActive" : true,
+        "id" : 42161,
+    },
+    {
+        "name" : "base",
+        "isActive" : false,
+        "id" : 8453,
+    }
+]
+```
