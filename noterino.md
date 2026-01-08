@@ -49,3 +49,7 @@ Chains[
     }
 ]
 ```
+
+From written notes:
+
+- Make progress up until broadcasting a transaction and deploying a wallet through the agent toolset, then simply opensource. Don't forget that all actions should be done through the agent's toolset except the config which it's better to take into our own hands and have a good onboarding experience. We're not building a CLI for trading - we're building an agent to help you trade and interact with DEFI with pure words not with remembering commands. MUST keep our command set to the minimum. Anything which can't be written with a single command like /balance should be made through a tool.
