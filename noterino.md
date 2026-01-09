@@ -29,7 +29,9 @@ TODO:
 
 CONFIG BRAINSTORM
 What will we need in the config?
-RPC URL, can add more and then can switch between them via the dropdown component, BUT this is tricky - how do we make the server easily prompt the client to pick options - MAYBE like this - user writes subcommand for picking between RPCs - then the client fetches all current RPCs available on the server and then maps through them via the option - then only with the PUT method updates the needed, We must also see which one is currently picked via an isActive field or something.
+RPC URL, can add more and then can switch between them via the dropdown component, BUT this is tricky - how do we make the server easily prompt the client to pick options - MAYBE like this - user writes subcommand for picking between RPCs - then the client fetches all current RPCs available on the server and then maps through them via the option
+
+- then only with the PUT method updates the needed, We must also see which one is currently picked via an isActive field or something.
 
 IGNORE THIS ABOVE - Just go with one current RPC url and thats it!! - Make a command to fetch only the RPC url, and make a command to only update the RPC url via PUT - thats it.
 
