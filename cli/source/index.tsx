@@ -1,10 +1,13 @@
 import { Box, Text, useApp } from 'ink';
+import SyntaxHighlight from 'ink-syntax-highlight';
 import TextInput from 'ink-text-input';
+import { useAtomValue } from 'jotai';
 import React, { useState } from 'react';
 
 import { Balance, Chat, Config, Help, Login, Reload } from './commands/index.js';
 import { CommandSuggestions } from './components/command-suggestions.js';
 import { Header } from './components/Header.js';
+import { savedConfigAtom } from './lib/atoms/onboarding.atom.js';
 import { COMMANDS } from './lib/commands.js';
 import { isCommand } from './lib/utils.js';
 
@@ -16,7 +19,11 @@ type HistoryItem = {
 export default function Index() {
 	const [history, setHistory] = useState<HistoryItem[]>([]);
 	const [input, setInput] = useState('');
+
 	const { exit } = useApp();
+	// TODO: Instead of an atom for this savedConfig - have it query it from the server.
+	// This is because if the user has the config saved - he's not gonna have the atom updated!
+	const savedConfig = useAtomValue(savedConfigAtom);
 
 	const showSuggestions = input === '/';
 
@@ -65,6 +72,25 @@ export default function Index() {
 	return (
 		<Box flexDirection="column">
 			<Header />
+			{savedConfig && (
+				<Box
+					flexDirection="column"
+					paddingX={2}
+					paddingY={1}
+					borderStyle="round"
+					borderColor="#FCCB3D"
+				>
+					<Text bold color="green">
+						Your config is
+					</Text>
+					<Box marginTop={1}>
+						<SyntaxHighlight
+							code={JSON.stringify({ ...savedConfig, apiKey: '*************' }, null, 2)}
+							language="json"
+						/>
+					</Box>
+				</Box>
+			)}
 			<Box flexDirection="column">
 				{history.map((item, index) => (
 					<Box key={index} flexDirection="column">

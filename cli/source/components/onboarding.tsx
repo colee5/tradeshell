@@ -6,12 +6,15 @@ import TextInput from 'ink-text-input';
 import { useSetAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { onboardingCompletedAtom } from '../lib/atoms/onboarding.atom.js';
+import { LLM_MODELS, LlmProvider } from '../../../shared/llm-providers.js';
+import { onboardingCompletedAtom, savedConfigAtom } from '../lib/atoms/onboarding.atom.js';
 import { onboardingFormSchema, type OnboardingFormData } from '../lib/schemas/onboarding.schema.js';
 
 enum OnboardingStep {
 	Welcome = 'welcome',
 	LlmType = 'llm-type',
+	Provider = 'provider',
+	Model = 'model',
 	BaseUrl = 'base-url',
 	ApiKey = 'api-key',
 	Complete = 'complete',
@@ -20,24 +23,30 @@ enum OnboardingStep {
 export function Onboarding() {
 	const [step, setStep] = useState<OnboardingStep>(OnboardingStep.Welcome);
 	const setOnboardingCompleted = useSetAtom(onboardingCompletedAtom);
+	const setSavedConfig = useSetAtom(savedConfigAtom);
 	const { watch, setValue, getValues } = useForm<OnboardingFormData>({
 		resolver: zodResolver(onboardingFormSchema),
 		defaultValues: {
 			llmType: 'cloud',
+			provider: undefined,
+			model: undefined,
 			baseURL: '',
 			apiKey: '',
 		},
 	});
 
 	const llmType = watch('llmType');
+	const provider = watch('provider');
 	const baseURL = watch('baseURL');
 	const apiKey = watch('apiKey');
 
 	const saveConfig = async () => {
 		const data = getValues();
 
-		if (!data.apiKey || data.apiKey.trim() === '') {
-			return;
+		if (data.llmType === 'cloud') {
+			if (!data.provider || !data.model || !data.apiKey || data.apiKey.trim() === '') {
+				return;
+			}
 		}
 
 		if (data.llmType === 'self-hosted' && (!data.baseURL || data.baseURL.trim() === '')) {
@@ -45,7 +54,7 @@ export function Onboarding() {
 		}
 
 		// TODO: Save config to server
-		console.log('Config saved:', data);
+		setSavedConfig(data);
 		setStep(OnboardingStep.Complete);
 
 		setTimeout(() => {
@@ -83,10 +92,60 @@ export function Onboarding() {
 						onSelect={(item) => {
 							setValue('llmType', item.value as 'cloud' | 'self-hosted');
 							if (item.value === 'cloud') {
-								setStep(OnboardingStep.ApiKey);
+								setStep(OnboardingStep.Provider);
 							} else {
 								setStep(OnboardingStep.BaseUrl);
 							}
+						}}
+					/>
+				</Box>
+			</Box>
+		);
+	}
+
+	if (step === OnboardingStep.Provider) {
+		const providerItems = Object.values(LlmProvider).map((providerValue) => ({
+			label: providerValue.charAt(0).toUpperCase() + providerValue.slice(1),
+			value: providerValue,
+		}));
+
+		return (
+			<Box flexDirection="column" paddingX={2} paddingY={1}>
+				<Text bold color="cyan">
+					Choose your cloud provider:
+				</Text>
+				<Box marginTop={1}>
+					<SelectInput
+						items={providerItems}
+						onSelect={(item) => {
+							setValue('provider', item.value as LlmProvider);
+							setStep(OnboardingStep.Model);
+						}}
+					/>
+				</Box>
+			</Box>
+		);
+	}
+
+	if (step === OnboardingStep.Model) {
+		const selectedProvider = provider;
+		const availableModels = selectedProvider ? LLM_MODELS[selectedProvider] : [];
+		const modelItems = availableModels.map((modelName) => ({
+			label: modelName,
+			value: modelName,
+		}));
+
+		return (
+			<Box flexDirection="column" paddingX={2} paddingY={1}>
+				<Text bold color="cyan">
+					Choose your model:
+				</Text>
+				<Box marginTop={1}>
+					<SelectInput
+						items={modelItems}
+						onSelect={(item) => {
+							setValue('model', item.value);
+							setStep(OnboardingStep.ApiKey);
 						}}
 					/>
 				</Box>
@@ -110,7 +169,7 @@ export function Onboarding() {
 						onChange={(value) => setValue('baseURL', value)}
 						onSubmit={() => {
 							if (baseURL && baseURL.trim() !== '') {
-								setStep(OnboardingStep.ApiKey);
+								saveConfig();
 							}
 						}}
 					/>
@@ -135,7 +194,7 @@ export function Onboarding() {
 				<Box marginTop={1} flexDirection="row">
 					<Text>API Key: </Text>
 					<TextInput
-						value={apiKey}
+						value={apiKey || ''}
 						onChange={(value) => setValue('apiKey', value)}
 						onSubmit={saveConfig}
 						mask="*"

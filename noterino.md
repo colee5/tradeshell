@@ -19,6 +19,7 @@ STAGE 1: Monorepo and architecture
 [] Autocomplete of commands when hit ✓
 [] Config service on the client & the server ✓
 [] Setup API endpoint queries with Tanstack Query ✓
+[] Setup importy path alias
 
 STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
 [] Onboarding config setup - Only if config is empty (default) - on every startup the /config endpoint will be called - and if empty return we'll render a <Text> saying to the user to fill up the config onboarding. The onboarding will be done on the frontend whereas the final payload we'll send in the end of this onboarding.
@@ -95,3 +96,7 @@ From written notes:
 - What's a firewalled subnet? How can my app be ran in this contanirized mode in which only the server can send requests to the configured AI Api & the RPCs provided.
 
 - Possibly make it easy for the user to add his own tool implementations of protocols. Like interacting with Uniswap/Aave Protocol. He would need to input the contract ABI into the CLI and it would save it on his local machine from which the agent can then call tools? This might be a good idea and its greatly modular.
+
+WHERE DID I STOP?
+
+index.tsx look at comment at line 24 - bye
