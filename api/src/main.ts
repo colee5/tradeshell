@@ -29,7 +29,6 @@ async function bootstrap() {
     },
   });
 
-  // Write swagger.json for code generation
   writeFileSync('./swagger.json', JSON.stringify(document, null, 2));
 
   const port = process.env.PORT ?? 3001;

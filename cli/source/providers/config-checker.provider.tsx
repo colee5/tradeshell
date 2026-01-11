@@ -6,8 +6,6 @@ import { Onboarding } from '../components/onboarding.js';
 import { onboardingCompletedAtom } from '../lib/atoms/onboarding.atom.js';
 import { useGetConfig } from '../lib/hooks/api-hooks.js';
 
-// Query the config on every startup of the app and check if
-// an empty object - if so prompt the onboarding component
 export function ConfigCheckerProvider({ children }: { children: React.ReactNode }) {
 	const { data: config, isLoading, error } = useGetConfig();
 	const onboardingCompleted = useAtomValue(onboardingCompletedAtom);

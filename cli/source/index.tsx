@@ -21,8 +21,6 @@ export default function Index() {
 	const [input, setInput] = useState('');
 
 	const { exit } = useApp();
-	// TODO: Instead of an atom for this savedConfig - have it query it from the server.
-	// This is because if the user has the config saved - he's not gonna have the atom updated!
 	const { data: savedConfig, isLoading: isSavedConfigLoading } = useGetConfig();
 
 	const showSuggestions = input === '/';
