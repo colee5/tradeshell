@@ -19,12 +19,15 @@ STAGE 1: Monorepo and architecture
 [] Autocomplete of commands when hit ✓
 [] Config service on the client & the server ✓
 [] Setup API endpoint queries with Tanstack Query ✓
-[] Setup importy path alias
+[] Setup import path alias for @shared ✓
+[] Generate backend schemas for the FE - hey-api ✓
+[] Setup husky for linting and commit msg checker
 
 STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
-[] Onboarding config setup - Only if config is empty (default) - on every startup the /config endpoint will be called - and if empty return we'll render a <Text> saying to the user to fill up the config onboarding. The onboarding will be done on the frontend whereas the final payload we'll send in the end of this onboarding.
-[] Config set command - `/config set llm.type cloud`, `/config set llm.baseURL https://...`, `/config set chains.enabled ethereum,polygon`, etc.
--- [] Find a way to have subcommands
+[] Onboarding LLM setup ✓
+[] Config set commands
+-- [] Find a way to have subcommands ✓
+-- [] Set commands for LLM object
 [] Config validation on server - Zod schemas to validate config structure before saving
 [] Config get command - `/config get llm.type` to read individual values
 [] Config list command - `/config list` to show current config (with secrets masked)
