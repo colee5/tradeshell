@@ -2,7 +2,7 @@ import { Box, Text } from 'ink';
 import Spinner from 'ink-spinner';
 import SyntaxHighlight from 'ink-syntax-highlight';
 import React from 'react';
-import { useGetConfig } from '../lib/hooks/use-get-config.js';
+import { useGetConfig } from '../lib/hooks/api-hooks.js';
 
 export function Config() {
 	const { data: config, error, isLoading } = useGetConfig();

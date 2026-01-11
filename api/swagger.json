@@ -10,7 +10,9 @@
             "description": ""
           }
         },
-        "tags": ["App"]
+        "tags": [
+          "App"
+        ]
       }
     },
     "/config": {
@@ -30,7 +32,9 @@
           }
         },
         "summary": "Get current configuration",
-        "tags": ["config"]
+        "tags": [
+          "config"
+        ]
       },
       "put": {
         "operationId": "ConfigController_updateConfig",
@@ -58,7 +62,9 @@
           }
         },
         "summary": "Update entire configuration",
-        "tags": ["config"]
+        "tags": [
+          "config"
+        ]
       },
       "patch": {
         "operationId": "ConfigController_partialUpdate",
@@ -76,7 +82,29 @@
           }
         },
         "summary": "Partially update configuration",
-        "tags": ["config"]
+        "tags": [
+          "config"
+        ]
+      },
+      "delete": {
+        "operationId": "ConfigController_resetConfig",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Reset configuration to defaults",
+        "tags": [
+          "config"
+        ]
       }
     }
   },
@@ -95,7 +123,10 @@
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["cloud", "self-hosted"],
+            "enum": [
+              "cloud",
+              "self-hosted"
+            ],
             "description": "LLM provider type"
           },
           "provider": {

@@ -1,14 +1,19 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { IsEnum, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 export class LlmConfigDto {
-  @ApiPropertyOptional({ enum: ['cloud', 'self-hosted'], description: 'LLM provider type' })
+  @ApiPropertyOptional({
+    enum: ['cloud', 'self-hosted'],
+    description: 'LLM provider type',
+  })
   @IsOptional()
   @IsEnum(['cloud', 'self-hosted'])
   type?: 'cloud' | 'self-hosted';
 
-  @ApiPropertyOptional({ description: 'Cloud provider name (anthropic, openai, groq)' })
+  @ApiPropertyOptional({
+    description: 'Cloud provider name (anthropic, openai, groq)',
+  })
   @IsOptional()
   @IsString()
   provider?: string;
