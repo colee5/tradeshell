@@ -45,6 +45,19 @@ export type AppControllerGetHelloResponses = {
     200: unknown;
 };
 
+export type ConfigControllerResetConfigData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/config';
+};
+
+export type ConfigControllerResetConfigResponses = {
+    default: ConfigDto;
+};
+
+export type ConfigControllerResetConfigResponse = ConfigControllerResetConfigResponses[keyof ConfigControllerResetConfigResponses];
+
 export type ConfigControllerGetConfigData = {
     body?: never;
     path?: never;

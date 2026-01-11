@@ -4,7 +4,7 @@ import { useAtomValue } from 'jotai';
 import React from 'react';
 import { Onboarding } from '../components/onboarding.js';
 import { onboardingCompletedAtom } from '../lib/atoms/onboarding.atom.js';
-import { useGetConfig } from '../lib/hooks/use-get-config.js';
+import { useGetConfig } from '../lib/hooks/api-hooks.js';
 
 // Query the config on every startup of the app and check if
 // an empty object - if so prompt the onboarding component

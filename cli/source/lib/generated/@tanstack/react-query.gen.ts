@@ -3,157 +3,122 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen.js';
-import {
-	appControllerGetHello,
-	configControllerGetConfig,
-	configControllerPartialUpdate,
-	configControllerUpdateConfig,
-	type Options,
-} from '../sdk.gen.js';
-import type {
-	AppControllerGetHelloData,
-	ConfigControllerGetConfigData,
-	ConfigControllerGetConfigResponse,
-	ConfigControllerPartialUpdateData,
-	ConfigControllerPartialUpdateResponse,
-	ConfigControllerUpdateConfigData,
-	ConfigControllerUpdateConfigResponse,
-} from '../types.gen.js';
+import { appControllerGetHello, configControllerGetConfig, configControllerPartialUpdate, configControllerResetConfig, configControllerUpdateConfig, type Options } from '../sdk.gen.js';
+import type { AppControllerGetHelloData, ConfigControllerGetConfigData, ConfigControllerGetConfigResponse, ConfigControllerPartialUpdateData, ConfigControllerPartialUpdateResponse, ConfigControllerResetConfigData, ConfigControllerResetConfigResponse, ConfigControllerUpdateConfigData, ConfigControllerUpdateConfigResponse } from '../types.gen.js';
 
 export type QueryKey<TOptions extends Options> = [
-	Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
-		_id: string;
-		_infinite?: boolean;
-		tags?: ReadonlyArray<string>;
-	},
+    Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
+        _id: string;
+        _infinite?: boolean;
+        tags?: ReadonlyArray<string>;
+    }
 ];
 
-const createQueryKey = <TOptions extends Options>(
-	id: string,
-	options?: TOptions,
-	infinite?: boolean,
-	tags?: ReadonlyArray<string>,
-): [QueryKey<TOptions>[0]] => {
-	const params: QueryKey<TOptions>[0] = {
-		_id: id,
-		baseUrl: options?.baseUrl || (options?.client ?? client).getConfig().baseUrl,
-	} as QueryKey<TOptions>[0];
-	if (infinite) {
-		params._infinite = infinite;
-	}
-	if (tags) {
-		params.tags = tags;
-	}
-	if (options?.body) {
-		params.body = options.body;
-	}
-	if (options?.headers) {
-		params.headers = options.headers;
-	}
-	if (options?.path) {
-		params.path = options.path;
-	}
-	if (options?.query) {
-		params.query = options.query;
-	}
-	return [params];
+const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions, infinite?: boolean, tags?: ReadonlyArray<string>): [
+    QueryKey<TOptions>[0]
+] => {
+    const params: QueryKey<TOptions>[0] = { _id: id, baseUrl: options?.baseUrl || (options?.client ?? client).getConfig().baseUrl } as QueryKey<TOptions>[0];
+    if (infinite) {
+        params._infinite = infinite;
+    }
+    if (tags) {
+        params.tags = tags;
+    }
+    if (options?.body) {
+        params.body = options.body;
+    }
+    if (options?.headers) {
+        params.headers = options.headers;
+    }
+    if (options?.path) {
+        params.path = options.path;
+    }
+    if (options?.query) {
+        params.query = options.query;
+    }
+    return [params];
 };
 
-export const appControllerGetHelloQueryKey = (options?: Options<AppControllerGetHelloData>) =>
-	createQueryKey('appControllerGetHello', options);
+export const appControllerGetHelloQueryKey = (options?: Options<AppControllerGetHelloData>) => createQueryKey('appControllerGetHello', options);
 
-export const appControllerGetHelloOptions = (options?: Options<AppControllerGetHelloData>) =>
-	queryOptions<unknown, DefaultError, unknown, ReturnType<typeof appControllerGetHelloQueryKey>>({
-		queryFn: async ({ queryKey, signal }) => {
-			const { data } = await appControllerGetHello({
-				...options,
-				...queryKey[0],
-				signal,
-				throwOnError: true,
-			});
-			return data;
-		},
-		queryKey: appControllerGetHelloQueryKey(options),
-	});
+export const appControllerGetHelloOptions = (options?: Options<AppControllerGetHelloData>) => queryOptions<unknown, DefaultError, unknown, ReturnType<typeof appControllerGetHelloQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await appControllerGetHello({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: appControllerGetHelloQueryKey(options)
+});
 
-export const configControllerGetConfigQueryKey = (
-	options?: Options<ConfigControllerGetConfigData>,
-) => createQueryKey('configControllerGetConfig', options);
+/**
+ * Reset configuration to defaults
+ */
+export const configControllerResetConfigMutation = (options?: Partial<Options<ConfigControllerResetConfigData>>): UseMutationOptions<ConfigControllerResetConfigResponse, DefaultError, Options<ConfigControllerResetConfigData>> => {
+    const mutationOptions: UseMutationOptions<ConfigControllerResetConfigResponse, DefaultError, Options<ConfigControllerResetConfigData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await configControllerResetConfig({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const configControllerGetConfigQueryKey = (options?: Options<ConfigControllerGetConfigData>) => createQueryKey('configControllerGetConfig', options);
 
 /**
  * Get current configuration
  */
-export const configControllerGetConfigOptions = (
-	options?: Options<ConfigControllerGetConfigData>,
-) =>
-	queryOptions<
-		ConfigControllerGetConfigResponse,
-		DefaultError,
-		ConfigControllerGetConfigResponse,
-		ReturnType<typeof configControllerGetConfigQueryKey>
-	>({
-		queryFn: async ({ queryKey, signal }) => {
-			const { data } = await configControllerGetConfig({
-				...options,
-				...queryKey[0],
-				signal,
-				throwOnError: true,
-			});
-			return data;
-		},
-		queryKey: configControllerGetConfigQueryKey(options),
-	});
+export const configControllerGetConfigOptions = (options?: Options<ConfigControllerGetConfigData>) => queryOptions<ConfigControllerGetConfigResponse, DefaultError, ConfigControllerGetConfigResponse, ReturnType<typeof configControllerGetConfigQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await configControllerGetConfig({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: configControllerGetConfigQueryKey(options)
+});
 
 /**
  * Partially update configuration
  */
-export const configControllerPartialUpdateMutation = (
-	options?: Partial<Options<ConfigControllerPartialUpdateData>>,
-): UseMutationOptions<
-	ConfigControllerPartialUpdateResponse,
-	DefaultError,
-	Options<ConfigControllerPartialUpdateData>
-> => {
-	const mutationOptions: UseMutationOptions<
-		ConfigControllerPartialUpdateResponse,
-		DefaultError,
-		Options<ConfigControllerPartialUpdateData>
-	> = {
-		mutationFn: async (fnOptions) => {
-			const { data } = await configControllerPartialUpdate({
-				...options,
-				...fnOptions,
-				throwOnError: true,
-			});
-			return data;
-		},
-	};
-	return mutationOptions;
+export const configControllerPartialUpdateMutation = (options?: Partial<Options<ConfigControllerPartialUpdateData>>): UseMutationOptions<ConfigControllerPartialUpdateResponse, DefaultError, Options<ConfigControllerPartialUpdateData>> => {
+    const mutationOptions: UseMutationOptions<ConfigControllerPartialUpdateResponse, DefaultError, Options<ConfigControllerPartialUpdateData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await configControllerPartialUpdate({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
 };
 
 /**
  * Update entire configuration
  */
-export const configControllerUpdateConfigMutation = (
-	options?: Partial<Options<ConfigControllerUpdateConfigData>>,
-): UseMutationOptions<
-	ConfigControllerUpdateConfigResponse,
-	DefaultError,
-	Options<ConfigControllerUpdateConfigData>
-> => {
-	const mutationOptions: UseMutationOptions<
-		ConfigControllerUpdateConfigResponse,
-		DefaultError,
-		Options<ConfigControllerUpdateConfigData>
-	> = {
-		mutationFn: async (fnOptions) => {
-			const { data } = await configControllerUpdateConfig({
-				...options,
-				...fnOptions,
-				throwOnError: true,
-			});
-			return data;
-		},
-	};
-	return mutationOptions;
+export const configControllerUpdateConfigMutation = (options?: Partial<Options<ConfigControllerUpdateConfigData>>): UseMutationOptions<ConfigControllerUpdateConfigResponse, DefaultError, Options<ConfigControllerUpdateConfigData>> => {
+    const mutationOptions: UseMutationOptions<ConfigControllerUpdateConfigResponse, DefaultError, Options<ConfigControllerUpdateConfigData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await configControllerUpdateConfig({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
 };
