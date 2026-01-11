@@ -21,7 +21,8 @@ STAGE 1: Monorepo and architecture
 [] Setup API endpoint queries with Tanstack Query ✓
 [] Setup import path alias for @shared ✓
 [] Generate backend schemas for the FE - hey-api ✓
-[] Setup husky for linting and commit msg checker
+[] Setup husky for linting
+[] Setup commit message standard
 
 STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
 [] Onboarding LLM setup ✓
@@ -36,7 +37,7 @@ STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
 STAGE 3: Private key storing and safety
 [] Private key storage - Use ethers.js encrypted keystore in ~/.tradeshell/keystore/ (password-protected, never plain text) Will be done through the server
 [] We MUST keep npm packages to the minimum, All cli and api packages must be reviewed
-[] Environment variable support - Allow RPC URLs, API keys to be set via env vars (12-factor app)
+[] Environment variable support - Allow RPC URLs, API keys to be set via env vars (12-facto r app)
 [] Audit logging - Log all wallet operations (deploys, transactions) to ~/.tradeshell/audit.log
 
 STAGE 4: Agent service, extensible folder structure /tools in the agent module
