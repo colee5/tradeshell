@@ -16,13 +16,14 @@
 		"start": "tsx source/cli.tsx",
 		"shell": "tsx source/cli.tsx",
 		"check-types": "tsc --noEmit",
-		"test": "prettier --check . && xo && ava"
+		"test": "prettier --check . && xo && ava",
+		"generate:api": "openapi-ts"
 	},
 	"files": [
 		"dist"
 	],
 	"dependencies": {
-		"@hookform/resolvers": "^5.2.2",
+		"@hey-api/client-axios": "^0.9.1",
 		"@tanstack/react-query": "^5.90.16",
 		"axios": "^1.13.2",
 		"ink": "^6.6.0",
@@ -37,6 +38,7 @@
 		"zod": "^3.21.4"
 	},
 	"devDependencies": {
+		"@hey-api/openapi-ts": "^0.90.3",
 		"@sindresorhus/tsconfig": "^3.0.1",
 		"@types/react": "^18.0.32",
 		"@vdemedes/prettier-config": "^2.0.1",
