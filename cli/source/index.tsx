@@ -1,14 +1,14 @@
 import { Box, Text, useApp } from 'ink';
 import SyntaxHighlight from 'ink-syntax-highlight';
 import TextInput from 'ink-text-input';
-import { useAtomValue } from 'jotai';
 import React, { useState } from 'react';
 
 import { Balance, Chat, Config, Help, Login, Reload } from './commands/index.js';
 import { CommandSuggestions } from './components/command-suggestions.js';
-import { Header } from './components/Header.js';
-import { savedConfigAtom } from './lib/atoms/onboarding.atom.js';
+import { Header } from './components/header.js';
+
 import { COMMANDS } from './lib/commands.js';
+import { useGetConfig } from './lib/hooks/api-hooks.js';
 import { isCommand } from './lib/utils.js';
 
 type HistoryItem = {
@@ -23,7 +23,7 @@ export default function Index() {
 	const { exit } = useApp();
 	// TODO: Instead of an atom for this savedConfig - have it query it from the server.
 	// This is because if the user has the config saved - he's not gonna have the atom updated!
-	const savedConfig = useAtomValue(savedConfigAtom);
+	const { data: savedConfig, isLoading: isSavedConfigLoading } = useGetConfig();
 
 	const showSuggestions = input === '/';
 
@@ -72,7 +72,7 @@ export default function Index() {
 	return (
 		<Box flexDirection="column">
 			<Header />
-			{savedConfig && (
+			{savedConfig && !isSavedConfigLoading && (
 				<Box
 					flexDirection="column"
 					paddingX={2}

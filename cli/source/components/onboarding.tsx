@@ -1,4 +1,3 @@
-import { LLM_MODELS, LlmProvider } from '@shared/lib/llm-providers.js';
 import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
@@ -6,9 +5,11 @@ import TextInput from 'ink-text-input';
 import { useSetAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { LLM_MODELS, LlmProvider } from '../lib/constants/llm-providers.js';
 
-import { onboardingCompletedAtom, savedConfigAtom } from '../lib/atoms/onboarding.atom.js';
+import { onboardingCompletedAtom } from '../lib/atoms/onboarding.atom.js';
 import { LlmConfigDto } from '../lib/generated/types.gen.js';
+import { useUpdateConfig } from '../lib/hooks/api-hooks.js';
 
 enum OnboardingStep {
 	Welcome = 'welcome',
@@ -23,7 +24,8 @@ enum OnboardingStep {
 export function Onboarding() {
 	const [step, setStep] = useState<OnboardingStep>(OnboardingStep.Welcome);
 	const setOnboardingCompleted = useSetAtom(onboardingCompletedAtom);
-	const setSavedConfig = useSetAtom(savedConfigAtom);
+
+	const updateConfig = useUpdateConfig();
 	const { watch, setValue, getValues } = useForm<LlmConfigDto>({
 		defaultValues: {
 			type: 'cloud',
@@ -52,14 +54,25 @@ export function Onboarding() {
 			return;
 		}
 
-		// TODO: Save config to server
-		setSavedConfig(data);
-
 		setStep(OnboardingStep.Complete);
 
-		setTimeout(() => {
-			setOnboardingCompleted(true);
-		}, 1500);
+		updateConfig.mutate(
+			{
+				body: {
+					llm: data,
+				},
+			},
+			{
+				onSuccess: () => {
+					setTimeout(() => {
+						setOnboardingCompleted(true);
+					}, 1500);
+				},
+				onError: (error) => {
+					console.error('Failed to save config:', error);
+				},
+			},
+		);
 	};
 
 	if (step === OnboardingStep.Welcome) {
