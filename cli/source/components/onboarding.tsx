@@ -1,4 +1,4 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { LLM_MODELS, LlmProvider } from '@shared/lib/llm-providers.js';
 import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
@@ -6,9 +6,9 @@ import TextInput from 'ink-text-input';
 import { useSetAtom } from 'jotai';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { LLM_MODELS, LlmProvider } from '../../../shared/llm-providers.js';
+
 import { onboardingCompletedAtom, savedConfigAtom } from '../lib/atoms/onboarding.atom.js';
-import { onboardingFormSchema, type OnboardingFormData } from '../lib/schemas/onboarding.schema.js';
+import { LlmConfigDto } from '../lib/generated/types.gen.js';
 
 enum OnboardingStep {
 	Welcome = 'welcome',
@@ -24,10 +24,9 @@ export function Onboarding() {
 	const [step, setStep] = useState<OnboardingStep>(OnboardingStep.Welcome);
 	const setOnboardingCompleted = useSetAtom(onboardingCompletedAtom);
 	const setSavedConfig = useSetAtom(savedConfigAtom);
-	const { watch, setValue, getValues } = useForm<OnboardingFormData>({
-		resolver: zodResolver(onboardingFormSchema),
+	const { watch, setValue, getValues } = useForm<LlmConfigDto>({
 		defaultValues: {
-			llmType: 'cloud',
+			type: 'cloud',
 			provider: undefined,
 			model: undefined,
 			baseURL: '',
@@ -35,7 +34,7 @@ export function Onboarding() {
 		},
 	});
 
-	const llmType = watch('llmType');
+	const llmType = watch('type');
 	const provider = watch('provider');
 	const baseURL = watch('baseURL');
 	const apiKey = watch('apiKey');
@@ -43,18 +42,19 @@ export function Onboarding() {
 	const saveConfig = async () => {
 		const data = getValues();
 
-		if (data.llmType === 'cloud') {
+		if (data.type === 'cloud') {
 			if (!data.provider || !data.model || !data.apiKey || data.apiKey.trim() === '') {
 				return;
 			}
 		}
 
-		if (data.llmType === 'self-hosted' && (!data.baseURL || data.baseURL.trim() === '')) {
+		if (data.type === 'self-hosted' && (!data.baseURL || data.baseURL.trim() === '')) {
 			return;
 		}
 
 		// TODO: Save config to server
 		setSavedConfig(data);
+
 		setStep(OnboardingStep.Complete);
 
 		setTimeout(() => {
@@ -90,7 +90,7 @@ export function Onboarding() {
 							{ label: 'Self-hosted', value: 'self-hosted' },
 						]}
 						onSelect={(item) => {
-							setValue('llmType', item.value as 'cloud' | 'self-hosted');
+							setValue('type', item.value as 'cloud' | 'self-hosted');
 							if (item.value === 'cloud') {
 								setStep(OnboardingStep.Provider);
 							} else {
@@ -128,9 +128,9 @@ export function Onboarding() {
 	}
 
 	if (step === OnboardingStep.Model) {
-		const selectedProvider = provider;
+		const selectedProvider = provider as LlmProvider;
 		const availableModels = selectedProvider ? LLM_MODELS[selectedProvider] : [];
-		const modelItems = availableModels.map((modelName) => ({
+		const modelItems = availableModels.map((modelName: string) => ({
 			label: modelName,
 			value: modelName,
 		}));
