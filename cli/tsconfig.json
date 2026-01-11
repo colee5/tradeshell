@@ -3,11 +3,7 @@
 	"compilerOptions": {
 		"moduleResolution": "node16",
 		"module": "Node16",
-		"outDir": "dist",
-		"baseUrl": ".",
-		"paths": {
-			"@shared/*": ["../shared/*"]
-		}
+		"outDir": "dist"
 	},
 	"include": ["source"]
 }
