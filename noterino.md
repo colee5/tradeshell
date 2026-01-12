@@ -45,7 +45,6 @@ STAGE 4: Agent service, extensible folder structure /tools in the agent module
 [] Tool response schemas - Zod validation for tool outputs (not just inputs)
 [] Agent streaming - Real-time agent thinking/progress display in CLI
 [] Tool execution confirmation - For dangerous operations (deploy, transfer), require explicit user confirmation
-[] Dry-run mode - `/deploy wallet --dry-run` to see what agent would do without executing - OOS
 
 STAGE 5: Wallet Operations
 [] Wallet list command - List all deployed/imported wallets
