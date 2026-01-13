@@ -14,22 +14,63 @@ Make a class which would load the config from a file. Then on the client we'll n
 
 TODO:
 
+STAGE 1: Monorepo and architecture
 [] Chat Interface ✓
 [] Autocomplete of commands when hit ✓
 [] Config service on the client & the server ✓
 [] Setup API endpoint queries with Tanstack Query ✓
-[] Onboarding config setup - Only if config is empty (default)
-[] Config set command - `/config set llm.type cloud`, `/config set llm.baseURL https://...`, `/config set chains.enabled ethereum,polygon`, etc.
--- [] Find a way to have subcommands
+[] Setup import path alias for @shared ✓
+[] Generate backend schemas for the FE - hey-api ✓
+[] Setup husky for linting
+[] Setup commit message standard
+[] Refactor by overlay-component-architecture.md
+
+STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
+[] Onboarding LLM setup ✓
+[] Config commands
+-- [] Find a way to have subcommands ✓
+-- [] Config list command - `/config get` to show current config (with secrets masked) ✓
+-- [] Config reset command - `/config reset` to return to defaults ✓
+-- [] Set commands for LLM object
+
+STAGE 3: Private key storing and safety
 [] Private key storage - Use ethers.js encrypted keystore in ~/.tradeshell/keystore/ (password-protected, never plain text) Will be done through the server
 [] We MUST keep npm packages to the minimum, All cli and api packages must be reviewed
+[] Environment variable support - Allow RPC URLs, API keys to be set via env vars (12-facto r app)
+[] Audit logging - Log all wallet operations (deploys, transactions) to ~/.tradeshell/audit.log
+
+STAGE 4: Agent service, extensible folder structure /tools in the agent module
 [] Find a toolcall structure which the LLM can prompt user to confirm/select etc - ZOD validated
+[] Tool response schemas - Zod validation for tool outputs (not just inputs)
+[] Agent streaming - Real-time agent thinking/progress display in CLI
+[] Tool execution confirmation - For dangerous operations (deploy, transfer), require explicit user confirmation
+
+STAGE 5: Wallet Operations
+[] Wallet list command - List all deployed/imported wallets
+[] Wallet import - Import existing wallet via private key
+[] Transaction history - Query and display transaction history for a wallet
+[] Balance checking - Multi-chain balance display
+[] Gas estimation - Before any transaction, show estimated gas costs
+
+STAGE 6: Testing & Quality
+[] Unit tests - For critical services (wallet, config, agent tools)
+[] Integration tests - Test CLI ↔ Server communication
+[] E2E tests - Test full agent flows (deploy wallet from start to finish)
+[] Security audit - Review all crypto operations, key storage, RPC interactions
+
+STAGE 7: DevOps & Deployment
+[] Docker compose setup - With network isolation (firewalled subnet)
+[] Health check endpoints - /health endpoint for monitoring
+[] Graceful shutdown - Handle SIGTERM/SIGINT properly (save sessions, close connections)
+[] Logging strategy - Structured logging (JSON) for both CLI and server
 
 ---
 
 CONFIG BRAINSTORM
 What will we need in the config?
-RPC URL, can add more and then can switch between them via the dropdown component, BUT this is tricky - how do we make the server easily prompt the client to pick options - MAYBE like this - user writes subcommand for picking between RPCs - then the client fetches all current RPCs available on the server and then maps through them via the option - then only with the PUT method updates the needed, We must also see which one is currently picked via an isActive field or something.
+RPC URL, can add more and then can switch between them via the dropdown component, BUT this is tricky - how do we make the server easily prompt the client to pick options - MAYBE like this - user writes subcommand for picking between RPCs - then the client fetches all current RPCs available on the server and then maps through them via the option
+
+- then only with the PUT method updates the needed, We must also see which one is currently picked via an isActive field or something.
 
 IGNORE THIS ABOVE - Just go with one current RPC url and thats it!! - Make a command to fetch only the RPC url, and make a command to only update the RPC url via PUT - thats it.
 
@@ -53,3 +94,11 @@ Chains[
 From written notes:
 
 - Make progress up until broadcasting a transaction and deploying a wallet through the agent toolset, then simply opensource. Don't forget that all actions should be done through the agent's toolset except the config which it's better to take into our own hands and have a good onboarding experience. We're not building a CLI for trading - we're building an agent to help you trade and interact with DEFI with pure words not with remembering commands. MUST keep our command set to the minimum. Anything which can't be written with a single command like /balance should be made through a tool.
+
+- What's a firewalled subnet? How can my app be ran in this contanirized mode in which only the server can send requests to the configured AI Api & the RPCs provided.
+
+- Possibly make it easy for the user to add his own tool implementations of protocols. Like interacting with Uniswap/Aave Protocol. He would need to input the contract ABI into the CLI and it would save it on his local machine from which the agent can then call tools? This might be a good idea and its greatly modular.
+
+WHERE DID I STOP?
+
+index.tsx look at comment at line 24 - bye

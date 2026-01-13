@@ -1,9 +1,9 @@
 import { Box, Text } from 'ink';
 import React from 'react';
 
-type HistoryItem = {
+export type HistoryItem = {
 	input: string;
-	output: string;
+	output: React.ReactElement;
 };
 
 type Props = {
@@ -19,7 +19,7 @@ export function CommandHistory({ history }: Props) {
 						<Text color="green">&gt; </Text>
 						{item.input}
 					</Text>
-					<Text>{item.output}</Text>
+					{item.output}
 				</Box>
 			))}
 		</Box>

@@ -1,6 +1,6 @@
 import { Text, useApp } from 'ink';
 import React, { useEffect } from 'react';
-import { RELOAD_ERROR_CODE } from '../lib/constants.js';
+import { RELOAD_ERROR_CODE } from '../lib/constants/index.js';
 
 export function Reload() {
 	const { exit } = useApp();

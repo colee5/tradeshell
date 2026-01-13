@@ -1,0 +1,165 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/config": {
+      "get": {
+        "operationId": "ConfigController_getConfig",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get current configuration",
+        "tags": [
+          "config"
+        ]
+      },
+      "put": {
+        "operationId": "ConfigController_updateConfig",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update entire configuration",
+        "tags": [
+          "config"
+        ]
+      },
+      "patch": {
+        "operationId": "ConfigController_partialUpdate",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Partially update configuration",
+        "tags": [
+          "config"
+        ]
+      },
+      "delete": {
+        "operationId": "ConfigController_resetConfig",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Reset configuration to defaults",
+        "tags": [
+          "config"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "TradeShell API",
+    "description": "API for TradeShell CLI",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "LlmConfigDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "cloud",
+              "self-hosted"
+            ],
+            "description": "LLM provider type"
+          },
+          "provider": {
+            "type": "string",
+            "description": "Cloud provider name (anthropic, openai, groq)"
+          },
+          "model": {
+            "type": "string",
+            "description": "Model name"
+          },
+          "baseURL": {
+            "type": "string",
+            "description": "Base URL for self-hosted LLM"
+          },
+          "apiKey": {
+            "type": "string",
+            "description": "API key for authentication"
+          }
+        }
+      },
+      "ConfigDto": {
+        "type": "object",
+        "properties": {
+          "llm": {
+            "description": "LLM configuration",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LlmConfigDto"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

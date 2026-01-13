@@ -1,6 +1,7 @@
-export { Login } from './login.js';
+export { Config } from './config/index.js';
 export { Balance } from './balance.js';
-export { Help } from './help.js';
-export { Reload } from './reload.js';
 export { Chat } from './chat.js';
-export { Config } from './config.js';
+export { Help } from './help.js';
+export { Login } from './login.js';
+export { Reload } from './reload.js';
+export { Onboard } from './onboard.js';

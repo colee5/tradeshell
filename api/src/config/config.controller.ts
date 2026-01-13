@@ -1,24 +1,48 @@
-import { Body, Controller, Get, Patch, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Put } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
-import type { Config } from './config.schema';
+import { ConfigDto } from './dto/config.dto';
 
+@ApiTags('config')
 @Controller('config')
 export class ConfigController {
   constructor(private readonly configService: ConfigService) {}
 
   @Get()
-  async getConfig(): Promise<Config> {
+  @ApiOperation({ summary: 'Get current configuration' })
+  @ApiResponse({
+    type: ConfigDto,
+  })
+  async getConfig(): Promise<ConfigDto> {
     return await this.configService.get();
   }
 
   @Put()
-  async updateConfig(@Body() config: Config): Promise<Config> {
+  @ApiOperation({ summary: 'Update entire configuration' })
+  @ApiResponse({
+    type: ConfigDto,
+  })
+  async updateConfig(@Body() config: ConfigDto): Promise<ConfigDto> {
     await this.configService.save(config);
     return this.configService.get();
   }
 
   @Patch()
-  async partialUpdate(@Body() updates: Partial<Config>): Promise<Config> {
+  @ApiOperation({ summary: 'Partially update configuration' })
+  @ApiResponse({
+    type: ConfigDto,
+  })
+  async partialUpdate(@Body() updates: Partial<ConfigDto>): Promise<ConfigDto> {
     return this.configService.update(updates);
+  }
+
+  @Delete()
+  @ApiOperation({ summary: 'Reset configuration to defaults' })
+  @ApiResponse({
+    type: ConfigDto,
+  })
+  async resetConfig(): Promise<ConfigDto> {
+    await this.configService.save({});
+    return this.configService.get();
   }
 }

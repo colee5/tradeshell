@@ -2,11 +2,11 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as fs from 'fs/promises';
 import * as os from 'os';
 import * as path from 'path';
-import { Config, ConfigSchema } from './config.schema';
+import { ConfigDto } from './dto/config.dto';
 
 @Injectable()
 export class ConfigService implements OnModuleInit {
-  private config: Config = {};
+  private config: ConfigDto = {};
   private readonly configDir: string;
   private readonly configPath: string;
 
@@ -33,46 +33,44 @@ export class ConfigService implements OnModuleInit {
     }
   }
 
-  async load(): Promise<Config> {
+  async load(): Promise<ConfigDto> {
     try {
       const data = await fs.readFile(this.configPath, 'utf-8');
       const parsed = JSON.parse(data);
-      this.config = ConfigSchema.parse(parsed);
+      this.config = parsed;
       return this.config;
     } catch (error) {
       throw new Error(`Failed to load config: ${error}`);
     }
   }
 
-  async save(config: Config): Promise<void> {
+  async save(config: ConfigDto): Promise<void> {
     try {
       await fs.mkdir(this.configDir, { recursive: true });
 
-      const validated = ConfigSchema.parse(config);
-
       await fs.writeFile(
         this.configPath,
-        JSON.stringify(validated, null, 2),
+        JSON.stringify(config, null, 2),
         'utf-8',
       );
 
-      this.config = validated;
+      this.config = config;
     } catch (error) {
       throw new Error(`Failed to save config: ${error}`);
     }
   }
 
-  async get(): Promise<Config> {
+  async get(): Promise<ConfigDto> {
     return this.config;
   }
 
-  async update(updates: Partial<Config>): Promise<Config> {
+  async update(updates: Partial<ConfigDto>): Promise<ConfigDto> {
     const newConfig = { ...this.config, ...updates };
     await this.save(newConfig);
     return newConfig;
   }
 
-  async updatePath(path: string, value: any): Promise<Config> {
+  async updatePath(path: string, value: any): Promise<ConfigDto> {
     const keys = path.split('.');
     const newConfig = JSON.parse(JSON.stringify(this.config));
 
@@ -89,8 +87,8 @@ export class ConfigService implements OnModuleInit {
     return newConfig;
   }
 
-  private async initEmpty(): Promise<Config> {
-    const emptyConfig: Config = {};
+  private async initEmpty(): Promise<ConfigDto> {
+    const emptyConfig: ConfigDto = {};
     await this.save(emptyConfig);
     return emptyConfig;
   }

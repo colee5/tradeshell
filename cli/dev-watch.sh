@@ -1,10 +1,8 @@
 #!/bin/bash
 
-# TradeShell CLI Development Watch Script
-# Automatically restarts the CLI when you use the 'refresh' command
+# Automatically restarts the CLI when we use the 'refresh' command
 
-echo "🚀 Starting TradeShell CLI in watch mode..."
-echo "   Use the 'refresh' command inside the CLI to reload code changes"
+echo "Starting TradeShell CLI in watch mode..."
 echo ""
 
 while true; do
