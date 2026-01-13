@@ -1,27 +1,22 @@
-import { Box, Text, useApp } from 'ink';
-import SyntaxHighlight from 'ink-syntax-highlight';
-import TextInput from 'ink-text-input';
+import { Box, useApp } from 'ink';
 import React, { useState } from 'react';
 
-import { Balance, Chat, Config, Help, Login, Reload } from './commands/index.js';
+import { Balance, Chat, Config, Help, Login, Onboard, Reload } from './commands/index.js';
+import { CommandInput } from './components/command-input.js';
 import { CommandSuggestions } from './components/command-suggestions.js';
 import { Header } from './components/header.js';
 
-import { COMMANDS } from './lib/commands.js';
-import { useGetConfig } from './lib/hooks/api-hooks.js';
-import { isCommand } from './lib/utils.js';
+import { InitialConfigPrompt } from './components/initial-config-prompt.js';
 
-type HistoryItem = {
-	input: string;
-	output: React.ReactElement;
-};
+import { CommandHistory, HistoryItem } from './components/command-history.js';
+import { COMMANDS } from './lib/commands.js';
+import { isCommand } from './lib/utils.js';
 
 export default function Index() {
 	const [history, setHistory] = useState<HistoryItem[]>([]);
 	const [input, setInput] = useState('');
-
+	const [isOnboardingActive, setIsOnboardingActive] = useState(false);
 	const { exit } = useApp();
-	const { data: savedConfig, isLoading: isSavedConfigLoading } = useGetConfig();
 
 	const showSuggestions = input === '/';
 
@@ -42,7 +37,7 @@ export default function Index() {
 			case COMMANDS.balance.name:
 				return <Balance />;
 			case COMMANDS.config.name:
-				return <Config />;
+				return <Config args={args} />;
 			case COMMANDS.help.name:
 				return <Help />;
 			case COMMANDS.r.name:
@@ -58,6 +53,21 @@ export default function Index() {
 			process.exit(0);
 		}
 
+		const parts = command.split(' ');
+		let cmd = parts[0];
+
+		if (isCommand(cmd)) {
+			cmd = cmd?.slice(1);
+		}
+
+		// cole: Special pattern for when we want to render something
+		// which does not render the other elements like the chat input etc
+		if (cmd === COMMANDS.onboard.name) {
+			setIsOnboardingActive(true);
+			setInput('');
+			return;
+		}
+
 		const output = processCommand(command);
 
 		if (output) {
@@ -67,47 +77,24 @@ export default function Index() {
 		setInput('');
 	};
 
+	if (isOnboardingActive) {
+		return (
+			<Box flexDirection="column">
+				<Header />
+				<Onboard onComplete={() => setIsOnboardingActive(false)} />
+			</Box>
+		);
+	}
+
 	return (
 		<Box flexDirection="column">
 			<Header />
-			{savedConfig && !isSavedConfigLoading && (
-				<Box
-					flexDirection="column"
-					paddingX={2}
-					paddingY={1}
-					borderStyle="round"
-					borderColor="#FCCB3D"
-				>
-					<Text bold color="green">
-						Your config is
-					</Text>
-					<Box marginTop={1}>
-						<SyntaxHighlight
-							code={JSON.stringify({ ...savedConfig, apiKey: '*************' }, null, 2)}
-							language="json"
-						/>
-					</Box>
-				</Box>
-			)}
-			<Box flexDirection="column">
-				{history.map((item, index) => (
-					<Box key={index} flexDirection="column">
-						<Text>
-							<Text color="green">&gt; </Text>
-							{item.input}
-						</Text>
-						{item.output}
-					</Box>
-				))}
-			</Box>
-			<Box flexDirection="column">
-				<Text color="#404040">{'─'.repeat(process.stdout.columns || 80)}</Text>
-				<Box paddingX={1}>
-					<Text color="green">&gt; </Text>
-					<TextInput value={input} onChange={setInput} onSubmit={handleSubmit} />
-				</Box>
-				<Text color="#404040">{'─'.repeat(process.stdout.columns || 80)}</Text>
-			</Box>
+			<InitialConfigPrompt />
+
+			<CommandHistory history={history} />
+
+			<CommandInput value={input} onChange={setInput} onSubmit={handleSubmit} />
+
 			<CommandSuggestions
 				show={showSuggestions}
 				onSelect={(command) => {
