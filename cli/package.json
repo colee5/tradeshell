@@ -17,7 +17,8 @@
 		"shell": "tsx source/cli.tsx",
 		"check-types": "tsc --noEmit",
 		"test": "prettier --check . && xo && ava",
-		"generate:api": "openapi-ts"
+		"generate:api": "openapi-ts",
+		"prepare": "husky"
 	},
 	"files": [
 		"dist"
@@ -38,6 +39,8 @@
 		"zod": "^3.21.4"
 	},
 	"devDependencies": {
+		"@commitlint/cli": "^20.3.1",
+		"@commitlint/config-conventional": "^20.3.1",
 		"@hey-api/openapi-ts": "^0.90.3",
 		"@sindresorhus/tsconfig": "^3.0.1",
 		"@types/react": "^18.0.32",
@@ -47,7 +50,9 @@
 		"eslint-config-xo-react": "^0.27.0",
 		"eslint-plugin-react": "^7.32.2",
 		"eslint-plugin-react-hooks": "^4.6.0",
+		"husky": "^9.1.7",
 		"ink-testing-library": "^3.0.0",
+		"lint-staged": "^16.2.7",
 		"prettier": "^2.8.7",
 		"ts-node": "^10.9.1",
 		"tsx": "^4.7.0",
@@ -69,5 +74,11 @@
 		"rules": {
 			"react/prop-types": "off"
 		}
+	},
+	"lint-staged": {
+		"*.{ts,tsx}": [
+			"xo",
+			"prettier --write"
+		]
 	}
 }
