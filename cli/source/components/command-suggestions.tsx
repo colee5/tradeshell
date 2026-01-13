@@ -11,10 +11,25 @@ type Props = {
 export function CommandSuggestions({ show, onSelect }: Props) {
 	if (!show) return null;
 
-	const items = AVAILABLE_COMMANDS.map((cmd) => ({
-		label: cmd.label,
-		value: cmd.name,
-	}));
+	const items: Array<{ label: string; value: string }> = [];
+
+	AVAILABLE_COMMANDS.forEach((cmd) => {
+		items.push({
+			label: cmd.label,
+			value: cmd.name,
+		});
+
+		if ('subcommands' in cmd && cmd.subcommands) {
+			cmd.subcommands.forEach((subcmd, index) => {
+				const isLast = index === cmd.subcommands!.length - 1;
+				const prefix = isLast ? '  └─ ' : '  ├─ ';
+				items.push({
+					label: `${prefix}${subcmd.label}`,
+					value: `${cmd.name} ${subcmd.name}`,
+				});
+			});
+		}
+	});
 
 	return (
 		<Box flexDirection="column" marginLeft={2} borderStyle="round" borderColor="gray" paddingX={1}>

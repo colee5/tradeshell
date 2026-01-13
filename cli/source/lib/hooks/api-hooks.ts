@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
 	configControllerGetConfigOptions,
 	configControllerPartialUpdateMutation,
@@ -8,8 +8,32 @@ import {
 
 export const useGetConfig = () => useQuery(configControllerGetConfigOptions());
 
-export const useUpdateConfig = () => useMutation(configControllerUpdateConfigMutation());
+export const useUpdateConfig = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		...configControllerUpdateConfigMutation(),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: configControllerGetConfigOptions().queryKey });
+		},
+	});
+};
 
-export const usePartialUpdateConfig = () => useMutation(configControllerPartialUpdateMutation());
+export const usePartialUpdateConfig = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		...configControllerPartialUpdateMutation(),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: configControllerGetConfigOptions().queryKey });
+		},
+	});
+};
 
-export const useResetConfig = () => useMutation(configControllerResetConfigMutation());
+export const useResetConfig = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		...configControllerResetConfigMutation(),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: configControllerGetConfigOptions().queryKey });
+		},
+	});
+};
