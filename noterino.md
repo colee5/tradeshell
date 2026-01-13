@@ -30,8 +30,9 @@ STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
 [] Config commands
 -- [] Find a way to have subcommands ✓
 -- [] Config list command - `/config get` to show current config (with secrets masked) ✓
-
 -- [] Config reset command - `/config reset` to return to defaults ✓
+-- [] Handle initialPrompt error case ✓
+-- [] Handle onboarding error case, it just stops and runs infinitely
 -- [] Set commands for LLM object
 
 STAGE 3: Private key storing and safety

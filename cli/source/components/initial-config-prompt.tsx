@@ -1,18 +1,32 @@
-import { Box, Text } from 'ink';
+import {Box, Text} from 'ink';
 import React from 'react';
-import { useGetConfig } from '../lib/hooks/api-hooks.js';
+import {useGetConfig} from '../lib/hooks/api-hooks.js';
 
 export function InitialConfigPrompt() {
-	const { data: config, isLoading } = useGetConfig();
+	const {data: config, isLoading, isError} = useGetConfig();
 
 	if (isLoading) {
 		return null;
 	}
 
-	const hasConfig = config && config.llm;
+	const hasConfig = config?.llm;
 
-	if (hasConfig) {
+	if (hasConfig && !isError) {
 		return null;
+	}
+
+	if (isError) {
+		return (
+			<Box flexDirection="column" paddingX={2} paddingY={1} borderStyle="round" borderColor="red">
+				<Text bold color="red">
+					Failed to receive response from the server
+				</Text>
+
+				<Box marginTop={0.3}>
+					<Text dimColor>Please try again later</Text>
+				</Box>
+			</Box>
+		);
 	}
 
 	return (

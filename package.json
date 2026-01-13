@@ -1,0 +1,47 @@
+{
+	"name": "tradeshell-monorepo",
+	"private": true,
+	"workspaces": [
+		"cli",
+		"api"
+	],
+	"scripts": {
+		"prepare": "husky",
+		"lint": "xo",
+		"format": "prettier --write .",
+		"check-types": "bun run --filter '*' check-types"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^20.3.1",
+		"@commitlint/config-conventional": "^20.3.1",
+		"@vdemedes/prettier-config": "^2.0.1",
+		"eslint-config-xo-react": "^0.27.0",
+		"eslint-plugin-react": "^7.32.2",
+		"eslint-plugin-react-hooks": "^4.6.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.2.7",
+		"prettier": "^3.4.2",
+		"xo": "^0.60.0"
+	},
+	"xo": {
+		"extends": "xo-react",
+		"prettier": true,
+		"ignores": [
+			"**/dist/**",
+			"**/node_modules/**",
+			"**/coverage/**"
+		],
+		"rules": {
+			"react/prop-types": "off"
+		}
+	},
+	"lint-staged": {
+		"cli/**/*.{ts,tsx}": [
+			"xo --fix"
+		],
+		"api/**/*.ts": [
+			"eslint --fix",
+			"prettier --write"
+		]
+	}
+}
