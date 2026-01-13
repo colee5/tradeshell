@@ -26,13 +26,11 @@ STAGE 1: Monorepo and architecture
 
 STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
 [] Onboarding LLM setup ✓
-[] Config set commands
+[] Config commands
 -- [] Find a way to have subcommands ✓
+-- [] Config list command - `/config get` to show current config (with secrets masked) ✓
+-- [] Config reset command - `/config reset` to return to defaults ✓
 -- [] Set commands for LLM object
-[] Config validation on server - Zod schemas to validate config structure before saving
-[] Config get command - `/config get llm.type` to read individual values
-[] Config list command - `/config list` to show current config (with secrets masked)
-[] Config reset command - `/config reset` to return to defaults
 
 STAGE 3: Private key storing and safety
 [] Private key storage - Use ethers.js encrypted keystore in ~/.tradeshell/keystore/ (password-protected, never plain text) Will be done through the server
