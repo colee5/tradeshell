@@ -1,9 +1,23 @@
+export enum ConfigSubcommands {
+	SET = 'set',
+	RESET = 'reset',
+	GET = 'get',
+}
+
 export const COMMANDS = {
 	login: { name: 'login', label: '/login [username]' },
 	balance: { name: 'balance', label: '/balance' },
-	config: { name: 'config', label: '/config' },
+	config: {
+		name: 'config',
+		label: '/config',
+		subcommands: [
+			{ name: ConfigSubcommands.SET, label: 'set <key> <value>' },
+			{ name: ConfigSubcommands.RESET, label: 'reset' },
+			{ name: ConfigSubcommands.GET, label: 'get' },
+		],
+	},
+	onboard: { name: 'onboard', label: '/onboard' },
 	help: { name: 'help', label: '/help' },
-	// Should be here ONLY on dev
 	r: { name: 'r', label: '/r (reload)' },
 	exit: { name: 'exit', label: '/exit' },
 } as const;

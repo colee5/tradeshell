@@ -1,12 +1,73 @@
-import { Text } from 'ink';
+import { Box, Text } from 'ink';
 import React from 'react';
-import { AVAILABLE_COMMANDS } from '../lib/commands.js';
+import { COMMANDS } from '../lib/commands.js';
 
 export function Help() {
 	return (
-		<Text>
-			Available commands:{'\n'}
-			{AVAILABLE_COMMANDS.map((cmd) => `  ${cmd.label}`).join('\n')}
-		</Text>
+		<Box flexDirection="column" gap={0.5}>
+			<Text bold color="cyan">
+				TradeShell Commands
+			</Text>
+
+			<Box flexDirection="column">
+				<Text bold color="green">
+					{COMMANDS.onboard.label}
+				</Text>
+				<Text dimColor>  Start the onboarding process to configure TradeShell</Text>
+			</Box>
+
+			<Box flexDirection="column">
+				<Text bold color="green">
+					{COMMANDS.config.label}
+				</Text>
+				<Text dimColor>  Manage your configuration</Text>
+				<Box marginLeft={2} flexDirection="column">
+					<Text>
+						<Text color="cyan">/config get</Text>
+						<Text dimColor> - Display current configuration</Text>
+					</Text>
+					<Text>
+						<Text color="cyan">/config set &lt;key&gt; &lt;value&gt;</Text>
+						<Text dimColor> - Set a configuration value</Text>
+					</Text>
+					<Text>
+						<Text color="cyan">/config reset</Text>
+						<Text dimColor> - Reset configuration to defaults</Text>
+					</Text>
+				</Box>
+			</Box>
+
+			<Box flexDirection="column">
+				<Text bold color="green">
+					{COMMANDS.login.label}
+				</Text>
+				<Text dimColor>  Login with your username</Text>
+			</Box>
+
+			<Box flexDirection="column">
+				<Text bold color="green">
+					{COMMANDS.balance.label}
+				</Text>
+				<Text dimColor>  Check your account balance</Text>
+			</Box>
+
+			<Box flexDirection="column">
+				<Text bold color="green">
+					{COMMANDS.help.label}
+				</Text>
+				<Text dimColor>  Show this help message</Text>
+			</Box>
+
+			<Box flexDirection="column">
+				<Text bold color="green">
+					{COMMANDS.exit.label}
+				</Text>
+				<Text dimColor>  Exit TradeShell</Text>
+			</Box>
+
+			<Box marginTop={1}>
+				<Text dimColor>Tip: Type / to see command suggestions</Text>
+			</Box>
+		</Box>
 	);
 }
