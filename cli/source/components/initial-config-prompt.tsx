@@ -1,9 +1,9 @@
-import {Box, Text} from 'ink';
+import { Box, Text } from 'ink';
 import React from 'react';
-import {useGetConfig} from '../lib/hooks/api-hooks.js';
+import { useGetConfig } from '../lib/hooks/api-hooks.js';
 
 export function InitialConfigPrompt() {
-	const {data: config, isLoading, isError} = useGetConfig();
+	const { data: config, isLoading, isError } = useGetConfig();
 
 	if (isLoading) {
 		return null;
