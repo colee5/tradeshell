@@ -17,13 +17,15 @@ enum OnboardingStep {
 	BaseUrl = 'base-url',
 	ApiKey = 'api-key',
 	Complete = 'complete',
+	Error = 'error',
 }
 
 export function OnboardingSteps() {
 	const [step, setStep] = useState<OnboardingStep>(OnboardingStep.LlmType);
 	const { exit } = useApp();
 
-	const updateConfig = useUpdateConfig();
+	const { mutate: updateConfig, error } = useUpdateConfig();
+
 	const { watch, setValue, getValues } = useForm<LlmConfigDto>({
 		defaultValues: {
 			type: 'cloud',
@@ -54,7 +56,7 @@ export function OnboardingSteps() {
 
 		setStep(OnboardingStep.Complete);
 
-		updateConfig.mutate(
+		updateConfig(
 			{
 				body: {
 					llm: data,
@@ -67,8 +69,8 @@ export function OnboardingSteps() {
 						process.exit(RELOAD_ERROR_CODE);
 					}, 2000);
 				},
-				onError: (error) => {
-					console.error('Failed to save config:', error);
+				onError: () => {
+					setStep(OnboardingStep.Error);
 				},
 			},
 		);
@@ -218,6 +220,30 @@ export function OnboardingSteps() {
 							/config get
 						</Text>
 					</Text>
+				</Box>
+			</Box>
+		);
+	}
+
+	if (step === OnboardingStep.Error) {
+		return (
+			<Box flexDirection="column" paddingX={2} paddingY={1} borderStyle="round" borderColor="red">
+				<Text bold color="red">
+					✖ Failed to save configuration
+				</Text>
+				<Box marginTop={1}>
+					<Text color="red">{error?.message || 'Could not connect to the server'}</Text>
+				</Box>
+				<Box marginTop={1}>
+					<Text dimColor>Please make sure the TradeShell server is running and try again.</Text>
+				</Box>
+				<Box marginTop={1}>
+					<SelectInput
+						items={[{ label: 'Exit', value: 'exit' }]}
+						onSelect={() => {
+							exit();
+						}}
+					/>
 				</Box>
 			</Box>
 		);
