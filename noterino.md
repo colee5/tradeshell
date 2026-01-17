@@ -12,6 +12,7 @@ Regarding wallet interface - we'll need to show some kind of a self contained we
 
 Make a class which would load the config from a file. Then on the client we'll need to check If the user has the config AND what does it contain - This config would need to be accessible from both the server & the client
 
+NEXT -> Refactor by overlay-component-architecture.md
 TODO:
 
 STAGE 1: Monorepo and architecture
@@ -33,7 +34,6 @@ STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
 -- [] Config reset command - `/config reset` to return to defaults ✓
 -- [] Handle initialPrompt error case ✓
 -- [] Handle onboarding error case, it just stops and runs infinitely ✓
--- [] Set commands for LLM object
 
 STAGE 3: Private key storing and safety
 

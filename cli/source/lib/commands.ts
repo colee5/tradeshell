@@ -1,5 +1,4 @@
 export enum ConfigSubcommands {
-	SET = 'set',
 	RESET = 'reset',
 	GET = 'get',
 }
@@ -11,7 +10,6 @@ export const COMMANDS = {
 		name: 'config',
 		label: '/config',
 		subcommands: [
-			{ name: ConfigSubcommands.SET, label: 'set <key> <value>' },
 			{ name: ConfigSubcommands.RESET, label: 'reset' },
 			{ name: ConfigSubcommands.GET, label: 'get' },
 		],
