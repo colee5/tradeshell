@@ -6,9 +6,9 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { LLM_MODELS, LlmProvider } from '../lib/constants/llm-providers.js';
 
-import { RELOAD_ERROR_CODE } from '../lib/constants/index.js';
 import { LlmConfigDto } from '../lib/generated/types.gen.js';
 import { useUpdateConfig } from '../lib/hooks/api-hooks.js';
+import { useModal } from '../lib/hooks/use-modal.js';
 
 enum OnboardingStep {
 	LlmType = 'llm-type',
@@ -22,8 +22,7 @@ enum OnboardingStep {
 
 export function OnboardingSteps() {
 	const [step, setStep] = useState<OnboardingStep>(OnboardingStep.LlmType);
-	const { exit } = useApp();
-
+	const modal = useModal();
 	const { mutate: updateConfig, error } = useUpdateConfig();
 
 	const { watch, setValue, getValues } = useForm<LlmConfigDto>({
@@ -44,6 +43,7 @@ export function OnboardingSteps() {
 	const saveConfig = async () => {
 		const data = getValues();
 
+		// Validation checks
 		if (data.type === 'cloud') {
 			if (!data.provider || !data.model || !data.apiKey || data.apiKey.trim() === '') {
 				return;
@@ -65,8 +65,7 @@ export function OnboardingSteps() {
 			{
 				onSuccess: () => {
 					setTimeout(() => {
-						exit();
-						process.exit(RELOAD_ERROR_CODE);
+						modal.dismiss();
 					}, 2000);
 				},
 				onError: () => {
@@ -231,17 +230,20 @@ export function OnboardingSteps() {
 				<Text bold color="red">
 					✖ Failed to save configuration
 				</Text>
+
 				<Box marginTop={1}>
 					<Text color="red">{error?.message || 'Could not connect to the server'}</Text>
 				</Box>
+
 				<Box marginTop={1}>
 					<Text dimColor>Please make sure the TradeShell server is running and try again.</Text>
 				</Box>
+
 				<Box marginTop={1}>
 					<SelectInput
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
-							exit();
+							modal.dismiss();
 						}}
 					/>
 				</Box>
