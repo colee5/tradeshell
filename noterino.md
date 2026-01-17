@@ -24,7 +24,7 @@ STAGE 1: Monorepo and architecture
 [] Generate backend schemas for the FE - hey-api ✓
 [] Setup husky for linting ✓
 [] Setup commit message standard ✓
-[] Refactor by overlay-component-architecture.md
+[] Refactor by overlay-component-architecture.md ✓
 
 STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
 [] Onboarding LLM setup ✓

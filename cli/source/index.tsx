@@ -10,11 +10,13 @@ import { InitialConfigPrompt } from './components/initial-config-prompt.js';
 
 import { CommandHistory, HistoryItem } from './components/command-history.js';
 import { COMMANDS } from './lib/commands.js';
+import { useModal } from './lib/hooks/use-modal.js';
 import { isCommand } from './lib/utils.js';
 
 export default function Index() {
 	const [history, setHistory] = useState<HistoryItem[]>([]);
 	const [input, setInput] = useState('');
+	const modal = useModal();
 	const [isOnboardingActive, setIsOnboardingActive] = useState(false);
 	const { exit } = useApp();
 
@@ -60,10 +62,11 @@ export default function Index() {
 			cmd = cmd?.slice(1);
 		}
 
-		// cole: Special pattern for when we want to render something
-		// which does not render the other elements like the chat input etc
 		if (cmd === COMMANDS.onboard.name) {
-			setIsOnboardingActive(true);
+			modal.show(<Onboard onComplete={() => modal.dismiss()} />, {
+				showHeader: false,
+			});
+
 			setInput('');
 			return;
 		}
