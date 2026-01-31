@@ -2,9 +2,9 @@
 
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
-import { client } from '../client.gen.js';
-import { appControllerGetHello, configControllerGetConfig, configControllerPartialUpdate, configControllerResetConfig, configControllerUpdateConfig, type Options } from '../sdk.gen.js';
-import type { AppControllerGetHelloData, ConfigControllerGetConfigData, ConfigControllerGetConfigResponse, ConfigControllerPartialUpdateData, ConfigControllerPartialUpdateResponse, ConfigControllerResetConfigData, ConfigControllerResetConfigResponse, ConfigControllerUpdateConfigData, ConfigControllerUpdateConfigResponse } from '../types.gen.js';
+import { client } from '../client.gen';
+import { appControllerGetHello, configControllerGetConfig, configControllerResetConfig, configControllerUpdateConfig, type Options } from '../sdk.gen';
+import type { AppControllerGetHelloData, ConfigControllerGetConfigData, ConfigControllerResetConfigData, ConfigControllerUpdateConfigData } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -57,8 +57,8 @@ export const appControllerGetHelloOptions = (options?: Options<AppControllerGetH
 /**
  * Reset configuration to defaults
  */
-export const configControllerResetConfigMutation = (options?: Partial<Options<ConfigControllerResetConfigData>>): UseMutationOptions<ConfigControllerResetConfigResponse, DefaultError, Options<ConfigControllerResetConfigData>> => {
-    const mutationOptions: UseMutationOptions<ConfigControllerResetConfigResponse, DefaultError, Options<ConfigControllerResetConfigData>> = {
+export const configControllerResetConfigMutation = (options?: Partial<Options<ConfigControllerResetConfigData>>): UseMutationOptions<unknown, DefaultError, Options<ConfigControllerResetConfigData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<ConfigControllerResetConfigData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await configControllerResetConfig({
                 ...options,
@@ -76,7 +76,7 @@ export const configControllerGetConfigQueryKey = (options?: Options<ConfigContro
 /**
  * Get current configuration
  */
-export const configControllerGetConfigOptions = (options?: Options<ConfigControllerGetConfigData>) => queryOptions<ConfigControllerGetConfigResponse, DefaultError, ConfigControllerGetConfigResponse, ReturnType<typeof configControllerGetConfigQueryKey>>({
+export const configControllerGetConfigOptions = (options?: Options<ConfigControllerGetConfigData>) => queryOptions<unknown, DefaultError, unknown, ReturnType<typeof configControllerGetConfigQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
         const { data } = await configControllerGetConfig({
             ...options,
@@ -90,27 +90,10 @@ export const configControllerGetConfigOptions = (options?: Options<ConfigControl
 });
 
 /**
- * Partially update configuration
- */
-export const configControllerPartialUpdateMutation = (options?: Partial<Options<ConfigControllerPartialUpdateData>>): UseMutationOptions<ConfigControllerPartialUpdateResponse, DefaultError, Options<ConfigControllerPartialUpdateData>> => {
-    const mutationOptions: UseMutationOptions<ConfigControllerPartialUpdateResponse, DefaultError, Options<ConfigControllerPartialUpdateData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await configControllerPartialUpdate({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
  * Update entire configuration
  */
-export const configControllerUpdateConfigMutation = (options?: Partial<Options<ConfigControllerUpdateConfigData>>): UseMutationOptions<ConfigControllerUpdateConfigResponse, DefaultError, Options<ConfigControllerUpdateConfigData>> => {
-    const mutationOptions: UseMutationOptions<ConfigControllerUpdateConfigResponse, DefaultError, Options<ConfigControllerUpdateConfigData>> = {
+export const configControllerUpdateConfigMutation = (options?: Partial<Options<ConfigControllerUpdateConfigData>>): UseMutationOptions<unknown, DefaultError, Options<ConfigControllerUpdateConfigData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<ConfigControllerUpdateConfigData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await configControllerUpdateConfig({
                 ...options,

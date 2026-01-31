@@ -27,11 +27,26 @@ export type LlmConfigDto = {
     apiKey?: string;
 };
 
+export type BlockchainConfigDto = {
+    /**
+     * Chain ID
+     */
+    chainId: 1 | 8453 | 42161 | 11155111;
+    /**
+     * RPC URL
+     */
+    rpcUrl?: string;
+};
+
 export type ConfigDto = {
     /**
      * LLM configuration
      */
     llm?: LlmConfigDto;
+    /**
+     * Blockchain configuration
+     */
+    blockchain?: BlockchainConfigDto;
 };
 
 export type AppControllerGetHelloData = {
@@ -53,10 +68,8 @@ export type ConfigControllerResetConfigData = {
 };
 
 export type ConfigControllerResetConfigResponses = {
-    default: ConfigDto;
+    200: unknown;
 };
-
-export type ConfigControllerResetConfigResponse = ConfigControllerResetConfigResponses[keyof ConfigControllerResetConfigResponses];
 
 export type ConfigControllerGetConfigData = {
     body?: never;
@@ -66,23 +79,8 @@ export type ConfigControllerGetConfigData = {
 };
 
 export type ConfigControllerGetConfigResponses = {
-    default: ConfigDto;
+    200: unknown;
 };
-
-export type ConfigControllerGetConfigResponse = ConfigControllerGetConfigResponses[keyof ConfigControllerGetConfigResponses];
-
-export type ConfigControllerPartialUpdateData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/config';
-};
-
-export type ConfigControllerPartialUpdateResponses = {
-    default: ConfigDto;
-};
-
-export type ConfigControllerPartialUpdateResponse = ConfigControllerPartialUpdateResponses[keyof ConfigControllerPartialUpdateResponses];
 
 export type ConfigControllerUpdateConfigData = {
     body: ConfigDto;
@@ -92,7 +90,5 @@ export type ConfigControllerUpdateConfigData = {
 };
 
 export type ConfigControllerUpdateConfigResponses = {
-    default: ConfigDto;
+    200: unknown;
 };
-
-export type ConfigControllerUpdateConfigResponse = ConfigControllerUpdateConfigResponses[keyof ConfigControllerUpdateConfigResponses];

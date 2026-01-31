@@ -4,13 +4,13 @@ import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { LLM_MODELS, LlmProvider } from '../lib/constants/llm-providers.js';
+import { LLM_MODELS, LlmProvider } from '../../lib/constants/llm-providers.js';
 
-import { LlmConfigDto } from '../lib/generated/types.gen.js';
-import { useUpdateConfig } from '../lib/hooks/api-hooks.js';
-import { useModal } from '../lib/hooks/use-modal.js';
+import { LlmConfigDto } from '../../lib/generated/types.gen.js';
+import { useUpdateConfig } from '../../lib/hooks/api-hooks.js';
+import { useModal } from '../../lib/hooks/use-modal.js';
 
-enum OnboardingStep {
+enum LlmOnboardingStep {
 	LlmType = 'llm-type',
 	Provider = 'provider',
 	Model = 'model',
@@ -20,8 +20,8 @@ enum OnboardingStep {
 	Error = 'error',
 }
 
-export function OnboardingSteps() {
-	const [step, setStep] = useState<OnboardingStep>(OnboardingStep.LlmType);
+export function LlmOnboarding() {
+	const [step, setStep] = useState<LlmOnboardingStep>(LlmOnboardingStep.LlmType);
 	const modal = useModal();
 	const { mutate: updateConfig, error } = useUpdateConfig();
 
@@ -54,7 +54,7 @@ export function OnboardingSteps() {
 			return;
 		}
 
-		setStep(OnboardingStep.Complete);
+		setStep(LlmOnboardingStep.Complete);
 
 		updateConfig(
 			{
@@ -69,13 +69,13 @@ export function OnboardingSteps() {
 					}, 2000);
 				},
 				onError: () => {
-					setStep(OnboardingStep.Error);
+					setStep(LlmOnboardingStep.Error);
 				},
 			},
 		);
 	};
 
-	if (step === OnboardingStep.LlmType) {
+	if (step === LlmOnboardingStep.LlmType) {
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
 				<Text bold color="cyan">
@@ -90,9 +90,9 @@ export function OnboardingSteps() {
 						onSelect={(item) => {
 							setValue('type', item.value as 'cloud' | 'self-hosted');
 							if (item.value === 'cloud') {
-								setStep(OnboardingStep.Provider);
+								setStep(LlmOnboardingStep.Provider);
 							} else {
-								setStep(OnboardingStep.BaseUrl);
+								setStep(LlmOnboardingStep.BaseUrl);
 							}
 						}}
 					/>
@@ -101,7 +101,7 @@ export function OnboardingSteps() {
 		);
 	}
 
-	if (step === OnboardingStep.Provider) {
+	if (step === LlmOnboardingStep.Provider) {
 		const providerItems = Object.values(LlmProvider).map((providerValue) => ({
 			label: providerValue.charAt(0).toUpperCase() + providerValue.slice(1),
 			value: providerValue,
@@ -117,7 +117,7 @@ export function OnboardingSteps() {
 						items={providerItems}
 						onSelect={(item) => {
 							setValue('provider', item.value as LlmProvider);
-							setStep(OnboardingStep.Model);
+							setStep(LlmOnboardingStep.Model);
 						}}
 					/>
 				</Box>
@@ -125,7 +125,7 @@ export function OnboardingSteps() {
 		);
 	}
 
-	if (step === OnboardingStep.Model) {
+	if (step === LlmOnboardingStep.Model) {
 		const selectedProvider = provider as LlmProvider;
 		const availableModels = selectedProvider ? LLM_MODELS[selectedProvider] : [];
 		const modelItems = availableModels.map((modelName: string) => ({
@@ -143,7 +143,7 @@ export function OnboardingSteps() {
 						items={modelItems}
 						onSelect={(item) => {
 							setValue('model', item.value);
-							setStep(OnboardingStep.ApiKey);
+							setStep(LlmOnboardingStep.ApiKey);
 						}}
 					/>
 				</Box>
@@ -151,7 +151,7 @@ export function OnboardingSteps() {
 		);
 	}
 
-	if (step === OnboardingStep.BaseUrl) {
+	if (step === LlmOnboardingStep.BaseUrl) {
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
 				<Text bold color="cyan">
@@ -176,7 +176,7 @@ export function OnboardingSteps() {
 		);
 	}
 
-	if (step === OnboardingStep.ApiKey) {
+	if (step === LlmOnboardingStep.ApiKey) {
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
 				<Text bold color="cyan">
@@ -202,7 +202,7 @@ export function OnboardingSteps() {
 		);
 	}
 
-	if (step === OnboardingStep.Complete) {
+	if (step === LlmOnboardingStep.Complete) {
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
 				<Text bold color="green">
@@ -224,7 +224,7 @@ export function OnboardingSteps() {
 		);
 	}
 
-	if (step === OnboardingStep.Error) {
+	if (step === LlmOnboardingStep.Error) {
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1} borderStyle="round" borderColor="red">
 				<Text bold color="red">

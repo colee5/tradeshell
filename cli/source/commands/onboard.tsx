@@ -3,8 +3,10 @@ import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
 import SyntaxHighlight from 'ink-syntax-highlight';
 import React, { useEffect, useState } from 'react';
-import { OnboardingSteps } from '../components/onboarding-steps.js';
+
 import { useGetConfig, useResetConfig } from '../lib/hooks/api-hooks.js';
+import { LlmOnboarding } from '../components/onboard/llm-onboarding.js';
+import { useModal } from '../lib/hooks/use-modal.js';
 
 enum OnboardStep {
 	CheckingConfig = 'checking',
@@ -13,15 +15,12 @@ enum OnboardStep {
 	Onboarding = 'onboarding',
 }
 
-type Props = {
-	onComplete: () => void;
-};
-
-export function Onboard({ onComplete }: Props) {
+export function Onboard() {
 	const [step, setStep] = useState<OnboardStep>(OnboardStep.CheckingConfig);
 	const [hasCheckedInitialConfig, setHasCheckedInitialConfig] = useState(false);
 	const { data: config, isLoading } = useGetConfig();
 	const { mutate: resetConfig, isPending: isResetting } = useResetConfig();
+	const modal = useModal();
 
 	// Check if config exists and is valid
 	useEffect(() => {
@@ -78,7 +77,7 @@ export function Onboard({ onComplete }: Props) {
 									},
 								);
 							} else {
-								onComplete();
+								modal.dismiss();
 							}
 						}}
 					/>
@@ -97,7 +96,7 @@ export function Onboard({ onComplete }: Props) {
 	}
 
 	if (step === OnboardStep.Onboarding) {
-		return <OnboardingSteps />;
+		return <LlmOnboarding />;
 	}
 
 	return null;
