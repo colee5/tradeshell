@@ -3,8 +3,8 @@ import { ConfigController } from './config.controller';
 import { ConfigService } from './config.service';
 
 @Module({
-  controllers: [ConfigController],
-  providers: [ConfigService],
-  exports: [ConfigService],
+	controllers: [ConfigController],
+	providers: [ConfigService],
+	exports: [ConfigService],
 })
 export class ConfigModule {}
