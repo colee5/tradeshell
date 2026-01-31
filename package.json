@@ -42,7 +42,7 @@
 			"cd cli && xo"
 		],
 		"api/**/*.ts": [
-			"eslint"
+			"cd api && eslint"
 		]
 	}
 }
