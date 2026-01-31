@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { appControllerGetHello, configControllerGetConfig, configControllerResetConfig, configControllerUpdateConfig, type Options } from '../sdk.gen';
-import type { AppControllerGetHelloData, AppControllerGetHelloResponse, ConfigControllerGetConfigData, ConfigControllerGetConfigResponse, ConfigControllerResetConfigData, ConfigControllerResetConfigResponse, ConfigControllerUpdateConfigData, ConfigControllerUpdateConfigResponse } from '../types.gen';
+import { appControllerGetHello, configControllerGetConfig, configControllerResetConfig, configControllerUpdateBlockchainConfig, configControllerUpdateLlmConfig, type Options } from '../sdk.gen';
+import type { AppControllerGetHelloData, AppControllerGetHelloResponse, ConfigControllerGetConfigData, ConfigControllerGetConfigResponse, ConfigControllerResetConfigData, ConfigControllerResetConfigResponse, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponse, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -90,12 +90,29 @@ export const configControllerGetConfigOptions = (options?: Options<ConfigControl
 });
 
 /**
- * Update entire configuration
+ * Update LLM configuration
  */
-export const configControllerUpdateConfigMutation = (options?: Partial<Options<ConfigControllerUpdateConfigData>>): UseMutationOptions<ConfigControllerUpdateConfigResponse, DefaultError, Options<ConfigControllerUpdateConfigData>> => {
-    const mutationOptions: UseMutationOptions<ConfigControllerUpdateConfigResponse, DefaultError, Options<ConfigControllerUpdateConfigData>> = {
+export const configControllerUpdateLlmConfigMutation = (options?: Partial<Options<ConfigControllerUpdateLlmConfigData>>): UseMutationOptions<ConfigControllerUpdateLlmConfigResponse, DefaultError, Options<ConfigControllerUpdateLlmConfigData>> => {
+    const mutationOptions: UseMutationOptions<ConfigControllerUpdateLlmConfigResponse, DefaultError, Options<ConfigControllerUpdateLlmConfigData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await configControllerUpdateConfig({
+            const { data } = await configControllerUpdateLlmConfig({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Update blockchain configuration
+ */
+export const configControllerUpdateBlockchainConfigMutation = (options?: Partial<Options<ConfigControllerUpdateBlockchainConfigData>>): UseMutationOptions<ConfigControllerUpdateBlockchainConfigResponse, DefaultError, Options<ConfigControllerUpdateBlockchainConfigData>> => {
+    const mutationOptions: UseMutationOptions<ConfigControllerUpdateBlockchainConfigResponse, DefaultError, Options<ConfigControllerUpdateBlockchainConfigData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await configControllerUpdateBlockchainConfig({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

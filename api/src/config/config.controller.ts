@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Put } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
-import { ConfigDto } from './dto/config.dto';
+import { BlockchainConfigDto, ConfigDto, LlmConfigDto } from './dto/config.dto';
 
 @ApiTags('config')
 @Controller('config')
@@ -14,11 +14,16 @@ export class ConfigController {
 		return await this.configService.get();
 	}
 
-	@Put()
-	@ApiOperation({ summary: 'Update entire configuration' })
-	async updateConfig(@Body() config: ConfigDto): Promise<ConfigDto> {
-		await this.configService.save(config);
-		return this.configService.get();
+	@Put('llm')
+	@ApiOperation({ summary: 'Update LLM configuration' })
+	async updateLlmConfig(@Body() llm: LlmConfigDto): Promise<ConfigDto> {
+		return this.configService.updateLlm(llm);
+	}
+
+	@Put('blockchain')
+	@ApiOperation({ summary: 'Update blockchain configuration' })
+	async updateBlockchainConfig(@Body() blockchain: BlockchainConfigDto): Promise<ConfigDto> {
+		return this.configService.updateBlockchain(blockchain);
 	}
 
 	@Delete()

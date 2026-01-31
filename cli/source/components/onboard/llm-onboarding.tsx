@@ -1,4 +1,4 @@
-import { Box, Text, useApp } from 'ink';
+import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
@@ -7,8 +7,7 @@ import { useForm } from 'react-hook-form';
 import { LLM_MODELS, LlmProvider } from '../../lib/constants/llm-providers.js';
 
 import { LlmConfigDto } from '../../lib/generated/types.gen.js';
-import { useUpdateConfig } from '../../lib/hooks/api-hooks.js';
-import { useModal } from '../../lib/hooks/use-modal.js';
+import { useUpdateLlmConfig } from '../../lib/hooks/api-hooks.js';
 
 enum LlmOnboardingStep {
 	LlmType = 'llm-type',
@@ -20,10 +19,9 @@ enum LlmOnboardingStep {
 	Error = 'error',
 }
 
-export function LlmOnboarding() {
+export function LlmOnboarding({ onComplete }: { onComplete: () => void }) {
 	const [step, setStep] = useState<LlmOnboardingStep>(LlmOnboardingStep.LlmType);
-	const modal = useModal();
-	const { mutate: updateConfig, error } = useUpdateConfig();
+	const { mutate: updateLlmConfig, error } = useUpdateLlmConfig();
 
 	const { watch, setValue, getValues } = useForm<LlmConfigDto>({
 		defaultValues: {
@@ -56,16 +54,14 @@ export function LlmOnboarding() {
 
 		setStep(LlmOnboardingStep.Complete);
 
-		updateConfig(
+		updateLlmConfig(
 			{
-				body: {
-					llm: data,
-				},
+				body: data,
 			},
 			{
 				onSuccess: () => {
 					setTimeout(() => {
-						modal.dismiss();
+						onComplete();
 					}, 2000);
 				},
 				onError: () => {
@@ -243,7 +239,7 @@ export function LlmOnboarding() {
 					<SelectInput
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
-							modal.dismiss();
+							onComplete();
 						}}
 					/>
 				</Box>

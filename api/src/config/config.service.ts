@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as fs from 'fs/promises';
 import * as os from 'os';
 import * as path from 'path';
-import { ConfigDto } from './dto/config.dto';
+import { BlockchainConfigDto, ConfigDto, LlmConfigDto } from './dto/config.dto';
 
 @Injectable()
 export class ConfigService implements OnModuleInit {
@@ -66,6 +66,18 @@ export class ConfigService implements OnModuleInit {
 
 		await this.save(emptyConfig);
 		return emptyConfig;
+	}
+
+	async updateLlm(llm: LlmConfigDto): Promise<ConfigDto> {
+		this.config.llm = llm;
+		await this.save(this.config);
+		return this.config;
+	}
+
+	async updateBlockchain(blockchain: BlockchainConfigDto): Promise<ConfigDto> {
+		this.config.blockchain = blockchain;
+		await this.save(this.config);
+		return this.config;
 	}
 
 	getConfigPath(): string {

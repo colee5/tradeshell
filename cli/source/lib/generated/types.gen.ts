@@ -88,15 +88,28 @@ export type ConfigControllerGetConfigResponses = {
 
 export type ConfigControllerGetConfigResponse = ConfigControllerGetConfigResponses[keyof ConfigControllerGetConfigResponses];
 
-export type ConfigControllerUpdateConfigData = {
-    body: ConfigDto;
+export type ConfigControllerUpdateLlmConfigData = {
+    body: LlmConfigDto;
     path?: never;
     query?: never;
-    url: '/config';
+    url: '/config/llm';
 };
 
-export type ConfigControllerUpdateConfigResponses = {
+export type ConfigControllerUpdateLlmConfigResponses = {
     200: ConfigDto;
 };
 
-export type ConfigControllerUpdateConfigResponse = ConfigControllerUpdateConfigResponses[keyof ConfigControllerUpdateConfigResponses];
+export type ConfigControllerUpdateLlmConfigResponse = ConfigControllerUpdateLlmConfigResponses[keyof ConfigControllerUpdateLlmConfigResponses];
+
+export type ConfigControllerUpdateBlockchainConfigData = {
+    body: BlockchainConfigDto;
+    path?: never;
+    query?: never;
+    url: '/config/blockchain';
+};
+
+export type ConfigControllerUpdateBlockchainConfigResponses = {
+    200: ConfigDto;
+};
+
+export type ConfigControllerUpdateBlockchainConfigResponse = ConfigControllerUpdateBlockchainConfigResponses[keyof ConfigControllerUpdateBlockchainConfigResponses];

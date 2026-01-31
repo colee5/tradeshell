@@ -43,36 +43,6 @@
           "config"
         ]
       },
-      "put": {
-        "operationId": "ConfigController_updateConfig",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConfigDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConfigDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Update entire configuration",
-        "tags": [
-          "config"
-        ]
-      },
       "delete": {
         "operationId": "ConfigController_resetConfig",
         "parameters": [],
@@ -89,6 +59,70 @@
           }
         },
         "summary": "Reset configuration to defaults",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/config/llm": {
+      "put": {
+        "operationId": "ConfigController_updateLlmConfig",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LlmConfigDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update LLM configuration",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/config/blockchain": {
+      "put": {
+        "operationId": "ConfigController_updateBlockchainConfig",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlockchainConfigDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update blockchain configuration",
         "tags": [
           "config"
         ]

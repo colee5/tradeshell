@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AppControllerGetHelloData, AppControllerGetHelloResponses, ConfigControllerGetConfigData, ConfigControllerGetConfigResponses, ConfigControllerResetConfigData, ConfigControllerResetConfigResponses, ConfigControllerUpdateConfigData, ConfigControllerUpdateConfigResponses } from './types.gen';
+import type { AppControllerGetHelloData, AppControllerGetHelloResponses, ConfigControllerGetConfigData, ConfigControllerGetConfigResponses, ConfigControllerResetConfigData, ConfigControllerResetConfigResponses, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponses, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -31,10 +31,22 @@ export const configControllerResetConfig = <ThrowOnError extends boolean = false
 export const configControllerGetConfig = <ThrowOnError extends boolean = false>(options?: Options<ConfigControllerGetConfigData, ThrowOnError>) => (options?.client ?? client).get<ConfigControllerGetConfigResponses, unknown, ThrowOnError>({ url: '/config', ...options });
 
 /**
- * Update entire configuration
+ * Update LLM configuration
  */
-export const configControllerUpdateConfig = <ThrowOnError extends boolean = false>(options: Options<ConfigControllerUpdateConfigData, ThrowOnError>) => (options.client ?? client).put<ConfigControllerUpdateConfigResponses, unknown, ThrowOnError>({
-    url: '/config',
+export const configControllerUpdateLlmConfig = <ThrowOnError extends boolean = false>(options: Options<ConfigControllerUpdateLlmConfigData, ThrowOnError>) => (options.client ?? client).put<ConfigControllerUpdateLlmConfigResponses, unknown, ThrowOnError>({
+    url: '/config/llm',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Update blockchain configuration
+ */
+export const configControllerUpdateBlockchainConfig = <ThrowOnError extends boolean = false>(options: Options<ConfigControllerUpdateBlockchainConfigData, ThrowOnError>) => (options.client ?? client).put<ConfigControllerUpdateBlockchainConfigResponses, unknown, ThrowOnError>({
+    url: '/config/blockchain',
     ...options,
     headers: {
         'Content-Type': 'application/json',
