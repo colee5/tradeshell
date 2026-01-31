@@ -1,7 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as fs from 'fs/promises';
 import * as os from 'os';
 import * as path from 'path';
+import { CONFIG_EVENTS } from './config.events';
 import { BlockchainConfigDto, ConfigDto, LlmConfigDto } from './dto/config.dto';
 
 @Injectable()
@@ -10,7 +12,7 @@ export class ConfigService implements OnModuleInit {
 	private readonly configDir: string;
 	private readonly configPath: string;
 
-	constructor() {
+	constructor(private readonly eventEmitter: EventEmitter2) {
 		this.configDir = path.join(os.homedir(), '.tradeshell');
 		this.configPath = path.join(this.configDir, 'config.json');
 	}
@@ -71,12 +73,15 @@ export class ConfigService implements OnModuleInit {
 	async updateLlm(llm: LlmConfigDto): Promise<ConfigDto> {
 		this.config.llm = llm;
 		await this.save(this.config);
+		this.eventEmitter.emit(CONFIG_EVENTS.LLM_UPDATED);
 		return this.config;
 	}
 
 	async updateBlockchain(blockchain: BlockchainConfigDto): Promise<ConfigDto> {
 		this.config.blockchain = blockchain;
 		await this.save(this.config);
+
+		this.eventEmitter.emit(CONFIG_EVENTS.BLOCKCHAIN_UPDATED);
 		return this.config;
 	}
 
