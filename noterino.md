@@ -16,24 +16,24 @@ NEXT -> Refactor by overlay-component-architecture.md
 TODO:
 
 STAGE 1: Monorepo and architecture
-[] Chat Interface ✓
-[] Autocomplete of commands when hit ✓
-[] Config service on the client & the server ✓
-[] Setup API endpoint queries with Tanstack Query ✓
-[] Setup import path alias for @shared ✓
-[] Generate backend schemas for the FE - hey-api ✓
-[] Setup husky for linting ✓
-[] Setup commit message standard ✓
-[] Refactor by overlay-component-architecture.md ✓
+[✓] Chat Interface
+[✓] Autocomplete of commands when hit
+[✓] Config service on the client & the server
+[✓] Setup API endpoint queries with Tanstack Query
+[✓] Setup import path alias for @shared
+[✓] Generate backend schemas for the FE - hey-api
+[✓] Setup husky for linting
+[✓] Setup commit message standard
+[✓] Refactor by overlay-component-architecture.md
 
 STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
-[] Onboarding LLM setup ✓
-[] Config commands
--- [] Find a way to have subcommands ✓
--- [] Config list command - `/config get` to show current config (with secrets masked) ✓
--- [] Config reset command - `/config reset` to return to defaults ✓
--- [] Handle initialPrompt error case ✓
--- [] Handle onboarding error case, it just stops and runs infinitely ✓
+[✓] Onboarding LLM setup
+[✓] Config commands
+-- [✓] Find a way to have subcommands
+-- [✓] Config list command - `/config get` to show current config (with secrets masked)
+-- [✓] Config reset command - `/config reset` to return to defaults
+-- [✓] Handle initialPrompt error case
+-- [✓] Handle onboarding error case, it just stops and runs infinitely
 
 STAGE 3: Private key storing and safety
 [] Private key storage - Use ethers.js encrypted keystore in ~/.tradeshell/keystore/ (password-protected, never plain text) Will be done through the server
