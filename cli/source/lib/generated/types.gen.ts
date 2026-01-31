@@ -57,8 +57,10 @@ export type AppControllerGetHelloData = {
 };
 
 export type AppControllerGetHelloResponses = {
-    200: unknown;
+    200: string;
 };
+
+export type AppControllerGetHelloResponse = AppControllerGetHelloResponses[keyof AppControllerGetHelloResponses];
 
 export type ConfigControllerResetConfigData = {
     body?: never;
@@ -68,8 +70,10 @@ export type ConfigControllerResetConfigData = {
 };
 
 export type ConfigControllerResetConfigResponses = {
-    200: unknown;
+    200: ConfigDto;
 };
+
+export type ConfigControllerResetConfigResponse = ConfigControllerResetConfigResponses[keyof ConfigControllerResetConfigResponses];
 
 export type ConfigControllerGetConfigData = {
     body?: never;
@@ -79,8 +83,10 @@ export type ConfigControllerGetConfigData = {
 };
 
 export type ConfigControllerGetConfigResponses = {
-    200: unknown;
+    200: ConfigDto;
 };
+
+export type ConfigControllerGetConfigResponse = ConfigControllerGetConfigResponses[keyof ConfigControllerGetConfigResponses];
 
 export type ConfigControllerUpdateConfigData = {
     body: ConfigDto;
@@ -90,5 +96,7 @@ export type ConfigControllerUpdateConfigData = {
 };
 
 export type ConfigControllerUpdateConfigResponses = {
-    200: unknown;
+    200: ConfigDto;
 };
+
+export type ConfigControllerUpdateConfigResponse = ConfigControllerUpdateConfigResponses[keyof ConfigControllerUpdateConfigResponses];

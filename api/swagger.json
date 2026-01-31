@@ -7,7 +7,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -21,7 +28,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
           }
         },
         "summary": "Get current configuration",
@@ -44,7 +58,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
           }
         },
         "summary": "Update entire configuration",
@@ -57,7 +78,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
           }
         },
         "summary": "Reset configuration to defaults",
@@ -110,14 +138,14 @@
         "type": "object",
         "properties": {
           "chainId": {
-            "type": "number",
-            "description": "Chain ID",
             "enum": [
               1,
               8453,
               42161,
               11155111
             ],
+            "type": "number",
+            "description": "Chain ID",
             "example": 8453
           },
           "rpcUrl": {
