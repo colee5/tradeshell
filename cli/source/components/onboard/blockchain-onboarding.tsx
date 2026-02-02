@@ -4,9 +4,11 @@ import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
 
-import { BlockchainConfigDto } from '../../lib/generated/types.gen.js';
 import { CHAIN_OPTIONS } from '../../lib/constants/chains.js';
+import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
+import { BlockchainConfigDto } from '../../lib/generated/types.gen.js';
 import { useUpdateBlockchainConfig } from '../../lib/hooks/api-hooks.js';
+import { SetupComplete } from './setup-complete.js';
 
 enum BlockchainOnboardingStep {
 	ChainSelect = 'chain-select',
@@ -33,7 +35,7 @@ export function BlockchainOnboarding({ onComplete }: { onComplete: () => void })
 					setStep(BlockchainOnboardingStep.Complete);
 					setTimeout(() => {
 						onComplete();
-					}, 2000);
+					}, SETUP_COMPLETE_TIMEOUT_MS);
 				},
 				onError: () => {
 					setStep(BlockchainOnboardingStep.Error);
@@ -100,13 +102,7 @@ export function BlockchainOnboarding({ onComplete }: { onComplete: () => void })
 	}
 
 	if (step === BlockchainOnboardingStep.Complete) {
-		return (
-			<Box flexDirection="column" paddingX={2} paddingY={1}>
-				<Text bold color="green">
-					✓ Blockchain setup complete!
-				</Text>
-			</Box>
-		);
+		return <SetupComplete message="Onboarding fully completed, redirecting shortly" />;
 	}
 
 	if (step === BlockchainOnboardingStep.Error) {

@@ -1,6 +1,5 @@
 import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
-import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -8,6 +7,8 @@ import { LLM_MODELS, LlmProvider } from '../../lib/constants/llm-providers.js';
 
 import { LlmConfigDto } from '../../lib/generated/types.gen.js';
 import { useUpdateLlmConfig } from '../../lib/hooks/api-hooks.js';
+import { SetupComplete } from './setup-complete.js';
+import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 
 enum LlmOnboardingStep {
 	LlmType = 'llm-type',
@@ -62,7 +63,7 @@ export function LlmOnboarding({ onComplete }: { onComplete: () => void }) {
 				onSuccess: () => {
 					setTimeout(() => {
 						onComplete();
-					}, 2000);
+					}, SETUP_COMPLETE_TIMEOUT_MS);
 				},
 				onError: () => {
 					setStep(LlmOnboardingStep.Error);
@@ -199,25 +200,7 @@ export function LlmOnboarding({ onComplete }: { onComplete: () => void }) {
 	}
 
 	if (step === LlmOnboardingStep.Complete) {
-		return (
-			<Box flexDirection="column" paddingX={2} paddingY={1}>
-				<Text bold color="green">
-					✓ Setup complete!
-				</Text>
-				<Box flexDirection="row" gap={1} marginTop={1}>
-					<Spinner />
-					<Text dimColor>Saving your configuration...</Text>
-				</Box>
-				<Box marginTop={1}>
-					<Text dimColor>
-						You can view your config anytime with{' '}
-						<Text bold color="cyan">
-							/config get
-						</Text>
-					</Text>
-				</Box>
-			</Box>
-		);
+		return <SetupComplete />;
 	}
 
 	if (step === LlmOnboardingStep.Error) {
