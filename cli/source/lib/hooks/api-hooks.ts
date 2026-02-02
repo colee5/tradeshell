@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+	configControllerGetChainsOptions,
 	configControllerGetConfigOptions,
 	configControllerResetConfigMutation,
-	configControllerUpdateLlmConfigMutation,
 	configControllerUpdateBlockchainConfigMutation,
+	configControllerUpdateLlmConfigMutation,
 } from '../generated/@tanstack/react-query.gen.js';
 
 export const useGetConfig = () => useQuery(configControllerGetConfigOptions());
@@ -37,3 +38,5 @@ export const useResetConfig = () => {
 		},
 	});
 };
+
+export const useGetChains = () => useQuery(configControllerGetChainsOptions());

@@ -235,39 +235,77 @@
           }
         }
       },
+      "ChainNativeCurrencyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Ether"
+          },
+          "symbol": {
+            "type": "string",
+            "example": "ETH"
+          },
+          "decimals": {
+            "type": "number",
+            "example": 18
+          }
+        },
+        "required": [
+          "name",
+          "symbol",
+          "decimals"
+        ]
+      },
+      "ChainDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 8453,
+            "description": "Chain ID in number form"
+          },
+          "name": {
+            "type": "string",
+            "example": "Base",
+            "description": "Human-readable chain name"
+          },
+          "nativeCurrency": {
+            "$ref": "#/components/schemas/ChainNativeCurrencyDto"
+          },
+          "rpcUrls": {
+            "type": "object",
+            "description": "Collection of RPC endpoints"
+          },
+          "blockExplorers": {
+            "type": "object",
+            "description": "Collection of block explorers"
+          },
+          "testnet": {
+            "type": "boolean",
+            "example": false
+          },
+          "sourceId": {
+            "type": "number",
+            "example": 1,
+            "description": "Source Chain ID (L1 for L2s)"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "nativeCurrency",
+          "rpcUrls"
+        ]
+      },
       "ChainsResponseDto": {
         "type": "object",
         "properties": {
           "chains": {
             "description": "List of supported blockchain chains",
-            "example": [
-              {
-                "id": 8453,
-                "name": "Base",
-                "nativeCurrency": {
-                  "name": "Ether",
-                  "symbol": "ETH",
-                  "decimals": 18
-                },
-                "rpcUrls": {
-                  "default": {
-                    "http": [
-                      "https://mainnet.base.org"
-                    ]
-                  }
-                },
-                "blockExplorers": {
-                  "default": {
-                    "name": "Basescan",
-                    "url": "https://basescan.org"
-                  }
-                },
-                "testnet": false
-              }
-            ],
             "type": "array",
             "items": {
-              "type": "object"
+              "$ref": "#/components/schemas/ChainDto"
             }
           }
         },

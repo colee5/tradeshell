@@ -49,13 +49,46 @@ export type ConfigDto = {
     blockchain?: BlockchainConfigDto;
 };
 
+export type ChainNativeCurrencyDto = {
+    name: string;
+    symbol: string;
+    decimals: number;
+};
+
+export type ChainDto = {
+    /**
+     * Chain ID in number form
+     */
+    id: number;
+    /**
+     * Human-readable chain name
+     */
+    name: string;
+    nativeCurrency: ChainNativeCurrencyDto;
+    /**
+     * Collection of RPC endpoints
+     */
+    rpcUrls: {
+        [key: string]: unknown;
+    };
+    /**
+     * Collection of block explorers
+     */
+    blockExplorers?: {
+        [key: string]: unknown;
+    };
+    testnet?: boolean;
+    /**
+     * Source Chain ID (L1 for L2s)
+     */
+    sourceId?: number;
+};
+
 export type ChainsResponseDto = {
     /**
      * List of supported blockchain chains
      */
-    chains: Array<{
-        [key: string]: unknown;
-    }>;
+    chains: Array<ChainDto>;
 };
 
 export type AppControllerGetHelloData = {

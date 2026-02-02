@@ -3,36 +3,50 @@ import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { CHAIN_OPTIONS } from '../../lib/constants/chains.js';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 import { BlockchainConfigDto } from '../../lib/generated/types.gen.js';
-import { useUpdateBlockchainConfig } from '../../lib/hooks/api-hooks.js';
+import { useGetChains, useUpdateBlockchainConfig } from '../../lib/hooks/api-hooks.js';
 import { SetupComplete } from './setup-complete.js';
 
 enum BlockchainOnboardingStep {
 	ChainSelect = 'chain-select',
 	RpcUrl = 'rpc-url',
-	Saving = 'saving',
 	Complete = 'complete',
 	Error = 'error',
 }
 
 export function BlockchainOnboarding({ onComplete }: { onComplete: () => void }) {
 	const [step, setStep] = useState<BlockchainOnboardingStep>(BlockchainOnboardingStep.ChainSelect);
-	const [chainId, setChainId] = useState<BlockchainConfigDto['chainId']>(1);
-	const [rpcUrl, setRpcUrl] = useState('');
+	const { data: supportedChains, isLoading } = useGetChains();
 	const { mutate: updateBlockchainConfig, error } = useUpdateBlockchainConfig();
 
-	const saveConfig = (config: BlockchainConfigDto) => {
-		setStep(BlockchainOnboardingStep.Saving);
+	const { watch, setValue, getValues } = useForm<BlockchainConfigDto>({
+		defaultValues: {
+			chainId: undefined,
+			rpcUrl: undefined,
+		},
+	});
+
+	const chainId = watch('chainId');
+	const rpcUrl = watch('rpcUrl');
+
+	const saveConfig = async () => {
+		const data = getValues();
+
+		if (!data.chainId) {
+			return;
+		}
+
+		setStep(BlockchainOnboardingStep.Complete);
+
 		updateBlockchainConfig(
 			{
-				body: config,
+				body: data,
 			},
 			{
 				onSuccess: () => {
-					setStep(BlockchainOnboardingStep.Complete);
 					setTimeout(() => {
 						onComplete();
 					}, SETUP_COMPLETE_TIMEOUT_MS);
@@ -45,6 +59,20 @@ export function BlockchainOnboarding({ onComplete }: { onComplete: () => void })
 	};
 
 	if (step === BlockchainOnboardingStep.ChainSelect) {
+		if (isLoading || !supportedChains) {
+			return (
+				<Box flexDirection="row" gap={1} paddingX={2} paddingY={1}>
+					<Spinner />
+					<Text>Loading supported chains...</Text>
+				</Box>
+			);
+		}
+
+		const chainOptions = supportedChains.chains.map((chain) => ({
+			label: chain.name,
+			value: chain.id,
+		}));
+
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
 				<Text bold color="cyan">
@@ -52,9 +80,9 @@ export function BlockchainOnboarding({ onComplete }: { onComplete: () => void })
 				</Text>
 				<Box marginTop={1}>
 					<SelectInput
-						items={CHAIN_OPTIONS}
+						items={chainOptions}
 						onSelect={(item) => {
-							setChainId(item.value);
+							setValue('chainId', item.value as BlockchainConfigDto['chainId']);
 							setStep(BlockchainOnboardingStep.RpcUrl);
 						}}
 					/>
@@ -64,11 +92,11 @@ export function BlockchainOnboarding({ onComplete }: { onComplete: () => void })
 	}
 
 	if (step === BlockchainOnboardingStep.RpcUrl) {
-		const selectedChain = CHAIN_OPTIONS.find((c) => c.value === chainId);
+		const selectedChain = supportedChains?.chains.find((c) => c.id === chainId);
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
 				<Text bold color="cyan">
-					Enter a custom RPC URL for {selectedChain?.label}:
+					Enter a custom RPC URL for {selectedChain?.name}:
 				</Text>
 				<Box marginTop={1}>
 					<Text dimColor>Press Enter to skip and use the default RPC</Text>
@@ -76,27 +104,11 @@ export function BlockchainOnboarding({ onComplete }: { onComplete: () => void })
 				<Box marginTop={1} flexDirection="row">
 					<Text>RPC URL: </Text>
 					<TextInput
-						value={rpcUrl}
-						onChange={setRpcUrl}
-						onSubmit={() => {
-							const config: BlockchainConfigDto = { chainId };
-							if (rpcUrl.trim() !== '') {
-								config.rpcUrl = rpcUrl.trim();
-							}
-
-							saveConfig(config);
-						}}
+						value={rpcUrl || ''}
+						onChange={(value) => setValue('rpcUrl', value)}
+						onSubmit={saveConfig}
 					/>
 				</Box>
-			</Box>
-		);
-	}
-
-	if (step === BlockchainOnboardingStep.Saving) {
-		return (
-			<Box flexDirection="row" gap={1} paddingX={2} paddingY={1}>
-				<Spinner />
-				<Text>Saving blockchain configuration...</Text>
 			</Box>
 		);
 	}
