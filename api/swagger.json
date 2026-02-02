@@ -28,6 +28,19 @@
         "parameters": [],
         "responses": {
           "200": {
+<<<<<<< Updated upstream
+=======
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          },
+          "default": {
+>>>>>>> Stashed changes
             "description": "",
             "content": {
               "application/json": {
@@ -43,11 +56,97 @@
           "config"
         ]
       },
+<<<<<<< Updated upstream
+=======
+      "put": {
+        "operationId": "ConfigController_updateConfig",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update entire configuration",
+        "tags": [
+          "config"
+        ]
+      },
+      "patch": {
+        "operationId": "ConfigController_partialUpdate",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Partially update configuration",
+        "tags": [
+          "config"
+        ]
+      },
+>>>>>>> Stashed changes
       "delete": {
         "operationId": "ConfigController_resetConfig",
         "parameters": [],
         "responses": {
           "200": {
+<<<<<<< Updated upstream
+=======
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          },
+          "default": {
+>>>>>>> Stashed changes
             "description": "",
             "content": {
               "application/json": {
