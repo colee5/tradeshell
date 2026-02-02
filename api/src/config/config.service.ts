@@ -3,7 +3,9 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as fs from 'fs/promises';
 import * as os from 'os';
 import * as path from 'path';
+import { CHAIN_BY_ID } from 'src/common/chains';
 import { CONFIG_EVENTS } from './config.events';
+import { ChainsResponseDto } from './dto/chain.dto';
 import { BlockchainConfigDto, ConfigDto, LlmConfigDto } from './dto/config.dto';
 
 @Injectable()
@@ -87,5 +89,10 @@ export class ConfigService implements OnModuleInit {
 
 	getConfigPath(): string {
 		return this.configPath;
+	}
+
+	getChains(): ChainsResponseDto {
+		const chains = Object.values(CHAIN_BY_ID);
+		return { chains };
 	}
 }

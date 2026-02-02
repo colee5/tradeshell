@@ -12,7 +12,6 @@ Regarding wallet interface - we'll need to show some kind of a self contained we
 
 Make a class which would load the config from a file. Then on the client we'll need to check If the user has the config AND what does it contain - This config would need to be accessible from both the server & the client
 
-NEXT -> Refactor by overlay-component-architecture.md
 TODO:
 
 STAGE 1: Monorepo and architecture
@@ -100,7 +99,3 @@ From written notes:
 - What's a firewalled subnet? How can my app be ran in this contanirized mode in which only the server can send requests to the configured AI Api & the RPCs provided.
 
 - Possibly make it easy for the user to add his own tool implementations of protocols. Like interacting with Uniswap/Aave Protocol. He would need to input the contract ABI into the CLI and it would save it on his local machine from which the agent can then call tools? This might be a good idea and its greatly modular.
-
-WHERE DID I STOP?
-
-index.tsx look at comment at line 24 - bye

@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AppControllerGetHelloData, AppControllerGetHelloResponses, ConfigControllerGetConfigData, ConfigControllerGetConfigResponses, ConfigControllerResetConfigData, ConfigControllerResetConfigResponses, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponses, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponses } from './types.gen';
+import type { AppControllerGetHelloData, AppControllerGetHelloResponses, ConfigControllerGetChainsData, ConfigControllerGetChainsResponses, ConfigControllerGetConfigData, ConfigControllerGetConfigResponses, ConfigControllerResetConfigData, ConfigControllerResetConfigResponses, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponses, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -53,3 +53,8 @@ export const configControllerUpdateBlockchainConfig = <ThrowOnError extends bool
         ...options.headers
     }
 });
+
+/**
+ * Get supported blockchain chains
+ */
+export const configControllerGetChains = <ThrowOnError extends boolean = false>(options?: Options<ConfigControllerGetChainsData, ThrowOnError>) => (options?.client ?? client).get<ConfigControllerGetChainsResponses, unknown, ThrowOnError>({ url: '/config/chains', ...options });

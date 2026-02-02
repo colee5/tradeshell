@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { IsEnum, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsEnum, IsOptional, IsString, IsUrl, ValidateNested } from 'class-validator';
 import { ChainId } from 'src/common/chains';
 
 export class LlmConfigDto {
@@ -49,6 +49,7 @@ export class BlockchainConfigDto {
 
 	@ApiPropertyOptional({ description: 'RPC URL' })
 	@IsOptional()
+	@IsUrl({ protocols: ['http', 'https', 'wss', 'ws'] })
 	@IsString()
 	rpcUrl?: string;
 }

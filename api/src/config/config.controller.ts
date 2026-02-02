@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Put } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
+import { ChainsResponseDto } from './dto/chain.dto';
 import { BlockchainConfigDto, ConfigDto, LlmConfigDto } from './dto/config.dto';
 
 @ApiTags('config')
@@ -31,5 +32,11 @@ export class ConfigController {
 	async resetConfig(): Promise<ConfigDto> {
 		await this.configService.save({});
 		return this.configService.get();
+	}
+
+	@Get('chains')
+	@ApiOperation({ summary: 'Get supported blockchain chains' })
+	async getChains(): Promise<ChainsResponseDto> {
+		return this.configService.getChains();
 	}
 }

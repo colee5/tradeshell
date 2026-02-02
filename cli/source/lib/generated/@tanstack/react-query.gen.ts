@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { appControllerGetHello, configControllerGetConfig, configControllerResetConfig, configControllerUpdateBlockchainConfig, configControllerUpdateLlmConfig, type Options } from '../sdk.gen';
-import type { AppControllerGetHelloData, AppControllerGetHelloResponse, ConfigControllerGetConfigData, ConfigControllerGetConfigResponse, ConfigControllerResetConfigData, ConfigControllerResetConfigResponse, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponse, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponse } from '../types.gen';
+import { appControllerGetHello, configControllerGetChains, configControllerGetConfig, configControllerResetConfig, configControllerUpdateBlockchainConfig, configControllerUpdateLlmConfig, type Options } from '../sdk.gen';
+import type { AppControllerGetHelloData, AppControllerGetHelloResponse, ConfigControllerGetChainsData, ConfigControllerGetChainsResponse, ConfigControllerGetConfigData, ConfigControllerGetConfigResponse, ConfigControllerResetConfigData, ConfigControllerResetConfigResponse, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponse, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -122,3 +122,21 @@ export const configControllerUpdateBlockchainConfigMutation = (options?: Partial
     };
     return mutationOptions;
 };
+
+export const configControllerGetChainsQueryKey = (options?: Options<ConfigControllerGetChainsData>) => createQueryKey('configControllerGetChains', options);
+
+/**
+ * Get supported blockchain chains
+ */
+export const configControllerGetChainsOptions = (options?: Options<ConfigControllerGetChainsData>) => queryOptions<ConfigControllerGetChainsResponse, DefaultError, ConfigControllerGetChainsResponse, ReturnType<typeof configControllerGetChainsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await configControllerGetChains({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: configControllerGetChainsQueryKey(options)
+});

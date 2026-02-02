@@ -49,6 +49,15 @@ export type ConfigDto = {
     blockchain?: BlockchainConfigDto;
 };
 
+export type ChainsResponseDto = {
+    /**
+     * List of supported blockchain chains
+     */
+    chains: Array<{
+        [key: string]: unknown;
+    }>;
+};
+
 export type AppControllerGetHelloData = {
     body?: never;
     path?: never;
@@ -113,3 +122,16 @@ export type ConfigControllerUpdateBlockchainConfigResponses = {
 };
 
 export type ConfigControllerUpdateBlockchainConfigResponse = ConfigControllerUpdateBlockchainConfigResponses[keyof ConfigControllerUpdateBlockchainConfigResponses];
+
+export type ConfigControllerGetChainsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/config/chains';
+};
+
+export type ConfigControllerGetChainsResponses = {
+    200: ChainsResponseDto;
+};
+
+export type ConfigControllerGetChainsResponse = ConfigControllerGetChainsResponses[keyof ConfigControllerGetChainsResponses];
