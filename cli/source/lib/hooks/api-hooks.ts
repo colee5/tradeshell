@@ -1,27 +1,28 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+	configControllerGetChainsOptions,
 	configControllerGetConfigOptions,
-	configControllerPartialUpdateMutation,
 	configControllerResetConfigMutation,
-	configControllerUpdateConfigMutation,
+	configControllerUpdateBlockchainConfigMutation,
+	configControllerUpdateLlmConfigMutation,
 } from '../generated/@tanstack/react-query.gen.js';
 
 export const useGetConfig = () => useQuery(configControllerGetConfigOptions());
 
-export const useUpdateConfig = () => {
+export const useUpdateLlmConfig = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		...configControllerUpdateConfigMutation(),
+		...configControllerUpdateLlmConfigMutation(),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: configControllerGetConfigOptions().queryKey });
 		},
 	});
 };
 
-export const usePartialUpdateConfig = () => {
+export const useUpdateBlockchainConfig = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		...configControllerPartialUpdateMutation(),
+		...configControllerUpdateBlockchainConfigMutation(),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: configControllerGetConfigOptions().queryKey });
 		},
@@ -37,3 +38,5 @@ export const useResetConfig = () => {
 		},
 	});
 };
+
+export const useGetChains = () => useQuery(configControllerGetChainsOptions());

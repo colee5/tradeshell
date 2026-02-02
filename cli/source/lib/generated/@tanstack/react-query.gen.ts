@@ -2,9 +2,9 @@
 
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
-import { client } from '../client.gen.js';
-import { appControllerGetHello, configControllerGetConfig, configControllerPartialUpdate, configControllerResetConfig, configControllerUpdateConfig, type Options } from '../sdk.gen.js';
-import type { AppControllerGetHelloData, ConfigControllerGetConfigData, ConfigControllerGetConfigResponse, ConfigControllerPartialUpdateData, ConfigControllerPartialUpdateResponse, ConfigControllerResetConfigData, ConfigControllerResetConfigResponse, ConfigControllerUpdateConfigData, ConfigControllerUpdateConfigResponse } from '../types.gen.js';
+import { client } from '../client.gen';
+import { appControllerGetHello, configControllerGetChains, configControllerGetConfig, configControllerResetConfig, configControllerUpdateBlockchainConfig, configControllerUpdateLlmConfig, type Options } from '../sdk.gen';
+import type { AppControllerGetHelloData, AppControllerGetHelloResponse, ConfigControllerGetChainsData, ConfigControllerGetChainsResponse, ConfigControllerGetConfigData, ConfigControllerGetConfigResponse, ConfigControllerResetConfigData, ConfigControllerResetConfigResponse, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponse, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -41,7 +41,7 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
 
 export const appControllerGetHelloQueryKey = (options?: Options<AppControllerGetHelloData>) => createQueryKey('appControllerGetHello', options);
 
-export const appControllerGetHelloOptions = (options?: Options<AppControllerGetHelloData>) => queryOptions<unknown, DefaultError, unknown, ReturnType<typeof appControllerGetHelloQueryKey>>({
+export const appControllerGetHelloOptions = (options?: Options<AppControllerGetHelloData>) => queryOptions<AppControllerGetHelloResponse, DefaultError, AppControllerGetHelloResponse, ReturnType<typeof appControllerGetHelloQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
         const { data } = await appControllerGetHello({
             ...options,
@@ -90,12 +90,12 @@ export const configControllerGetConfigOptions = (options?: Options<ConfigControl
 });
 
 /**
- * Partially update configuration
+ * Update LLM configuration
  */
-export const configControllerPartialUpdateMutation = (options?: Partial<Options<ConfigControllerPartialUpdateData>>): UseMutationOptions<ConfigControllerPartialUpdateResponse, DefaultError, Options<ConfigControllerPartialUpdateData>> => {
-    const mutationOptions: UseMutationOptions<ConfigControllerPartialUpdateResponse, DefaultError, Options<ConfigControllerPartialUpdateData>> = {
+export const configControllerUpdateLlmConfigMutation = (options?: Partial<Options<ConfigControllerUpdateLlmConfigData>>): UseMutationOptions<ConfigControllerUpdateLlmConfigResponse, DefaultError, Options<ConfigControllerUpdateLlmConfigData>> => {
+    const mutationOptions: UseMutationOptions<ConfigControllerUpdateLlmConfigResponse, DefaultError, Options<ConfigControllerUpdateLlmConfigData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await configControllerPartialUpdate({
+            const { data } = await configControllerUpdateLlmConfig({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -107,12 +107,12 @@ export const configControllerPartialUpdateMutation = (options?: Partial<Options<
 };
 
 /**
- * Update entire configuration
+ * Update blockchain configuration
  */
-export const configControllerUpdateConfigMutation = (options?: Partial<Options<ConfigControllerUpdateConfigData>>): UseMutationOptions<ConfigControllerUpdateConfigResponse, DefaultError, Options<ConfigControllerUpdateConfigData>> => {
-    const mutationOptions: UseMutationOptions<ConfigControllerUpdateConfigResponse, DefaultError, Options<ConfigControllerUpdateConfigData>> = {
+export const configControllerUpdateBlockchainConfigMutation = (options?: Partial<Options<ConfigControllerUpdateBlockchainConfigData>>): UseMutationOptions<ConfigControllerUpdateBlockchainConfigResponse, DefaultError, Options<ConfigControllerUpdateBlockchainConfigData>> => {
+    const mutationOptions: UseMutationOptions<ConfigControllerUpdateBlockchainConfigResponse, DefaultError, Options<ConfigControllerUpdateBlockchainConfigData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await configControllerUpdateConfig({
+            const { data } = await configControllerUpdateBlockchainConfig({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -122,3 +122,21 @@ export const configControllerUpdateConfigMutation = (options?: Partial<Options<C
     };
     return mutationOptions;
 };
+
+export const configControllerGetChainsQueryKey = (options?: Options<ConfigControllerGetChainsData>) => createQueryKey('configControllerGetChains', options);
+
+/**
+ * Get supported blockchain chains
+ */
+export const configControllerGetChainsOptions = (options?: Options<ConfigControllerGetChainsData>) => queryOptions<ConfigControllerGetChainsResponse, DefaultError, ConfigControllerGetChainsResponse, ReturnType<typeof configControllerGetChainsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await configControllerGetChains({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: configControllerGetChainsQueryKey(options)
+});

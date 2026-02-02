@@ -3,39 +3,48 @@ import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
 import SyntaxHighlight from 'ink-syntax-highlight';
 import React, { useEffect, useState } from 'react';
-import { OnboardingSteps } from '../components/onboarding-steps.js';
+
+import { BlockchainOnboarding } from '../components/onboard/blockchain-onboarding.js';
+import { LlmOnboarding } from '../components/onboard/llm-onboarding.js';
 import { useGetConfig, useResetConfig } from '../lib/hooks/api-hooks.js';
+import { useModal } from '../lib/hooks/use-modal.js';
+import { hasValidConfig } from '../lib/utils.js';
 
 enum OnboardStep {
 	CheckingConfig = 'checking',
 	ShowConfirmation = 'confirmation',
 	Resetting = 'resetting',
-	Onboarding = 'onboarding',
+	LlmOnboarding = 'llm-onboarding',
+	AskBlockchain = 'ask-blockchain',
+	BlockchainOnboarding = 'blockchain-onboarding',
 }
 
-type Props = {
-	onComplete: () => void;
-};
-
-export function Onboard({ onComplete }: Props) {
+export function Onboard() {
 	const [step, setStep] = useState<OnboardStep>(OnboardStep.CheckingConfig);
 	const [hasCheckedInitialConfig, setHasCheckedInitialConfig] = useState(false);
 	const { data: config, isLoading } = useGetConfig();
 	const { mutate: resetConfig, isPending: isResetting } = useResetConfig();
+	const modal = useModal();
 
 	// Check if config exists and is valid
 	useEffect(() => {
 		if (!isLoading && !hasCheckedInitialConfig) {
 			setHasCheckedInitialConfig(true);
-			const hasValidConfig = config && config.llm;
-
-			if (hasValidConfig) {
+			if (hasValidConfig(config)) {
 				setStep(OnboardStep.ShowConfirmation);
 			} else {
-				setStep(OnboardStep.Onboarding);
+				setStep(OnboardStep.LlmOnboarding);
 			}
 		}
 	}, [isLoading, config, hasCheckedInitialConfig]);
+
+	const handleLlmComplete = () => {
+		setStep(OnboardStep.AskBlockchain);
+	};
+
+	const handleBlockchainComplete = () => {
+		modal.dismiss();
+	};
 
 	if (isLoading || step === OnboardStep.CheckingConfig) {
 		return (
@@ -73,12 +82,12 @@ export function Onboard({ onComplete }: Props) {
 									{},
 									{
 										onSuccess: () => {
-											setStep(OnboardStep.Onboarding);
+											setStep(OnboardStep.LlmOnboarding);
 										},
 									},
 								);
 							} else {
-								onComplete();
+								modal.dismiss();
 							}
 						}}
 					/>
@@ -96,8 +105,37 @@ export function Onboard({ onComplete }: Props) {
 		);
 	}
 
-	if (step === OnboardStep.Onboarding) {
-		return <OnboardingSteps />;
+	if (step === OnboardStep.LlmOnboarding) {
+		return <LlmOnboarding onComplete={handleLlmComplete} />;
+	}
+
+	if (step === OnboardStep.AskBlockchain) {
+		return (
+			<Box flexDirection="column" paddingX={2} paddingY={1}>
+				<Text bold color="cyan">
+					Would you like to set up blockchain configuration?
+				</Text>
+				<Box marginTop={1}>
+					<SelectInput
+						items={[
+							{ label: 'Yes, set up blockchain', value: 'yes' },
+							{ label: 'No, skip for now', value: 'no' },
+						]}
+						onSelect={(item) => {
+							if (item.value === 'yes') {
+								setStep(OnboardStep.BlockchainOnboarding);
+							} else {
+								modal.dismiss();
+							}
+						}}
+					/>
+				</Box>
+			</Box>
+		);
+	}
+
+	if (step === OnboardStep.BlockchainOnboarding) {
+		return <BlockchainOnboarding onComplete={handleBlockchainComplete} />;
 	}
 
 	return null;

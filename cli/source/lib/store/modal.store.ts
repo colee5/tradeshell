@@ -37,6 +37,6 @@ export const popModalAtom = atom(null, (get, set) => {
 });
 
 // Clear all modals
-export const clearModalsAtom = atom(null, (get, set) => {
+export const clearModalsAtom = atom(null, (_, set) => {
 	set(modalStackAtom, []);
 });

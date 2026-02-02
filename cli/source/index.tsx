@@ -17,7 +17,6 @@ export default function Index() {
 	const [history, setHistory] = useState<HistoryItem[]>([]);
 	const [input, setInput] = useState('');
 	const modal = useModal();
-	const [isOnboardingActive, setIsOnboardingActive] = useState(false);
 	const { exit } = useApp();
 
 	const showSuggestions = input === '/';
@@ -62,11 +61,11 @@ export default function Index() {
 			cmd = cmd?.slice(1);
 		}
 
+		// Cases in which we handle special modal commands
 		if (cmd === COMMANDS.onboard.name) {
-			modal.show(<Onboard onComplete={() => modal.dismiss()} />, {
+			modal.show(<Onboard />, {
 				showHeader: false,
 			});
-
 			setInput('');
 			return;
 		}
@@ -80,24 +79,12 @@ export default function Index() {
 		setInput('');
 	};
 
-	if (isOnboardingActive) {
-		return (
-			<Box flexDirection="column">
-				<Header />
-				<Onboard onComplete={() => setIsOnboardingActive(false)} />
-			</Box>
-		);
-	}
-
 	return (
 		<Box flexDirection="column">
 			<Header />
 			<InitialConfigPrompt />
-
 			<CommandHistory history={history} />
-
 			<CommandInput value={input} onChange={setInput} onSubmit={handleSubmit} />
-
 			<CommandSuggestions
 				show={showSuggestions}
 				onSelect={(command) => {

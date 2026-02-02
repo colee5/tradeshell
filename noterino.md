@@ -12,31 +12,29 @@ Regarding wallet interface - we'll need to show some kind of a self contained we
 
 Make a class which would load the config from a file. Then on the client we'll need to check If the user has the config AND what does it contain - This config would need to be accessible from both the server & the client
 
-NEXT -> Refactor by overlay-component-architecture.md
 TODO:
 
 STAGE 1: Monorepo and architecture
-[] Chat Interface ✓
-[] Autocomplete of commands when hit ✓
-[] Config service on the client & the server ✓
-[] Setup API endpoint queries with Tanstack Query ✓
-[] Setup import path alias for @shared ✓
-[] Generate backend schemas for the FE - hey-api ✓
-[] Setup husky for linting ✓
-[] Setup commit message standard ✓
-[] Refactor by overlay-component-architecture.md ✓
+[✓] Chat Interface
+[✓] Autocomplete of commands when hit
+[✓] Config service on the client & the server
+[✓] Setup API endpoint queries with Tanstack Query
+[✓] Setup import path alias for @shared
+[✓] Generate backend schemas for the FE - hey-api
+[✓] Setup husky for linting
+[✓] Setup commit message standard
+[✓] Refactor by overlay-component-architecture.md
 
 STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
-[] Onboarding LLM setup ✓
-[] Config commands
--- [] Find a way to have subcommands ✓
--- [] Config list command - `/config get` to show current config (with secrets masked) ✓
--- [] Config reset command - `/config reset` to return to defaults ✓
--- [] Handle initialPrompt error case ✓
--- [] Handle onboarding error case, it just stops and runs infinitely ✓
+[✓] Onboarding LLM setup
+[✓] Config commands
+-- [✓] Find a way to have subcommands
+-- [✓] Config list command - `/config get` to show current config (with secrets masked)
+-- [✓] Config reset command - `/config reset` to return to defaults
+-- [✓] Handle initialPrompt error case
+-- [✓] Handle onboarding error case, it just stops and runs infinitely
 
 STAGE 3: Private key storing and safety
-
 [] Private key storage - Use ethers.js encrypted keystore in ~/.tradeshell/keystore/ (password-protected, never plain text) Will be done through the server
 [] We MUST keep npm packages to the minimum, All cli and api packages must be reviewed
 [] Environment variable support - Allow RPC URLs, API keys to be set via env vars (12-facto r app)
@@ -101,7 +99,3 @@ From written notes:
 - What's a firewalled subnet? How can my app be ran in this contanirized mode in which only the server can send requests to the configured AI Api & the RPCs provided.
 
 - Possibly make it easy for the user to add his own tool implementations of protocols. Like interacting with Uniswap/Aave Protocol. He would need to input the contract ABI into the CLI and it would save it on his local machine from which the agent can then call tools? This might be a good idea and its greatly modular.
-
-WHERE DID I STOP?
-
-index.tsx look at comment at line 24 - bye

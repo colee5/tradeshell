@@ -7,7 +7,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -20,7 +27,7 @@
         "operationId": "ConfigController_getConfig",
         "parameters": [],
         "responses": {
-          "default": {
+          "200": {
             "description": "",
             "content": {
               "application/json": {
@@ -36,61 +43,11 @@
           "config"
         ]
       },
-      "put": {
-        "operationId": "ConfigController_updateConfig",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConfigDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "default": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConfigDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Update entire configuration",
-        "tags": [
-          "config"
-        ]
-      },
-      "patch": {
-        "operationId": "ConfigController_partialUpdate",
-        "parameters": [],
-        "responses": {
-          "default": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConfigDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Partially update configuration",
-        "tags": [
-          "config"
-        ]
-      },
       "delete": {
         "operationId": "ConfigController_resetConfig",
         "parameters": [],
         "responses": {
-          "default": {
+          "200": {
             "description": "",
             "content": {
               "application/json": {
@@ -102,6 +59,92 @@
           }
         },
         "summary": "Reset configuration to defaults",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/config/llm": {
+      "put": {
+        "operationId": "ConfigController_updateLlmConfig",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LlmConfigDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update LLM configuration",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/config/blockchain": {
+      "put": {
+        "operationId": "ConfigController_updateBlockchainConfig",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlockchainConfigDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update blockchain configuration",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/config/chains": {
+      "get": {
+        "operationId": "ConfigController_getChains",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChainsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get supported blockchain chains",
         "tags": [
           "config"
         ]
@@ -147,6 +190,30 @@
           }
         }
       },
+      "BlockchainConfigDto": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "enum": [
+              1,
+              8453,
+              42161,
+              11155111
+            ],
+            "type": "number",
+            "description": "Chain ID",
+            "example": 8453
+          },
+          "rpcUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "RPC URL"
+          }
+        },
+        "required": [
+          "chainId"
+        ]
+      },
       "ConfigDto": {
         "type": "object",
         "properties": {
@@ -157,8 +224,94 @@
                 "$ref": "#/components/schemas/LlmConfigDto"
               }
             ]
+          },
+          "blockchain": {
+            "description": "Blockchain configuration",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BlockchainConfigDto"
+              }
+            ]
           }
         }
+      },
+      "ChainNativeCurrencyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Ether"
+          },
+          "symbol": {
+            "type": "string",
+            "example": "ETH"
+          },
+          "decimals": {
+            "type": "number",
+            "example": 18
+          }
+        },
+        "required": [
+          "name",
+          "symbol",
+          "decimals"
+        ]
+      },
+      "ChainDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 8453,
+            "description": "Chain ID in number form"
+          },
+          "name": {
+            "type": "string",
+            "example": "Base",
+            "description": "Human-readable chain name"
+          },
+          "nativeCurrency": {
+            "$ref": "#/components/schemas/ChainNativeCurrencyDto"
+          },
+          "rpcUrls": {
+            "type": "object",
+            "description": "Collection of RPC endpoints"
+          },
+          "blockExplorers": {
+            "type": "object",
+            "description": "Collection of block explorers"
+          },
+          "testnet": {
+            "type": "boolean",
+            "example": false
+          },
+          "sourceId": {
+            "type": "number",
+            "example": 1,
+            "description": "Source Chain ID (L1 for L2s)"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "nativeCurrency",
+          "rpcUrls"
+        ]
+      },
+      "ChainsResponseDto": {
+        "type": "object",
+        "properties": {
+          "chains": {
+            "description": "List of supported blockchain chains",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChainDto"
+            }
+          }
+        },
+        "required": [
+          "chains"
+        ]
       }
     }
   }

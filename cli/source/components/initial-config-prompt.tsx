@@ -1,6 +1,7 @@
 import { Box, Text } from 'ink';
 import React from 'react';
 import { useGetConfig } from '../lib/hooks/api-hooks.js';
+import { hasValidConfig } from '../lib/utils.js';
 
 export function InitialConfigPrompt() {
 	const { data: config, isLoading, isError } = useGetConfig();
@@ -9,9 +10,7 @@ export function InitialConfigPrompt() {
 		return null;
 	}
 
-	const hasConfig = config?.llm;
-
-	if (hasConfig && !isError) {
+	if (hasValidConfig(config) && !isError) {
 		return null;
 	}
 

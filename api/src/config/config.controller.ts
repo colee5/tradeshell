@@ -1,48 +1,42 @@
-import { Body, Controller, Delete, Get, Patch, Put } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Put } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
-import { ConfigDto } from './dto/config.dto';
+import { ChainsResponseDto } from './dto/chain.dto';
+import { BlockchainConfigDto, ConfigDto, LlmConfigDto } from './dto/config.dto';
 
 @ApiTags('config')
 @Controller('config')
 export class ConfigController {
-  constructor(private readonly configService: ConfigService) {}
+	constructor(private readonly configService: ConfigService) {}
 
-  @Get()
-  @ApiOperation({ summary: 'Get current configuration' })
-  @ApiResponse({
-    type: ConfigDto,
-  })
-  async getConfig(): Promise<ConfigDto> {
-    return await this.configService.get();
-  }
+	@Get()
+	@ApiOperation({ summary: 'Get current configuration' })
+	async getConfig(): Promise<ConfigDto> {
+		return await this.configService.get();
+	}
 
-  @Put()
-  @ApiOperation({ summary: 'Update entire configuration' })
-  @ApiResponse({
-    type: ConfigDto,
-  })
-  async updateConfig(@Body() config: ConfigDto): Promise<ConfigDto> {
-    await this.configService.save(config);
-    return this.configService.get();
-  }
+	@Put('llm')
+	@ApiOperation({ summary: 'Update LLM configuration' })
+	async updateLlmConfig(@Body() llm: LlmConfigDto): Promise<ConfigDto> {
+		return this.configService.updateLlm(llm);
+	}
 
-  @Patch()
-  @ApiOperation({ summary: 'Partially update configuration' })
-  @ApiResponse({
-    type: ConfigDto,
-  })
-  async partialUpdate(@Body() updates: Partial<ConfigDto>): Promise<ConfigDto> {
-    return this.configService.update(updates);
-  }
+	@Put('blockchain')
+	@ApiOperation({ summary: 'Update blockchain configuration' })
+	async updateBlockchainConfig(@Body() blockchain: BlockchainConfigDto): Promise<ConfigDto> {
+		return this.configService.updateBlockchain(blockchain);
+	}
 
-  @Delete()
-  @ApiOperation({ summary: 'Reset configuration to defaults' })
-  @ApiResponse({
-    type: ConfigDto,
-  })
-  async resetConfig(): Promise<ConfigDto> {
-    await this.configService.save({});
-    return this.configService.get();
-  }
+	@Delete()
+	@ApiOperation({ summary: 'Reset configuration to defaults' })
+	async resetConfig(): Promise<ConfigDto> {
+		await this.configService.save({});
+		return this.configService.get();
+	}
+
+	@Get('chains')
+	@ApiOperation({ summary: 'Get supported blockchain chains' })
+	async getChains(): Promise<ChainsResponseDto> {
+		return this.configService.getChains();
+	}
 }
