@@ -149,6 +149,216 @@
           "config"
         ]
       }
+    },
+    "/wallet/store": {
+      "post": {
+        "operationId": "WalletController_storePrivateKey",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StorePrivateKeyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Private key stored successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid private key or password"
+          }
+        },
+        "summary": "Store a private key encrypted with a password",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/unlock": {
+      "post": {
+        "operationId": "WalletController_unlockWallet",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UnlockWalletDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Wallet unlocked successfully"
+          },
+          "401": {
+            "description": "Invalid password"
+          },
+          "404": {
+            "description": "Wallet not found"
+          }
+        },
+        "summary": "Unlock a wallet for the current session",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/lock": {
+      "post": {
+        "operationId": "WalletController_lockWallets",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "All wallets locked successfully"
+          }
+        },
+        "summary": "Lock all wallets",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/active/{address}": {
+      "post": {
+        "operationId": "WalletController_setActiveWallet",
+        "parameters": [
+          {
+            "name": "address",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Active wallet set successfully"
+          },
+          "404": {
+            "description": "Wallet not unlocked"
+          }
+        },
+        "summary": "Set active wallet (must be unlocked first)",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/status": {
+      "get": {
+        "operationId": "WalletController_getStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Wallet status retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get the current wallet status",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/list": {
+      "get": {
+        "operationId": "WalletController_listWallets",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Wallets listed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletListDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all wallets in the keystore",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/password": {
+      "put": {
+        "operationId": "WalletController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed successfully"
+          },
+          "401": {
+            "description": "Invalid old password"
+          },
+          "404": {
+            "description": "Wallet not found"
+          }
+        },
+        "summary": "Change the password for a wallet",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/{address}": {
+      "delete": {
+        "operationId": "WalletController_deleteWallet",
+        "parameters": [
+          {
+            "name": "address",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallet deleted successfully"
+          },
+          "404": {
+            "description": "Wallet not found"
+          }
+        },
+        "summary": "Delete a wallet from the keystore",
+        "tags": [
+          "wallet"
+        ]
+      }
     }
   },
   "info": {
@@ -311,6 +521,139 @@
         },
         "required": [
           "chains"
+        ]
+      },
+      "StorePrivateKeyDto": {
+        "type": "object",
+        "properties": {
+          "privateKey": {
+            "type": "string",
+            "description": "Private key to store (with or without 0x prefix)",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "Password to encrypt the private key",
+            "example": "my-secure-password"
+          },
+          "setActive": {
+            "type": "boolean",
+            "description": "Whether to unlock and set as active wallet (default: true)",
+            "example": true,
+            "default": true
+          }
+        },
+        "required": [
+          "privateKey",
+          "password"
+        ]
+      },
+      "WalletResponseDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Wallet address",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
+          }
+        },
+        "required": [
+          "address"
+        ]
+      },
+      "UnlockWalletDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Wallet address",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password to decrypt the private key",
+            "example": "my-secure-password"
+          }
+        },
+        "required": [
+          "address",
+          "password"
+        ]
+      },
+      "WalletStatusDto": {
+        "type": "object",
+        "properties": {
+          "unlocked": {
+            "type": "boolean",
+            "description": "Whether any wallet is currently unlocked",
+            "example": true
+          },
+          "activeAddress": {
+            "type": "string",
+            "description": "Address of the currently active wallet",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
+          },
+          "unlockedWallets": {
+            "description": "List of all unlocked wallet addresses",
+            "example": [
+              "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0",
+              "0x1234567890abcdef1234567890abcdef12345678"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "unlocked",
+          "unlockedWallets"
+        ]
+      },
+      "WalletListDto": {
+        "type": "object",
+        "properties": {
+          "wallets": {
+            "description": "List of wallet addresses in the keystore",
+            "example": [
+              "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0",
+              "0x1234567890abcdef1234567890abcdef12345678"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "wallets"
+        ]
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Wallet address",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
+          },
+          "oldPassword": {
+            "type": "string",
+            "description": "Current password",
+            "example": "my-old-password"
+          },
+          "newPassword": {
+            "type": "string",
+            "minLength": 8,
+            "description": "New password (at least 8 characters)",
+            "example": "my-new-password"
+          }
+        },
+        "required": [
+          "address",
+          "oldPassword",
+          "newPassword"
         ]
       }
     }
