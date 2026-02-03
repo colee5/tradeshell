@@ -1,9 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as fs from 'fs/promises';
-import * as os from 'os';
-import * as path from 'path';
 import { CHAIN_BY_ID } from 'src/common/chains';
+import { CONFIG_PATH, TRADESHELL_DIR } from 'src/common/constants';
 import { CONFIG_EVENTS } from './config.events';
 import { ChainsResponseDto } from './dto/chain.dto';
 import { BlockchainConfigDto, ConfigDto, LlmConfigDto } from './dto/config.dto';
@@ -11,15 +10,12 @@ import { BlockchainConfigDto, ConfigDto, LlmConfigDto } from './dto/config.dto';
 @Injectable()
 export class ConfigService implements OnModuleInit {
 	private config: ConfigDto = {};
-	private readonly configDir: string;
-	private readonly configPath: string;
+	private readonly configDir = TRADESHELL_DIR;
+	private readonly configPath = CONFIG_PATH;
 
-	constructor(private readonly eventEmitter: EventEmitter2) {
-		this.configDir = path.join(os.homedir(), '.tradeshell');
-		this.configPath = path.join(this.configDir, 'config.json');
-	}
+	constructor(private readonly eventEmitter: EventEmitter2) {}
 
-	async onModuleInit() {
+	async onModuleInit(): Promise<void> {
 		const exists = await this.exists();
 
 		if (exists) {
@@ -85,10 +81,6 @@ export class ConfigService implements OnModuleInit {
 
 		this.eventEmitter.emit(CONFIG_EVENTS.BLOCKCHAIN_UPDATED);
 		return this.config;
-	}
-
-	getConfigPath(): string {
-		return this.configPath;
 	}
 
 	getChains(): ChainsResponseDto {
