@@ -38,7 +38,16 @@ interface WalletsFile {
 export class WalletService {
 	private readonly logger = new Logger(WalletService.name);
 
-	// If set, system is unlocked
+	private readonly errors = {
+		alreadySetup: () =>
+			new BadRequestException('Wallet system already set up. Use change password instead.'),
+		notSetup: () => new NotFoundException('Wallet system not set up. Call setup first.'),
+		invalidPassword: () => new UnauthorizedException('Invalid password'),
+		walletsLocked: () => new UnauthorizedException('Wallets are locked. Unlock first.'),
+		walletExists: () => new BadRequestException('Wallet already exists'),
+		walletNotFound: (address: string) => new NotFoundException(`Wallet not found: ${address}`),
+	};
+
 	private masterKey: Buffer | null = null;
 	private wallets: Map<string, StoredWallet> = new Map();
 
@@ -50,29 +59,29 @@ export class WalletService {
 		await fs.mkdir(TRADESHELL_DIR, { recursive: true });
 	}
 
+	// loadWallets runs only on start and pushes the current stored wallet metadata into memory
+	// , Then when the system is unlocked, it stores the masterKey in memory too (decrypted)
+	// Which is used to access the private key of the active current acccount.
 	private async loadWallets(): Promise<void> {
-		try {
-			const data = await fs.readFile(WALLETS_FILE, 'utf-8');
-			const file: WalletsFile = JSON.parse(data);
-			this.wallets = new Map(Object.entries(file.wallets));
+		const file = await this.readWalletsFile();
 
-			this.logger.log(`Loaded ${this.wallets.size} wallet(s) metadata`);
-		} catch (error) {
-			if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-				this.wallets = new Map();
-			} else {
-				this.logger.error('Failed to load wallets file', error);
-				this.wallets = new Map();
-			}
+		if (file) {
+			this.wallets = new Map(Object.entries(file.wallets));
+			this.logger.log(`Loaded ${this.wallets.size} wallet(s) metadata into memory`);
+		} else {
+			this.wallets = new Map();
 		}
 	}
 
+	// I/O operations from file system
 	private async saveWalletsFile(masterKeyData: MasterKeyData): Promise<void> {
 		await this.ensureDir();
 
+		const currentWallets = Object.fromEntries(this.wallets);
+
 		const file: WalletsFile = {
 			masterKeyData,
-			wallets: Object.fromEntries(this.wallets),
+			wallets: currentWallets,
 		};
 
 		await fs.writeFile(WALLETS_FILE, JSON.stringify(file, null, 2), 'utf-8');
@@ -87,19 +96,11 @@ export class WalletService {
 		}
 	}
 
-	isSetup(): boolean {
-		return this.wallets.size > 0 || this.masterKey !== null;
-	}
-
-	isUnlocked(): boolean {
-		return this.masterKey !== null;
-	}
-
 	async setup(password: string): Promise<void> {
 		const existingFile = await this.readWalletsFile();
 
 		if (existingFile) {
-			throw new BadRequestException('Wallet system already set up. Use change password instead.');
+			throw this.errors.alreadySetup();
 		}
 
 		const generatedMasterKey = generateMasterKey();
@@ -112,69 +113,66 @@ export class WalletService {
 		this.logger.log('Wallet system initialized with master password');
 	}
 
-	async unlock(password: string): Promise<void> {
-		const file = await this.readWalletsFile();
-
-		if (!file) {
-			throw new NotFoundException('Wallet system not set up. Call setup first.');
-		}
-
-		try {
-			this.masterKey = decryptMasterKey(file.masterKeyData, password);
-		} catch {
-			throw new UnauthorizedException('Invalid password');
-		}
-
-		// Stores them in memory
-		this.wallets = new Map(Object.entries(file.wallets));
-		this.eventEmitter.emit(WALLET_EVENTS.UNLOCKED);
-
-		this.logger.log(`Unlocked ${this.wallets.size} wallet(s)`);
-	}
-
 	lock(): void {
 		this.masterKey = null;
 		this.eventEmitter.emit(WALLET_EVENTS.LOCKED);
 		this.logger.log('All wallets locked');
 	}
 
-	async changePassword(oldPassword: string, newPassword: string): Promise<void> {
+	async unlock(password: string): Promise<void> {
 		const file = await this.readWalletsFile();
+
 		if (!file) {
-			throw new NotFoundException('Wallet system not set up');
+			throw this.errors.notSetup();
 		}
 
-		// Verify old password
+		try {
+			this.masterKey = decryptMasterKey(file.masterKeyData, password);
+		} catch {
+			throw this.errors.invalidPassword();
+		}
+
+		this.wallets = new Map(Object.entries(file.wallets));
+		this.eventEmitter.emit(WALLET_EVENTS.UNLOCKED);
+
+		this.logger.log(`Unlocked ${this.wallets.size} wallet(s)`);
+	}
+
+	async changePassword(oldPassword: string, newPassword: string): Promise<void> {
+		const file = await this.readWalletsFile();
+
+		if (!file) {
+			throw this.errors.notSetup();
+		}
+
+		// 1. Verify old password is correct by decrypting the master key with it
 		let masterKey: Buffer;
 
 		try {
 			masterKey = decryptMasterKey(file.masterKeyData, oldPassword);
 		} catch {
-			throw new UnauthorizedException('Invalid current password');
+			throw this.errors.invalidPassword();
 		}
 
-		// Re-encrypt master key with new password
+		// 2. Re-encrypt master key with new password
 		const newMasterKeyData = encryptMasterKey(masterKey, newPassword);
 
-		// Save with new encryption (wallet data unchanged)
+		// 3. Save with new encryption (wallet data unchanged)
 		await this.saveWalletsFile(newMasterKeyData);
 		this.logger.log('Master password changed successfully');
 	}
 
 	async addWallet(privateKey: string, name: string, setActive = true): Promise<string> {
-		if (!this.masterKey) {
-			throw new UnauthorizedException('Wallets are locked. Unlock first.');
+		if (!this.isUnlocked()) {
+			throw this.errors.walletsLocked();
 		}
 
-		// Normalize private key format
-		const normalizedKey = privateKey.startsWith('0x') ? privateKey : `0x${privateKey}`;
-
 		// Create account to get address
-		const account = privateKeyToAccount(normalizedKey as Hash);
+		const account = privateKeyToAccount(privateKey as Hash);
 		const address = account.address.toLowerCase();
 
 		if (this.wallets.has(address)) {
-			throw new BadRequestException('Wallet already exists');
+			throw this.errors.walletExists();
 		}
 
 		// If setActive, mark all other wallets as inactive
@@ -185,10 +183,10 @@ export class WalletService {
 		}
 
 		// Encrypt and store
-		const encryptedPrivateKey = encryptPrivateKey(normalizedKey, this.masterKey);
+		const encryptedPrivateKey = encryptPrivateKey(privateKey, this.masterKey!);
 
-		const wallet: StoredWallet = {
-			address: account.address, // Keep original case for display
+		const wallet = {
+			address: account.address,
 			name,
 			isActive: setActive,
 			encryptedPrivateKey,
@@ -198,6 +196,7 @@ export class WalletService {
 
 		// Save to file
 		const file = await this.readWalletsFile();
+
 		if (file) {
 			await this.saveWalletsFile(file.masterKeyData);
 		}
@@ -212,7 +211,7 @@ export class WalletService {
 		const normalizedAddress = address.toLowerCase();
 
 		if (!this.wallets.has(normalizedAddress)) {
-			throw new NotFoundException('Wallet not found');
+			throw this.errors.walletNotFound(address);
 		}
 
 		const wasActive = this.wallets.get(normalizedAddress)?.isActive;
@@ -243,7 +242,7 @@ export class WalletService {
 		const normalizedAddress = address.toLowerCase();
 
 		if (!this.wallets.has(normalizedAddress)) {
-			throw new NotFoundException('Wallet not found');
+			throw this.errors.walletNotFound(address);
 		}
 
 		// Mark all as inactive, then set the target as active
@@ -263,15 +262,16 @@ export class WalletService {
 	}
 
 	getActiveAccount(): PrivateKeyAccount | null {
-		if (!this.masterKey) return null;
+		if (!this.isUnlocked) return null;
 
 		const activeInfo = this.getActiveAccountInfo();
 		if (!activeInfo) return null;
 
-		const privateKey = decryptPrivateKey(activeInfo.encryptedPrivateKey, this.masterKey);
-		return privateKeyToAccount(privateKey as `0x${string}`);
+		const privateKey = decryptPrivateKey(activeInfo.encryptedPrivateKey, this.masterKey!);
+		return privateKeyToAccount(privateKey as Hash);
 	}
 
+	// This returns the wallet data such as address, name, isActive
 	getActiveAccountInfo(): StoredWallet | null {
 		for (const wallet of this.wallets.values()) {
 			if (wallet.isActive) {
@@ -293,5 +293,13 @@ export class WalletService {
 
 	getWalletCount(): number {
 		return this.wallets.size;
+	}
+
+	isSetup(): boolean {
+		return this.wallets.size > 0 || this.masterKey !== null;
+	}
+
+	isUnlocked(): boolean {
+		return this.masterKey !== null;
 	}
 }
