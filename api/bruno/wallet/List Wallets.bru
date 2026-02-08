@@ -1,0 +1,22 @@
+meta {
+  name: List Wallets
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/wallet/list
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("Response has wallets array", function() {
+    expect(res.body).to.have.property("wallets");
+    expect(res.body.wallets).to.be.an("array");
+  });
+}

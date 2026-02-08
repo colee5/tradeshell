@@ -14,6 +14,14 @@ Make a class which would load the config from a file. Then on the client we'll n
 
 TODO:
 
+<!-- https://github.com/Kadajett/agent-nestjs-skills/tree/main/rules -->
+
+STAGE 0: Agent and skills setup
+[x] Standard for error handling
+[x] Standard for DTO and typing
+[x] Redundant return types on methods
+[x] Comments pattern
+
 STAGE 1: Monorepo and architecture
 [✓] Chat Interface
 [✓] Autocomplete of commands when hit

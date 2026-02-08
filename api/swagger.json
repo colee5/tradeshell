@@ -149,6 +149,222 @@
           "config"
         ]
       }
+    },
+    "/wallet/setup": {
+      "post": {
+        "operationId": "WalletController_setup",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetupPasswordBodyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Set up the master password (first time only)",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/unlock": {
+      "post": {
+        "operationId": "WalletController_unlock",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UnlockBodyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Unlock all wallets with master password",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/lock": {
+      "post": {
+        "operationId": "WalletController_lock",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Lock all wallets",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/password": {
+      "put": {
+        "operationId": "WalletController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordBodyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Change the master password",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/add": {
+      "post": {
+        "operationId": "WalletController_addWallet",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddWalletBodyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add a new wallet (requires unlocked state)",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/list": {
+      "get": {
+        "operationId": "WalletController_listWallets",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all wallets",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/status": {
+      "get": {
+        "operationId": "WalletController_getStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletStatusResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get wallet system status",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/active": {
+      "put": {
+        "operationId": "WalletController_setActive",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetActiveWalletDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Set a wallet as active",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/delete": {
+      "delete": {
+        "operationId": "WalletController_deleteWallet",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteWalletDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a wallet",
+        "tags": [
+          "wallet"
+        ]
+      }
     }
   },
   "info": {
@@ -311,6 +527,176 @@
         },
         "required": [
           "chains"
+        ]
+      },
+      "SetupPasswordBodyDto": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "minLength": 4,
+            "example": "mypass"
+          }
+        },
+        "required": [
+          "password"
+        ]
+      },
+      "UnlockBodyDto": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "example": "mypass"
+          }
+        },
+        "required": [
+          "password"
+        ]
+      },
+      "ChangePasswordBodyDto": {
+        "type": "object",
+        "properties": {
+          "oldPassword": {
+            "type": "string",
+            "example": "oldpass"
+          },
+          "newPassword": {
+            "type": "string",
+            "minLength": 4,
+            "example": "newpass"
+          }
+        },
+        "required": [
+          "oldPassword",
+          "newPassword"
+        ]
+      },
+      "AddWalletBodyDto": {
+        "type": "object",
+        "properties": {
+          "privateKey": {
+            "type": "string",
+            "pattern": "hashRegex",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+          },
+          "name": {
+            "type": "string",
+            "example": "Main Trading"
+          },
+          "setActive": {
+            "type": "boolean",
+            "example": true,
+            "default": true
+          }
+        },
+        "required": [
+          "privateKey",
+          "name"
+        ]
+      },
+      "WalletResponseDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
+          }
+        },
+        "required": [
+          "address"
+        ]
+      },
+      "WalletInfoResponseDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
+          },
+          "name": {
+            "type": "string",
+            "example": "Main Trading"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "address",
+          "name",
+          "isActive"
+        ]
+      },
+      "WalletListResponseDto": {
+        "type": "object",
+        "properties": {
+          "wallets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WalletInfoResponseDto"
+            }
+          }
+        },
+        "required": [
+          "wallets"
+        ]
+      },
+      "WalletStatusResponseDto": {
+        "type": "object",
+        "properties": {
+          "isSetup": {
+            "type": "boolean",
+            "example": true
+          },
+          "isUnlocked": {
+            "type": "boolean",
+            "example": true
+          },
+          "activeAddress": {
+            "type": "string",
+            "nullable": true,
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
+          },
+          "activeName": {
+            "type": "string",
+            "nullable": true,
+            "example": "Main Trading"
+          },
+          "walletCount": {
+            "type": "number",
+            "example": 2
+          }
+        },
+        "required": [
+          "isSetup",
+          "isUnlocked",
+          "walletCount"
+        ]
+      },
+      "SetActiveWalletDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
+          }
+        },
+        "required": [
+          "address"
+        ]
+      },
+      "DeleteWalletDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
+          }
+        },
+        "required": [
+          "address"
         ]
       }
     }

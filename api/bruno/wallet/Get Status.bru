@@ -1,0 +1,23 @@
+meta {
+  name: Get Status
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/wallet/status
+  body: none
+  auth: none
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response has required fields", function() {
+    expect(res.body).to.have.property("isSetup");
+    expect(res.body).to.have.property("isUnlocked");
+    expect(res.body).to.have.property("walletCount");
+  });
+}

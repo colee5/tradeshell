@@ -1,0 +1,23 @@
+meta {
+  name: Delete Wallet
+  type: http
+  seq: 8
+}
+
+delete {
+  url: {{baseUrl}}/wallet/delete
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "address": "{{walletAddress}}"
+  }
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+}
