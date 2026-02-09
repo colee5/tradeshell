@@ -4,8 +4,10 @@ import { CHAIN_BY_ID } from '../constants/chains.js';
 import { CONFIG_EVENTS } from '../constants/events.js';
 import { CONFIG_PATH, TRADESHELL_DIR } from '../constants/paths.js';
 import type { BlockchainConfig, Config, LlmConfig } from '../types/config.types.js';
+import { createLogger } from './logger.js';
 
 export class ConfigService {
+	private readonly logger = createLogger(ConfigService.name);
 	private config: Config = {};
 	private readonly configDir = TRADESHELL_DIR;
 	private readonly configPath = CONFIG_PATH;
@@ -16,8 +18,10 @@ export class ConfigService {
 		const exists = await this.exists();
 
 		if (exists) {
+			this.logger.log('Loading existing config');
 			await this.load();
 		} else {
+			this.logger.log('No config found, initializing empty config');
 			await this.initEmpty();
 		}
 	}
@@ -39,6 +43,7 @@ export class ConfigService {
 			this.config = parsed;
 			return this.config;
 		} catch (error) {
+			this.logger.error('Failed to load config', error);
 			throw new Error(`Failed to load config: ${error}`);
 		}
 	}
@@ -50,6 +55,7 @@ export class ConfigService {
 
 			this.config = config;
 		} catch (error) {
+			this.logger.error('Failed to save config', error);
 			throw new Error(`Failed to save config: ${error}`);
 		}
 	}
@@ -66,6 +72,7 @@ export class ConfigService {
 	}
 
 	async updateLlm(llm: LlmConfig): Promise<Config> {
+		this.logger.log('Updating LLM config');
 		this.config.llm = llm;
 		await this.save(this.config);
 		this.emitter.emit(CONFIG_EVENTS.LLM_UPDATED);
@@ -73,6 +80,7 @@ export class ConfigService {
 	}
 
 	async updateBlockchain(blockchain: BlockchainConfig): Promise<Config> {
+		this.logger.log('Updating blockchain config');
 		this.config.blockchain = blockchain;
 		await this.save(this.config);
 

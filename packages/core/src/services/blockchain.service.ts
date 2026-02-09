@@ -9,7 +9,7 @@ import type { WalletService } from './wallet.service.js';
 import { createLogger } from './logger.js';
 
 export class BlockchainService {
-	private readonly logger = createLogger('BlockchainService');
+	private readonly logger = createLogger(BlockchainService.name);
 	private publicClient: PublicClient | null = null;
 	private walletClient: WalletClient | null = null;
 	private config: Config | null = null;
@@ -19,7 +19,7 @@ export class BlockchainService {
 		private readonly walletService: WalletService,
 		private readonly emitter: EventEmitter,
 	) {
-		// Wire up event listeners (replaces @OnEvent decorators)
+		// Wire up event listeners
 		this.emitter.on(CONFIG_EVENTS.BLOCKCHAIN_UPDATED, () => this.handleBlockchainConfigUpdated());
 		this.emitter.on(WALLET_EVENTS.UNLOCKED, () => this.handleWalletUnlocked());
 		this.emitter.on(WALLET_EVENTS.LOCKED, () => this.handleWalletLocked());

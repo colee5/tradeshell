@@ -29,7 +29,7 @@ type WalletsFile = {
 };
 
 export class WalletService {
-	private readonly logger = createLogger('WalletService');
+	private readonly logger = createLogger(WalletService.name);
 
 	private readonly errors = {
 		alreadySetup: () =>
