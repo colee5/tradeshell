@@ -1,25 +1,20 @@
+import { useAtomValue } from 'jotai';
 import { Box, Text } from 'ink';
 import React from 'react';
+import { commandLogAtom } from '../lib/store/command-log.atom.js';
 
-export type HistoryItem = {
-	input: string;
-	output: React.ReactElement;
-};
+export function CommandHistory() {
+	const commandLog = useAtomValue(commandLogAtom);
 
-type Props = {
-	history: HistoryItem[];
-};
-
-export function CommandHistory({ history }: Props) {
 	return (
 		<Box flexDirection="column">
-			{history.map((item, index) => (
+			{commandLog.map((entry, index) => (
 				<Box key={index} flexDirection="column">
 					<Text>
 						<Text color="green">&gt; </Text>
-						{item.input}
+						{entry.input}
 					</Text>
-					{item.output}
+					{entry.output}
 				</Box>
 			))}
 		</Box>

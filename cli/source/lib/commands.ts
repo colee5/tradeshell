@@ -40,6 +40,7 @@ export const COMMANDS = {
 	onboard: { name: 'onboard', label: '/onboard' },
 	help: { name: 'help', label: '/help' },
 	r: { name: 'r', label: '/r (reload)' },
+	reset: { name: 'reset', label: '/reset' },
 	exit: { name: 'exit', label: '/exit' },
 } as const;
 
