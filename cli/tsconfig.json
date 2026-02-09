@@ -1,9 +1,0 @@
-{
-	"extends": "@sindresorhus/tsconfig",
-	"compilerOptions": {
-		"moduleResolution": "bundler",
-		"module": "ESNext",
-		"outDir": "dist"
-	},
-	"include": ["source"]
-}
