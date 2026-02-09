@@ -1,7 +1,7 @@
 import { Box } from 'ink';
 import { useAtomValue } from 'jotai';
 import React from 'react';
-import { activeModalAtom, hasActivemodalAtom } from '../lib/store/modal.store.js';
+import { activeModalAtom, hasActivemodalAtom } from '../lib/store/modal.atom.js';
 import { Header } from './header.js';
 
 type Props = {
