@@ -50,6 +50,7 @@ export class WalletService {
 
 	private masterKey: Buffer | null = null;
 	private wallets: Map<string, StoredWallet> = new Map();
+	private walletsFileExists = false;
 
 	constructor(private readonly eventEmitter: EventEmitter2) {
 		this.loadWallets();
@@ -66,6 +67,7 @@ export class WalletService {
 		const file = await this.readWalletsFile();
 
 		if (file) {
+			this.walletsFileExists = true;
 			this.wallets = new Map(Object.entries(file.wallets));
 			this.logger.log(`Loaded ${this.wallets.size} wallet(s) metadata into memory`);
 		} else {
@@ -110,6 +112,7 @@ export class WalletService {
 		this.wallets = new Map();
 
 		await this.saveWalletsFile(masterKeyData);
+		this.walletsFileExists = true;
 		this.logger.log('Wallet system initialized with master password');
 	}
 
@@ -136,6 +139,20 @@ export class WalletService {
 		this.eventEmitter.emit(WALLET_EVENTS.UNLOCKED);
 
 		this.logger.log(`Unlocked ${this.wallets.size} wallet(s)`);
+	}
+
+	async checkPassword(password: string): Promise<void> {
+		const file = await this.readWalletsFile();
+
+		if (!file) {
+			throw this.errors.notSetup();
+		}
+
+		try {
+			decryptMasterKey(file.masterKeyData, password);
+		} catch {
+			throw this.errors.invalidPassword();
+		}
 	}
 
 	async changePassword(oldPassword: string, newPassword: string): Promise<void> {
@@ -296,7 +313,7 @@ export class WalletService {
 	}
 
 	isSetup(): boolean {
-		return this.wallets.size > 0 || this.masterKey !== null;
+		return this.walletsFileExists;
 	}
 
 	isUnlocked(): boolean {

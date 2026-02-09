@@ -5,7 +5,7 @@ import {
 	ModalComponent,
 	popModalAtom,
 	pushModalAtom,
-} from '../store/modal.store.js';
+} from '../store/modal.atom.js';
 
 export function useModal() {
 	const push = useSetAtom(pushModalAtom);

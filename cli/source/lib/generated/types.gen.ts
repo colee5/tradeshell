@@ -91,6 +91,59 @@ export type ChainsResponseDto = {
     chains: Array<ChainDto>;
 };
 
+export type SetupPasswordBodyDto = {
+    password: string;
+};
+
+export type UnlockBodyDto = {
+    password: string;
+};
+
+export type CheckPasswordBodyDto = {
+    password: string;
+};
+
+export type ChangePasswordBodyDto = {
+    oldPassword: string;
+    newPassword: string;
+};
+
+export type AddWalletBodyDto = {
+    privateKey: string;
+    name: string;
+    setActive?: boolean;
+};
+
+export type WalletResponseDto = {
+    address: string;
+};
+
+export type WalletInfoResponseDto = {
+    address: string;
+    name: string;
+    isActive: boolean;
+};
+
+export type WalletListResponseDto = {
+    wallets: Array<WalletInfoResponseDto>;
+};
+
+export type WalletStatusResponseDto = {
+    isSetup: boolean;
+    isUnlocked: boolean;
+    activeAddress?: string | null;
+    activeName?: string | null;
+    walletCount: number;
+};
+
+export type SetActiveWalletDto = {
+    address: string;
+};
+
+export type DeleteWalletDto = {
+    address: string;
+};
+
 export type AppControllerGetHelloData = {
     body?: never;
     path?: never;
@@ -168,3 +221,119 @@ export type ConfigControllerGetChainsResponses = {
 };
 
 export type ConfigControllerGetChainsResponse = ConfigControllerGetChainsResponses[keyof ConfigControllerGetChainsResponses];
+
+export type WalletControllerSetupData = {
+    body: SetupPasswordBodyDto;
+    path?: never;
+    query?: never;
+    url: '/wallet/setup';
+};
+
+export type WalletControllerSetupResponses = {
+    200: unknown;
+};
+
+export type WalletControllerUnlockData = {
+    body: UnlockBodyDto;
+    path?: never;
+    query?: never;
+    url: '/wallet/unlock';
+};
+
+export type WalletControllerUnlockResponses = {
+    200: unknown;
+};
+
+export type WalletControllerLockData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/wallet/lock';
+};
+
+export type WalletControllerLockResponses = {
+    200: unknown;
+};
+
+export type WalletControllerCheckPasswordData = {
+    body: CheckPasswordBodyDto;
+    path?: never;
+    query?: never;
+    url: '/wallet/check-password';
+};
+
+export type WalletControllerCheckPasswordResponses = {
+    200: unknown;
+};
+
+export type WalletControllerChangePasswordData = {
+    body: ChangePasswordBodyDto;
+    path?: never;
+    query?: never;
+    url: '/wallet/password';
+};
+
+export type WalletControllerChangePasswordResponses = {
+    200: unknown;
+};
+
+export type WalletControllerAddWalletData = {
+    body: AddWalletBodyDto;
+    path?: never;
+    query?: never;
+    url: '/wallet/add';
+};
+
+export type WalletControllerAddWalletResponses = {
+    201: WalletResponseDto;
+};
+
+export type WalletControllerAddWalletResponse = WalletControllerAddWalletResponses[keyof WalletControllerAddWalletResponses];
+
+export type WalletControllerListWalletsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/wallet/list';
+};
+
+export type WalletControllerListWalletsResponses = {
+    200: WalletListResponseDto;
+};
+
+export type WalletControllerListWalletsResponse = WalletControllerListWalletsResponses[keyof WalletControllerListWalletsResponses];
+
+export type WalletControllerGetStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/wallet/status';
+};
+
+export type WalletControllerGetStatusResponses = {
+    200: WalletStatusResponseDto;
+};
+
+export type WalletControllerGetStatusResponse = WalletControllerGetStatusResponses[keyof WalletControllerGetStatusResponses];
+
+export type WalletControllerSetActiveData = {
+    body: SetActiveWalletDto;
+    path?: never;
+    query?: never;
+    url: '/wallet/active';
+};
+
+export type WalletControllerSetActiveResponses = {
+    200: unknown;
+};
+
+export type WalletControllerDeleteWalletData = {
+    body: DeleteWalletDto;
+    path?: never;
+    query?: never;
+    url: '/wallet/delete';
+};
+
+export type WalletControllerDeleteWalletResponses = {
+    200: unknown;
+};

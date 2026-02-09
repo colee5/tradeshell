@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { appControllerGetHello, configControllerGetChains, configControllerGetConfig, configControllerResetConfig, configControllerUpdateBlockchainConfig, configControllerUpdateLlmConfig, type Options } from '../sdk.gen';
-import type { AppControllerGetHelloData, AppControllerGetHelloResponse, ConfigControllerGetChainsData, ConfigControllerGetChainsResponse, ConfigControllerGetConfigData, ConfigControllerGetConfigResponse, ConfigControllerResetConfigData, ConfigControllerResetConfigResponse, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponse, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponse } from '../types.gen';
+import { appControllerGetHello, configControllerGetChains, configControllerGetConfig, configControllerResetConfig, configControllerUpdateBlockchainConfig, configControllerUpdateLlmConfig, type Options, walletControllerAddWallet, walletControllerChangePassword, walletControllerCheckPassword, walletControllerDeleteWallet, walletControllerGetStatus, walletControllerListWallets, walletControllerLock, walletControllerSetActive, walletControllerSetup, walletControllerUnlock } from '../sdk.gen';
+import type { AppControllerGetHelloData, AppControllerGetHelloResponse, ConfigControllerGetChainsData, ConfigControllerGetChainsResponse, ConfigControllerGetConfigData, ConfigControllerGetConfigResponse, ConfigControllerResetConfigData, ConfigControllerResetConfigResponse, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponse, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponse, WalletControllerAddWalletData, WalletControllerAddWalletResponse, WalletControllerChangePasswordData, WalletControllerCheckPasswordData, WalletControllerDeleteWalletData, WalletControllerGetStatusData, WalletControllerGetStatusResponse, WalletControllerListWalletsData, WalletControllerListWalletsResponse, WalletControllerLockData, WalletControllerSetActiveData, WalletControllerSetupData, WalletControllerUnlockData } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -140,3 +140,175 @@ export const configControllerGetChainsOptions = (options?: Options<ConfigControl
     },
     queryKey: configControllerGetChainsQueryKey(options)
 });
+
+/**
+ * Set up the master password (first time only)
+ */
+export const walletControllerSetupMutation = (options?: Partial<Options<WalletControllerSetupData>>): UseMutationOptions<unknown, DefaultError, Options<WalletControllerSetupData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<WalletControllerSetupData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await walletControllerSetup({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Unlock all wallets with master password
+ */
+export const walletControllerUnlockMutation = (options?: Partial<Options<WalletControllerUnlockData>>): UseMutationOptions<unknown, DefaultError, Options<WalletControllerUnlockData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<WalletControllerUnlockData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await walletControllerUnlock({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Lock all wallets
+ */
+export const walletControllerLockMutation = (options?: Partial<Options<WalletControllerLockData>>): UseMutationOptions<unknown, DefaultError, Options<WalletControllerLockData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<WalletControllerLockData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await walletControllerLock({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Check if the provided password is correct
+ */
+export const walletControllerCheckPasswordMutation = (options?: Partial<Options<WalletControllerCheckPasswordData>>): UseMutationOptions<unknown, DefaultError, Options<WalletControllerCheckPasswordData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<WalletControllerCheckPasswordData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await walletControllerCheckPassword({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Change the master password
+ */
+export const walletControllerChangePasswordMutation = (options?: Partial<Options<WalletControllerChangePasswordData>>): UseMutationOptions<unknown, DefaultError, Options<WalletControllerChangePasswordData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<WalletControllerChangePasswordData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await walletControllerChangePassword({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Add a new wallet (requires unlocked state)
+ */
+export const walletControllerAddWalletMutation = (options?: Partial<Options<WalletControllerAddWalletData>>): UseMutationOptions<WalletControllerAddWalletResponse, DefaultError, Options<WalletControllerAddWalletData>> => {
+    const mutationOptions: UseMutationOptions<WalletControllerAddWalletResponse, DefaultError, Options<WalletControllerAddWalletData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await walletControllerAddWallet({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const walletControllerListWalletsQueryKey = (options?: Options<WalletControllerListWalletsData>) => createQueryKey('walletControllerListWallets', options);
+
+/**
+ * List all wallets
+ */
+export const walletControllerListWalletsOptions = (options?: Options<WalletControllerListWalletsData>) => queryOptions<WalletControllerListWalletsResponse, DefaultError, WalletControllerListWalletsResponse, ReturnType<typeof walletControllerListWalletsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await walletControllerListWallets({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: walletControllerListWalletsQueryKey(options)
+});
+
+export const walletControllerGetStatusQueryKey = (options?: Options<WalletControllerGetStatusData>) => createQueryKey('walletControllerGetStatus', options);
+
+/**
+ * Get wallet system status
+ */
+export const walletControllerGetStatusOptions = (options?: Options<WalletControllerGetStatusData>) => queryOptions<WalletControllerGetStatusResponse, DefaultError, WalletControllerGetStatusResponse, ReturnType<typeof walletControllerGetStatusQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await walletControllerGetStatus({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: walletControllerGetStatusQueryKey(options)
+});
+
+/**
+ * Set a wallet as active
+ */
+export const walletControllerSetActiveMutation = (options?: Partial<Options<WalletControllerSetActiveData>>): UseMutationOptions<unknown, DefaultError, Options<WalletControllerSetActiveData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<WalletControllerSetActiveData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await walletControllerSetActive({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Delete a wallet
+ */
+export const walletControllerDeleteWalletMutation = (options?: Partial<Options<WalletControllerDeleteWalletData>>): UseMutationOptions<unknown, DefaultError, Options<WalletControllerDeleteWalletData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<WalletControllerDeleteWalletData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await walletControllerDeleteWallet({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};

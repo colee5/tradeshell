@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AppControllerGetHelloData, AppControllerGetHelloResponses, ConfigControllerGetChainsData, ConfigControllerGetChainsResponses, ConfigControllerGetConfigData, ConfigControllerGetConfigResponses, ConfigControllerResetConfigData, ConfigControllerResetConfigResponses, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponses, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponses } from './types.gen';
+import type { AppControllerGetHelloData, AppControllerGetHelloResponses, ConfigControllerGetChainsData, ConfigControllerGetChainsResponses, ConfigControllerGetConfigData, ConfigControllerGetConfigResponses, ConfigControllerResetConfigData, ConfigControllerResetConfigResponses, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponses, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponses, WalletControllerAddWalletData, WalletControllerAddWalletResponses, WalletControllerChangePasswordData, WalletControllerChangePasswordResponses, WalletControllerCheckPasswordData, WalletControllerCheckPasswordResponses, WalletControllerDeleteWalletData, WalletControllerDeleteWalletResponses, WalletControllerGetStatusData, WalletControllerGetStatusResponses, WalletControllerListWalletsData, WalletControllerListWalletsResponses, WalletControllerLockData, WalletControllerLockResponses, WalletControllerSetActiveData, WalletControllerSetActiveResponses, WalletControllerSetupData, WalletControllerSetupResponses, WalletControllerUnlockData, WalletControllerUnlockResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -58,3 +58,102 @@ export const configControllerUpdateBlockchainConfig = <ThrowOnError extends bool
  * Get supported blockchain chains
  */
 export const configControllerGetChains = <ThrowOnError extends boolean = false>(options?: Options<ConfigControllerGetChainsData, ThrowOnError>) => (options?.client ?? client).get<ConfigControllerGetChainsResponses, unknown, ThrowOnError>({ url: '/config/chains', ...options });
+
+/**
+ * Set up the master password (first time only)
+ */
+export const walletControllerSetup = <ThrowOnError extends boolean = false>(options: Options<WalletControllerSetupData, ThrowOnError>) => (options.client ?? client).post<WalletControllerSetupResponses, unknown, ThrowOnError>({
+    url: '/wallet/setup',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Unlock all wallets with master password
+ */
+export const walletControllerUnlock = <ThrowOnError extends boolean = false>(options: Options<WalletControllerUnlockData, ThrowOnError>) => (options.client ?? client).post<WalletControllerUnlockResponses, unknown, ThrowOnError>({
+    url: '/wallet/unlock',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Lock all wallets
+ */
+export const walletControllerLock = <ThrowOnError extends boolean = false>(options?: Options<WalletControllerLockData, ThrowOnError>) => (options?.client ?? client).post<WalletControllerLockResponses, unknown, ThrowOnError>({ url: '/wallet/lock', ...options });
+
+/**
+ * Check if the provided password is correct
+ */
+export const walletControllerCheckPassword = <ThrowOnError extends boolean = false>(options: Options<WalletControllerCheckPasswordData, ThrowOnError>) => (options.client ?? client).post<WalletControllerCheckPasswordResponses, unknown, ThrowOnError>({
+    url: '/wallet/check-password',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Change the master password
+ */
+export const walletControllerChangePassword = <ThrowOnError extends boolean = false>(options: Options<WalletControllerChangePasswordData, ThrowOnError>) => (options.client ?? client).put<WalletControllerChangePasswordResponses, unknown, ThrowOnError>({
+    url: '/wallet/password',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Add a new wallet (requires unlocked state)
+ */
+export const walletControllerAddWallet = <ThrowOnError extends boolean = false>(options: Options<WalletControllerAddWalletData, ThrowOnError>) => (options.client ?? client).post<WalletControllerAddWalletResponses, unknown, ThrowOnError>({
+    url: '/wallet/add',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List all wallets
+ */
+export const walletControllerListWallets = <ThrowOnError extends boolean = false>(options?: Options<WalletControllerListWalletsData, ThrowOnError>) => (options?.client ?? client).get<WalletControllerListWalletsResponses, unknown, ThrowOnError>({ url: '/wallet/list', ...options });
+
+/**
+ * Get wallet system status
+ */
+export const walletControllerGetStatus = <ThrowOnError extends boolean = false>(options?: Options<WalletControllerGetStatusData, ThrowOnError>) => (options?.client ?? client).get<WalletControllerGetStatusResponses, unknown, ThrowOnError>({ url: '/wallet/status', ...options });
+
+/**
+ * Set a wallet as active
+ */
+export const walletControllerSetActive = <ThrowOnError extends boolean = false>(options: Options<WalletControllerSetActiveData, ThrowOnError>) => (options.client ?? client).put<WalletControllerSetActiveResponses, unknown, ThrowOnError>({
+    url: '/wallet/active',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete a wallet
+ */
+export const walletControllerDeleteWallet = <ThrowOnError extends boolean = false>(options: Options<WalletControllerDeleteWalletData, ThrowOnError>) => (options.client ?? client).delete<WalletControllerDeleteWalletResponses, unknown, ThrowOnError>({
+    url: '/wallet/delete',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});

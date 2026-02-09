@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Put } from '
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AddWalletBodyDto } from './dto/add-wallet-body.dto';
 import { ChangePasswordBodyDto } from './dto/change-password-body.dto';
+import { CheckPasswordBodyDto } from './dto/check-password-body.dto';
 import { DeleteWalletDto } from './dto/delete-wallet.dto';
 import { SetActiveWalletDto } from './dto/set-active-wallet.dto';
 import { SetupPasswordBodyDto } from './dto/setup-password-body.dto';
@@ -35,6 +36,13 @@ export class WalletController {
 	@ApiOperation({ summary: 'Lock all wallets' })
 	lock() {
 		this.walletService.lock();
+	}
+
+	@Post('check-password')
+	@HttpCode(HttpStatus.OK)
+	@ApiOperation({ summary: 'Check if the provided password is correct' })
+	async checkPassword(@Body() { password }: CheckPasswordBodyDto) {
+		await this.walletService.checkPassword(password);
 	}
 
 	@Put('password')
