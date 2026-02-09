@@ -99,6 +99,10 @@ export type UnlockBodyDto = {
     password: string;
 };
 
+export type CheckPasswordBodyDto = {
+    password: string;
+};
+
 export type ChangePasswordBodyDto = {
     oldPassword: string;
     newPassword: string;
@@ -248,6 +252,17 @@ export type WalletControllerLockData = {
 };
 
 export type WalletControllerLockResponses = {
+    200: unknown;
+};
+
+export type WalletControllerCheckPasswordData = {
+    body: CheckPasswordBodyDto;
+    path?: never;
+    query?: never;
+    url: '/wallet/check-password';
+};
+
+export type WalletControllerCheckPasswordResponses = {
     200: unknown;
 };
 

@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { appControllerGetHello, configControllerGetChains, configControllerGetConfig, configControllerResetConfig, configControllerUpdateBlockchainConfig, configControllerUpdateLlmConfig, type Options, walletControllerAddWallet, walletControllerChangePassword, walletControllerDeleteWallet, walletControllerGetStatus, walletControllerListWallets, walletControllerLock, walletControllerSetActive, walletControllerSetup, walletControllerUnlock } from '../sdk.gen';
-import type { AppControllerGetHelloData, AppControllerGetHelloResponse, ConfigControllerGetChainsData, ConfigControllerGetChainsResponse, ConfigControllerGetConfigData, ConfigControllerGetConfigResponse, ConfigControllerResetConfigData, ConfigControllerResetConfigResponse, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponse, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponse, WalletControllerAddWalletData, WalletControllerAddWalletResponse, WalletControllerChangePasswordData, WalletControllerDeleteWalletData, WalletControllerGetStatusData, WalletControllerGetStatusResponse, WalletControllerListWalletsData, WalletControllerListWalletsResponse, WalletControllerLockData, WalletControllerSetActiveData, WalletControllerSetupData, WalletControllerUnlockData } from '../types.gen';
+import { appControllerGetHello, configControllerGetChains, configControllerGetConfig, configControllerResetConfig, configControllerUpdateBlockchainConfig, configControllerUpdateLlmConfig, type Options, walletControllerAddWallet, walletControllerChangePassword, walletControllerCheckPassword, walletControllerDeleteWallet, walletControllerGetStatus, walletControllerListWallets, walletControllerLock, walletControllerSetActive, walletControllerSetup, walletControllerUnlock } from '../sdk.gen';
+import type { AppControllerGetHelloData, AppControllerGetHelloResponse, ConfigControllerGetChainsData, ConfigControllerGetChainsResponse, ConfigControllerGetConfigData, ConfigControllerGetConfigResponse, ConfigControllerResetConfigData, ConfigControllerResetConfigResponse, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponse, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponse, WalletControllerAddWalletData, WalletControllerAddWalletResponse, WalletControllerChangePasswordData, WalletControllerCheckPasswordData, WalletControllerDeleteWalletData, WalletControllerGetStatusData, WalletControllerGetStatusResponse, WalletControllerListWalletsData, WalletControllerListWalletsResponse, WalletControllerLockData, WalletControllerSetActiveData, WalletControllerSetupData, WalletControllerUnlockData } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -182,6 +182,23 @@ export const walletControllerLockMutation = (options?: Partial<Options<WalletCon
     const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<WalletControllerLockData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await walletControllerLock({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Check if the provided password is correct
+ */
+export const walletControllerCheckPasswordMutation = (options?: Partial<Options<WalletControllerCheckPasswordData>>): UseMutationOptions<unknown, DefaultError, Options<WalletControllerCheckPasswordData>> => {
+    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<WalletControllerCheckPasswordData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await walletControllerCheckPassword({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

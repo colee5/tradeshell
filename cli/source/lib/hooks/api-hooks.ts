@@ -7,6 +7,7 @@ import {
 	configControllerUpdateLlmConfigMutation,
 	walletControllerAddWalletMutation,
 	walletControllerChangePasswordMutation,
+	walletControllerCheckPasswordMutation,
 	walletControllerDeleteWalletMutation,
 	walletControllerGetStatusOptions,
 	walletControllerListWalletsOptions,
@@ -119,5 +120,7 @@ export const useWalletSetActive = () => {
 		},
 	});
 };
+
+export const useWalletCheckPassword = () => useMutation(walletControllerCheckPasswordMutation());
 
 export const useWalletChangePassword = () => useMutation(walletControllerChangePasswordMutation());

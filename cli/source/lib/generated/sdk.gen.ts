@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AppControllerGetHelloData, AppControllerGetHelloResponses, ConfigControllerGetChainsData, ConfigControllerGetChainsResponses, ConfigControllerGetConfigData, ConfigControllerGetConfigResponses, ConfigControllerResetConfigData, ConfigControllerResetConfigResponses, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponses, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponses, WalletControllerAddWalletData, WalletControllerAddWalletResponses, WalletControllerChangePasswordData, WalletControllerChangePasswordResponses, WalletControllerDeleteWalletData, WalletControllerDeleteWalletResponses, WalletControllerGetStatusData, WalletControllerGetStatusResponses, WalletControllerListWalletsData, WalletControllerListWalletsResponses, WalletControllerLockData, WalletControllerLockResponses, WalletControllerSetActiveData, WalletControllerSetActiveResponses, WalletControllerSetupData, WalletControllerSetupResponses, WalletControllerUnlockData, WalletControllerUnlockResponses } from './types.gen';
+import type { AppControllerGetHelloData, AppControllerGetHelloResponses, ConfigControllerGetChainsData, ConfigControllerGetChainsResponses, ConfigControllerGetConfigData, ConfigControllerGetConfigResponses, ConfigControllerResetConfigData, ConfigControllerResetConfigResponses, ConfigControllerUpdateBlockchainConfigData, ConfigControllerUpdateBlockchainConfigResponses, ConfigControllerUpdateLlmConfigData, ConfigControllerUpdateLlmConfigResponses, WalletControllerAddWalletData, WalletControllerAddWalletResponses, WalletControllerChangePasswordData, WalletControllerChangePasswordResponses, WalletControllerCheckPasswordData, WalletControllerCheckPasswordResponses, WalletControllerDeleteWalletData, WalletControllerDeleteWalletResponses, WalletControllerGetStatusData, WalletControllerGetStatusResponses, WalletControllerListWalletsData, WalletControllerListWalletsResponses, WalletControllerLockData, WalletControllerLockResponses, WalletControllerSetActiveData, WalletControllerSetActiveResponses, WalletControllerSetupData, WalletControllerSetupResponses, WalletControllerUnlockData, WalletControllerUnlockResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -87,6 +87,18 @@ export const walletControllerUnlock = <ThrowOnError extends boolean = false>(opt
  * Lock all wallets
  */
 export const walletControllerLock = <ThrowOnError extends boolean = false>(options?: Options<WalletControllerLockData, ThrowOnError>) => (options?.client ?? client).post<WalletControllerLockResponses, unknown, ThrowOnError>({ url: '/wallet/lock', ...options });
+
+/**
+ * Check if the provided password is correct
+ */
+export const walletControllerCheckPassword = <ThrowOnError extends boolean = false>(options: Options<WalletControllerCheckPasswordData, ThrowOnError>) => (options.client ?? client).post<WalletControllerCheckPasswordResponses, unknown, ThrowOnError>({
+    url: '/wallet/check-password',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Change the master password

@@ -215,6 +215,31 @@
         ]
       }
     },
+    "/wallet/check-password": {
+      "post": {
+        "operationId": "WalletController_checkPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckPasswordBodyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Check if the provided password is correct",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
     "/wallet/password": {
       "put": {
         "operationId": "WalletController_changePassword",
@@ -543,6 +568,18 @@
         ]
       },
       "UnlockBodyDto": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "example": "mypass"
+          }
+        },
+        "required": [
+          "password"
+        ]
+      },
+      "CheckPasswordBodyDto": {
         "type": "object",
         "properties": {
           "password": {
