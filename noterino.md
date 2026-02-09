@@ -41,11 +41,13 @@ STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
 -- [✓] Config reset command - `/config reset` to return to defaults
 -- [✓] Handle initialPrompt error case
 -- [✓] Handle onboarding error case, it just stops and runs infinitely
+-- [✓] Refactor command autocomplete component
 
 STAGE 3: Private key storing and safety
-[] Private key storage - Use ethers.js encrypted keystore in ~/.tradeshell/keystore/ (password-protected, never plain text) Will be done through the server
+[x] Private key storage - Use encrypted master wallet and support for multiple wallets
+[x] Wallet Service Client implementation
+[] First time user handles all onboarding cases, wallet too
 [] We MUST keep npm packages to the minimum, All cli and api packages must be reviewed
-[] Environment variable support - Allow RPC URLs, API keys to be set via env vars (12-facto r app)
 [] Audit logging - Log all wallet operations (deploys, transactions) to ~/.tradeshell/audit.log
 
 STAGE 4: Agent service, extensible folder structure /tools in the agent module
@@ -72,6 +74,12 @@ STAGE 7: DevOps & Deployment
 [] Health check endpoints - /health endpoint for monitoring
 [] Graceful shutdown - Handle SIGTERM/SIGINT properly (save sessions, close connections)
 [] Logging strategy - Structured logging (JSON) for both CLI and server
+
+MAINTAINCE AND REFACTOR
+[] Find a better structure for CLI components, too bloated
+[] Better help component, make it dynamic
+[] Client error handling standard
+[] Return formatted history entry after all modals
 
 ---
 
