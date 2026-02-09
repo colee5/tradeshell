@@ -8,7 +8,9 @@ import { Header } from './components/header.js';
 
 import { InitialConfigPrompt } from './components/initial-config-prompt.js';
 
+import { Wallet } from './commands/wallet/index.js';
 import { CommandHistory, HistoryItem } from './components/command-history.js';
+import { InitialWalletPrompt } from './components/initial-wallet-prompt.js';
 import { COMMANDS } from './lib/commands.js';
 import { useModal } from './lib/hooks/use-modal.js';
 import { isCommand } from './lib/utils.js';
@@ -39,6 +41,8 @@ export default function Index() {
 				return <Balance />;
 			case COMMANDS.config.name:
 				return <Config args={args} />;
+			case COMMANDS.wallet.name:
+				return <Wallet args={args} />;
 			case COMMANDS.help.name:
 				return <Help />;
 			case COMMANDS.r.name:
@@ -83,6 +87,7 @@ export default function Index() {
 		<Box flexDirection="column">
 			<Header />
 			<InitialConfigPrompt />
+			<InitialWalletPrompt />
 			<CommandHistory history={history} />
 			<CommandInput value={input} onChange={setInput} onSubmit={handleSubmit} />
 			<CommandSuggestions

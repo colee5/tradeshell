@@ -1,4 +1,4 @@
-import { Text } from 'ink';
+import { Newline, Text } from 'ink';
 import React from 'react';
 import { ConfigSubcommands } from '../../lib/commands.js';
 import { ConfigGet } from './get.js';
@@ -35,8 +35,8 @@ export function Config({ args }: Props) {
 	return (
 		<Text color="yellow">
 			Unknown subcommand: {subcommand}
-			{'\n'}
-			Available subcommands: {ConfigSubcommands.GET}, {ConfigSubcommands.RESET}
+			<Newline />
+			Available subcommands: {Object.values(ConfigSubcommands).join(', ')}
 		</Text>
 	);
 }
