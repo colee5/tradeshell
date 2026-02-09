@@ -1,0 +1,38 @@
+import * as fs from 'fs';
+import pino from 'pino';
+import { LOGS_FILE, TRADESHELL_DIR } from '../constants/paths.js';
+
+export type Logger = {
+	log: (message: string) => void;
+	error: (message: string, error?: unknown) => void;
+	warn: (message: string) => void;
+};
+
+fs.mkdirSync(TRADESHELL_DIR, { recursive: true });
+
+const rootLogger = pino(
+	{ timestamp: pino.stdTimeFunctions.isoTime },
+	pino.destination({ dest: LOGS_FILE, append: true, sync: false }),
+);
+
+export function createLogger(context: string): Logger {
+	const child = rootLogger.child({ context });
+
+	return {
+		log: (message: string) => {
+			child.info(message);
+		},
+		error: (message: string, error?: unknown) => {
+			if (error instanceof Error) {
+				child.error({ err: error }, message);
+			} else {
+				child.error(message);
+			}
+		},
+		warn: (message: string) => {
+			child.warn(message);
+		},
+	};
+}
+
+// tail -f ~/.tradeshell/debug.log | bunx pino-pretty
