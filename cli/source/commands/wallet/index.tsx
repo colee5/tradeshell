@@ -1,6 +1,9 @@
 import { Newline, Text } from 'ink';
 import React from 'react';
 import { WalletSubcommands } from '../../lib/commands.js';
+import { WalletList } from './list.js';
+import { WalletLock } from './lock.js';
+import { WalletStatus } from './status.js';
 
 type Props = {
 	args: string[];
@@ -22,37 +25,17 @@ export function Wallet({ args }: Props) {
 		);
 	}
 
-	// if (subcommand === WalletSubcommands.ADD) {
-	// 	return <ConfigGet />;
-	// }
+	if (subcommand === WalletSubcommands.LIST) {
+		return <WalletList />;
+	}
 
-	// if (subcommand === WalletSubcommands.DELETE) {
-	// 	return <ConfigGet />;
-	// }
+	if (subcommand === WalletSubcommands.LOCK) {
+		return <WalletLock />;
+	}
 
-	// if (subcommand === WalletSubcommands.LIST) {
-	// 	return <ConfigGet />;
-	// }
-
-	// if (subcommand === WalletSubcommands.LOCK) {
-	// 	return <ConfigGet />;
-	// }
-
-	// if (subcommand === WalletSubcommands.UNLOCK) {
-	// 	return <ConfigGet />;
-	// }
-
-	// if (subcommand === WalletSubcommands.PASSWORD) {
-	// 	return <ConfigGet />;
-	// }
-
-	// if (subcommand === WalletSubcommands.SETUP) {
-	// 	return <ConfigGet />;
-	// }
-
-	// if (subcommand === WalletSubcommands.STATUS) {
-	// 	return <ConfigGet />;
-	// }
+	if (subcommand === WalletSubcommands.STATUS) {
+		return <WalletStatus />;
+	}
 
 	// if (subcommand === WalletSubcommands.SWITCH) {
 	// 	return <ConfigGet />;
