@@ -83,6 +83,7 @@ MAINTAINCE AND REFACTOR
 [] Client error handling standard
 [] Return formatted history entry after all modals
 [] Refactor type checks and order of operations in root package.json
+[] Tidy up custom pino logger
 [] Linter update
 
 ---
