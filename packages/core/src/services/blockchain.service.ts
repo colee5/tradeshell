@@ -8,6 +8,7 @@ import type { ConfigService } from './config.service.js';
 import type { WalletService } from './wallet.service.js';
 import { createLogger } from './logger.js';
 
+// TODO: Emitt re-initialization event when we change the active wallet
 export class BlockchainService {
 	private readonly logger = createLogger(BlockchainService.name);
 	private publicClient: PublicClient | null = null;
