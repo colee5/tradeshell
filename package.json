@@ -9,7 +9,7 @@
 		"lint": "xo packages/cli/",
 		"format": "prettier --write .",
 		"check-types": "bun run --filter '*' check-types",
-		"build": "bun run --filter '@tradeshell/core' build && bun run --filter '*' build"
+		"build": "bun run --filter '*' build"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^20.3.1",
