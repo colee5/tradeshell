@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import * as fs from 'fs/promises';
-import { CHAIN_BY_ID } from '../constants/chains.js';
+import { CHAIN_BY_ID, type SerializableChain } from '../constants/chains.js';
 import { CONFIG_EVENTS } from '../constants/events.js';
 import { CONFIG_PATH, TRADESHELL_DIR } from '../constants/paths.js';
 import type { BlockchainConfig, Config, LlmConfig } from '../types/config.types.js';
@@ -88,8 +88,15 @@ export class ConfigService {
 		return this.config;
 	}
 
-	getChains() {
-		const chains = Object.values(CHAIN_BY_ID);
+	getChains(): { chains: SerializableChain[] } {
+		const chains = Object.values(CHAIN_BY_ID).map((chain) => ({
+			id: chain.id,
+			name: chain.name,
+			nativeCurrency: chain.nativeCurrency,
+			rpcUrls: chain.rpcUrls,
+			blockExplorers: chain.blockExplorers,
+		}));
+
 		return { chains };
 	}
 }

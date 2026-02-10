@@ -2,6 +2,8 @@ import { arbitrum, base, type Chain, mainnet, sepolia } from 'viem/chains';
 
 export type { Chain } from 'viem/chains';
 
+export type SerializableChain = Pick<Chain, 'id' | 'name' | 'nativeCurrency' | 'rpcUrls' | 'blockExplorers'>;
+
 export enum ChainId {
 	ETH = 1,
 	BASE = 8453,
