@@ -11,7 +11,7 @@ while true; do
 
   # Exit code 42 means user requested refresh
   if [ $EXIT_CODE -eq 42 ]; then
-  break
+  echo ""
   else
     # Any other exit code (including normal exit) stops the loop
     echo ""

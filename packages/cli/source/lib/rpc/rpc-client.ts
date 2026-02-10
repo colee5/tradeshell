@@ -43,3 +43,12 @@ export function call<M extends keyof RpcMethods>(
 		});
 	});
 }
+
+// Cole (proto of changing the transport layer) - swapped HTTP to remote server
+// export function call<M extends keyof RpcMethods>(method, args): Promise<...> {
+//     const res = await fetch('https://api.tradeshell.com/rpc', {
+//         method: 'POST',
+//         body: JSON.stringify({ method, args }),
+//     });
+//     return res.json();
+// }
