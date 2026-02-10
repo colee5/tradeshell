@@ -1,5 +1,5 @@
 import { Box, Text } from 'ink';
-import SelectInput from 'ink-select-input';
+import { SelectList } from '../select-list.js';
 import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
@@ -74,7 +74,7 @@ export function BlockchainOnboarding({ onComplete }: { onComplete: () => void })
 					Choose your blockchain network:
 				</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={chainOptions}
 						onSelect={(item) => {
 							setValue('chainId', item.value as BlockchainConfig['chainId']);
@@ -122,7 +122,7 @@ export function BlockchainOnboarding({ onComplete }: { onComplete: () => void })
 					<Text color="red">{error?.message || 'Could not connect to the server'}</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[
 							{ label: 'Retry', value: 'retry' },
 							{ label: 'Skip', value: 'skip' },

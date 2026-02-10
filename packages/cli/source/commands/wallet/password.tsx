@@ -1,5 +1,5 @@
 import { Box, Text } from 'ink';
-import SelectInput from 'ink-select-input';
+import { SelectList } from '../../components/select-list.js';
 import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useEffect, useState } from 'react';
@@ -120,7 +120,7 @@ export function WalletPassword() {
 					</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'OK', value: 'ok' }]}
 						onSelect={() => {
 							modal.dismiss();
@@ -170,7 +170,7 @@ export function WalletPassword() {
 					Incorrect password.
 				</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[
 							{ label: 'Try again', value: 'retry' },
 							{ label: 'Exit', value: 'exit' },
@@ -276,7 +276,7 @@ export function WalletPassword() {
 					<Text color="red">{error?.message || 'Invalid current password'}</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[
 							{ label: 'Try again', value: 'retry' },
 							{ label: 'Exit', value: 'exit' },

@@ -35,20 +35,6 @@ export function Help() {
 
 			<Box flexDirection="column">
 				<Text bold color="green">
-					{COMMANDS.login.label}
-				</Text>
-				<Text dimColor> Login with your username</Text>
-			</Box>
-
-			<Box flexDirection="column">
-				<Text bold color="green">
-					{COMMANDS.balance.label}
-				</Text>
-				<Text dimColor> Check your account balance</Text>
-			</Box>
-
-			<Box flexDirection="column">
-				<Text bold color="green">
 					{COMMANDS.help.label}
 				</Text>
 				<Text dimColor> Show this help message</Text>

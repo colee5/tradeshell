@@ -16,32 +16,44 @@ export enum WalletSubcommands {
 }
 
 export const COMMANDS = {
-	login: { name: 'login', label: '/login [username]' },
-	balance: { name: 'balance', label: '/balance' },
 	config: {
 		name: 'config',
-		label: 'config',
+		label: '/config',
+		description: 'Manage configuration',
+		subcommands: [
+			{ name: ConfigSubcommands.GET, label: 'get', description: 'Show current config' },
+			{ name: ConfigSubcommands.RESET, label: 'reset', description: 'Reset config to defaults' },
+		],
 	},
 	wallet: {
 		name: 'wallet',
 		label: '/wallet',
+		description: 'Manage wallets',
 		subcommands: [
-			{ name: WalletSubcommands.SETUP, label: 'setup' },
-			{ name: WalletSubcommands.UNLOCK, label: 'unlock' },
-			{ name: WalletSubcommands.LOCK, label: 'lock' },
-			{ name: WalletSubcommands.STATUS, label: 'status' },
-			{ name: WalletSubcommands.ADD, label: 'add' },
-			{ name: WalletSubcommands.LIST, label: 'list' },
-			{ name: WalletSubcommands.DELETE, label: 'delete' },
-			{ name: WalletSubcommands.SWITCH, label: 'switch' },
-			{ name: WalletSubcommands.PASSWORD, label: 'password' },
+			{
+				name: WalletSubcommands.SETUP,
+				label: 'setup',
+				description: 'Create master key & first wallet',
+			},
+			{ name: WalletSubcommands.UNLOCK, label: 'unlock', description: 'Unlock with password' },
+			{ name: WalletSubcommands.LOCK, label: 'lock', description: 'Lock the wallet' },
+			{ name: WalletSubcommands.STATUS, label: 'status', description: 'Show wallet status' },
+			{ name: WalletSubcommands.ADD, label: 'add', description: 'Add a new wallet' },
+			{ name: WalletSubcommands.LIST, label: 'list', description: 'List all wallets' },
+			{ name: WalletSubcommands.DELETE, label: 'delete', description: 'Remove a wallet' },
+			{ name: WalletSubcommands.SWITCH, label: 'switch', description: 'Switch active wallet' },
+			{
+				name: WalletSubcommands.PASSWORD,
+				label: 'password',
+				description: 'Change master password',
+			},
 		],
 	},
-	onboard: { name: 'onboard', label: '/onboard' },
-	help: { name: 'help', label: '/help' },
-	r: { name: 'r', label: '/r (reload)' },
-	reset: { name: 'reset', label: '/reset' },
-	exit: { name: 'exit', label: '/exit' },
+	onboard: { name: 'onboard', label: '/onboard', description: 'Interactive setup wizard' },
+	help: { name: 'help', label: '/help', description: 'Show available commands' },
+	r: { name: 'r', label: '/r (reload)', description: 'Reload services' },
+	reset: { name: 'reset', label: '/reset', description: 'Clear command history' },
+	exit: { name: 'exit', label: '/exit', description: 'Quit the application' },
 } as const;
 
 export const AVAILABLE_COMMANDS = Object.values(COMMANDS);

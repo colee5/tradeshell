@@ -1,5 +1,5 @@
 import { Box, Text } from 'ink';
-import SelectInput from 'ink-select-input';
+import { SelectList } from '../../components/select-list.js';
 import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useEffect, useState } from 'react';
@@ -81,7 +81,7 @@ export function WalletUnlock() {
 					Wallets are already unlocked.
 				</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'OK', value: 'ok' }]}
 						onSelect={() => {
 							modal.dismiss();
@@ -122,7 +122,7 @@ export function WalletUnlock() {
 	}
 
 	if (step === UnlockStep.Complete) {
-		return <SetupComplete message="✓ Wallets unlocked!" />;
+		return <SetupComplete message="✓ Wallets unlocked!" spinnerText="Redirecting you shortly..." />;
 	}
 
 	if (step === UnlockStep.Error) {
@@ -135,7 +135,7 @@ export function WalletUnlock() {
 					<Text color="red">{error?.message || 'Invalid password'}</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[
 							{ label: 'Try again', value: 'retry' },
 							{ label: 'Exit', value: 'exit' },

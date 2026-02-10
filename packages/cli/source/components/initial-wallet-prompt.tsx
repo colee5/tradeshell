@@ -1,6 +1,7 @@
 import { Box, Text } from 'ink';
 import React from 'react';
 import { useGetWalletStatus } from '../lib/hooks/wallet-hooks';
+import { PRIMARY_COLOR } from '../lib/constants/colors';
 
 export function InitialWalletPrompt() {
 	const { data: walletStatus, isLoading, isError } = useGetWalletStatus();
@@ -24,7 +25,7 @@ export function InitialWalletPrompt() {
 				borderStyle="round"
 				borderColor="yellow"
 			>
-				<Text bold color="yellow">
+				<Text bold color={PRIMARY_COLOR}>
 					Wallets are locked
 				</Text>
 				<Box marginTop={1}>

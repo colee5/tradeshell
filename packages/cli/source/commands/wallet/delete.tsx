@@ -1,5 +1,5 @@
 import { Box, Text } from 'ink';
-import SelectInput from 'ink-select-input';
+import { SelectList } from '../../components/select-list.js';
 import Spinner from 'ink-spinner';
 import React, { useState } from 'react';
 import { SetupComplete } from '../../components/onboard/setup-complete.js';
@@ -41,7 +41,7 @@ export function WalletDelete() {
 					{listError instanceof Error ? listError.message : 'Unknown error'}
 				</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
 							modal.dismiss();
@@ -57,7 +57,7 @@ export function WalletDelete() {
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
 				<Text dimColor>No wallets found. Use /wallet add to add one.</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
 							modal.dismiss();
@@ -80,7 +80,7 @@ export function WalletDelete() {
 					Select a wallet to delete:
 				</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={items}
 						onSelect={(item) => {
 							const wallet = walletList.wallets.find((w) => w.address === item.value);
@@ -104,7 +104,7 @@ export function WalletDelete() {
 					<Text dimColor>{selectedAddress}</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[
 							{ label: 'Yes, delete this wallet', value: 'yes' },
 							{ label: 'No, cancel', value: 'no' },
@@ -161,7 +161,7 @@ export function WalletDelete() {
 					<Text color="red">{deleteError?.message || 'Could not connect to the server'}</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
 							modal.dismiss();

@@ -1,5 +1,5 @@
 import { Box, Text } from 'ink';
-import SelectInput from 'ink-select-input';
+import { SelectList } from '../../components/select-list.js';
 import Spinner from 'ink-spinner';
 import React, { useState } from 'react';
 import { SetupComplete } from '../../components/onboard/setup-complete.js';
@@ -39,7 +39,7 @@ export function WalletSwitch() {
 					{listError instanceof Error ? listError.message : 'Unknown error'}
 				</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
 							modal.dismiss();
@@ -55,7 +55,7 @@ export function WalletSwitch() {
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
 				<Text dimColor>No wallets found. Use /wallet add to add one.</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
 							modal.dismiss();
@@ -78,7 +78,7 @@ export function WalletSwitch() {
 					Select a wallet to switch to:
 				</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={items}
 						onSelect={(item) => {
 							const wallet = walletList.wallets.find((w) => w.address === item.value);
@@ -134,7 +134,7 @@ export function WalletSwitch() {
 					<Text color="red">{switchError?.message || 'Could not connect to the server'}</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
 							modal.dismiss();

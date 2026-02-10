@@ -1,5 +1,5 @@
 import { Box, Text } from 'ink';
-import SelectInput from 'ink-select-input';
+import { SelectList } from '../components/select-list.js';
 import Spinner from 'ink-spinner';
 import SyntaxHighlight from 'ink-syntax-highlight';
 import React, { useEffect, useState } from 'react';
@@ -70,7 +70,7 @@ export function Onboard() {
 					</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[
 							{ label: 'Yes, reset and start onboarding', value: 'yes' },
 							{ label: 'No, keep current configuration', value: 'no' },
@@ -113,7 +113,7 @@ export function Onboard() {
 					Would you like to set up blockchain configuration?
 				</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[
 							{ label: 'Yes, set up blockchain', value: 'yes' },
 							{ label: 'No, skip for now', value: 'no' },

@@ -1,5 +1,5 @@
 import { Box, Text } from 'ink';
-import SelectInput from 'ink-select-input';
+import { SelectList } from '../../components/select-list.js';
 import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
@@ -99,7 +99,7 @@ export function WalletSetup() {
 				)}
 
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
 							modal.dismiss();
@@ -192,7 +192,7 @@ export function WalletSetup() {
 					<Text color="red">{error?.message || 'Could not connect to the server'}</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
 							modal.dismiss();

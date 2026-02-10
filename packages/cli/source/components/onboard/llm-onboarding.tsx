@@ -1,5 +1,5 @@
 import { Box, Text } from 'ink';
-import SelectInput from 'ink-select-input';
+import { SelectList } from '../select-list.js';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -74,7 +74,7 @@ export function LlmOnboarding({ onComplete }: { onComplete: () => void }) {
 					Choose your LLM provider:
 				</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[
 							{ label: 'Cloud (Anthropic, OpenAI, etc.)', value: 'cloud' },
 							{ label: 'Self-hosted', value: 'self-hosted' },
@@ -105,7 +105,7 @@ export function LlmOnboarding({ onComplete }: { onComplete: () => void }) {
 					Choose your cloud provider:
 				</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={providerItems}
 						onSelect={(item) => {
 							setValue('provider', item.value as LlmProvider);
@@ -131,7 +131,7 @@ export function LlmOnboarding({ onComplete }: { onComplete: () => void }) {
 					Choose your model:
 				</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={modelItems}
 						onSelect={(item) => {
 							setValue('model', item.value);
@@ -214,7 +214,7 @@ export function LlmOnboarding({ onComplete }: { onComplete: () => void }) {
 				</Box>
 
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
 							onComplete();

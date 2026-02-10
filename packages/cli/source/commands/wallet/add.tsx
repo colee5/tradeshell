@@ -1,5 +1,5 @@
 import { Box, Text } from 'ink';
-import SelectInput from 'ink-select-input';
+import { SelectList } from '../../components/select-list.js';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -128,7 +128,7 @@ export function WalletAdd() {
 					<Text color="red">{error?.message || 'Could not connect to the server'}</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
 							modal.dismiss();
