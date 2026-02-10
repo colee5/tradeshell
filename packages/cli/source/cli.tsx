@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { render } from 'ink';
 import React from 'react';
 import { DialogManager } from './components/dialog-manager.js';
