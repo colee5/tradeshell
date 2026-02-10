@@ -49,7 +49,6 @@ STAGE 3: Private key storing and safety
 [x] Wallet Service Client implementation
 [] Switch logic should emmit the unlocked event on the blockchainService and load that wallet into memory
 [] First time user handles all onboarding cases, wallet too
-[] We MUST keep npm packages to the minimum, All cli and api packages must be reviewed
 [] Audit logging - Log all wallet operations (deploys, transactions) to ~/.tradeshell/audit.log
 
 STAGE 4: Agent service, extensible folder structure /tools in the agent module
@@ -84,6 +83,7 @@ MAINTAINCE AND REFACTOR
 [] Return formatted history entry after all modals
 [] Refactor type checks and order of operations in root package.json
 [] Tidy up custom pino logger
+[] Find a good validation layer for inputs between client/workers
 [] Linter update
 
 ---
