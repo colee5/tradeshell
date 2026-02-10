@@ -45,6 +45,8 @@ export class WalletService {
 	private wallets: Map<string, StoredWallet> = new Map();
 	private walletsFileExists = false;
 
+	// todo: Make tradeshell dir and wallets file be dynamically injectable, so
+	// we can run tests on temporary files and generate on the go
 	constructor(private readonly emitter: EventEmitter) {
 		this.loadWallets();
 	}
