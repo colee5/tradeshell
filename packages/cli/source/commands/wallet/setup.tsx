@@ -8,6 +8,9 @@ import { SetupComplete } from '../../components/onboard/setup-complete.js';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
 import { useGetWalletStatus, useWalletSetup } from '../../lib/hooks/wallet-hooks.js';
+import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
+import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
+import { useSetAtom } from 'jotai';
 import { WalletAdd } from './add.js';
 
 type SetupFormValues = {
@@ -42,6 +45,7 @@ export function WalletSetup() {
 
 	const { data: walletStatus, isLoading } = useGetWalletStatus();
 	const { mutate: setup, error } = useWalletSetup();
+	const pushCommandLog = useSetAtom(pushCommandLogAtom);
 
 	if (!hasCheckedStatus && !isLoading) {
 		setHasCheckedStatus(true);
@@ -60,6 +64,10 @@ export function WalletSetup() {
 				onSuccess: () => {
 					setStep(SetupStep.Complete);
 					setTimeout(() => {
+						pushCommandLog({
+							input: `${COMMANDS.wallet.label} ${WalletSubcommands.SETUP}`,
+							output: <Text color="green">Wallet Setup Complete</Text>,
+						});
 						modal.dismiss();
 						modal.show(<WalletAdd />, { showHeader: false });
 					}, SETUP_COMPLETE_TIMEOUT_MS);

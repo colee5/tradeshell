@@ -6,6 +6,9 @@ import { SetupComplete } from '../../components/onboard/setup-complete.js';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 import { useGetWalletList, useWalletDelete } from '../../lib/hooks/wallet-hooks.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
+import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
+import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
+import { useSetAtom } from 'jotai';
 
 enum DeleteStep {
 	Select = 'select',
@@ -23,6 +26,7 @@ export function WalletDelete() {
 	const { data: walletList, error: listError, isLoading } = useGetWalletList();
 	const { mutate: deleteWallet, error: deleteError } = useWalletDelete();
 	const modal = useModal();
+	const pushCommandLog = useSetAtom(pushCommandLogAtom);
 
 	if (isLoading) {
 		return (
@@ -69,10 +73,13 @@ export function WalletDelete() {
 	}
 
 	if (step === DeleteStep.Select) {
-		const items = walletList.wallets.map((wallet) => ({
-			label: `${wallet.name} ${wallet.address}${wallet.isActive ? ' (active)' : ''}`,
-			value: wallet.address,
-		}));
+		const items = [
+			...walletList.wallets.map((wallet) => ({
+				label: `${wallet.name} ${wallet.address}${wallet.isActive ? ' (active)' : ''}`,
+				value: wallet.address,
+			})),
+			{ label: 'Cancel', value: 'cancel' },
+		];
 
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
@@ -83,6 +90,11 @@ export function WalletDelete() {
 					<SelectList
 						items={items}
 						onSelect={(item) => {
+							if (item.value === 'cancel') {
+								modal.dismiss();
+								return;
+							}
+
 							const wallet = walletList.wallets.find((w) => w.address === item.value);
 							setSelectedAddress(item.value);
 							setSelectedName(wallet?.name || '');
@@ -122,6 +134,12 @@ export function WalletDelete() {
 									onSuccess: () => {
 										setStep(DeleteStep.Complete);
 										setTimeout(() => {
+											pushCommandLog({
+												input: `${COMMANDS.wallet.label} ${WalletSubcommands.DELETE}`,
+												output: (
+													<Text color="green">Wallet &quot;{selectedName}&quot; Deleted</Text>
+												),
+											});
 											modal.dismiss();
 										}, SETUP_COMPLETE_TIMEOUT_MS);
 									},

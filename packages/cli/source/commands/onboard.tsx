@@ -11,6 +11,9 @@ import { useModal } from '../lib/hooks/use-modal.js';
 import { useGetWalletStatus } from '../lib/hooks/wallet-hooks.js';
 import { hasValidConfig } from '../lib/utils.js';
 import { WalletSetup } from './wallet/setup.js';
+import { COMMANDS } from '../lib/commands.js';
+import { pushCommandLogAtom } from '../lib/store/command-log.atom.js';
+import { useSetAtom } from 'jotai';
 
 enum OnboardStep {
 	CheckingConfig = 'checking',
@@ -28,6 +31,7 @@ export function Onboard() {
 	const { data: config, isLoading } = useGetConfig();
 	const { data: walletStatus } = useGetWalletStatus();
 	const { mutate: resetConfig, isPending: isResetting } = useResetConfig();
+	const pushCommandLog = useSetAtom(pushCommandLogAtom);
 
 	useEffect(() => {
 		if (!isLoading) {
@@ -44,11 +48,19 @@ export function Onboard() {
 		setStep(OnboardStep.AskBlockchain);
 	};
 
+	const handleOnboardingDone = () => {
+		pushCommandLog({
+			input: COMMANDS.onboard.label,
+			output: <Text color="green">Onboarding Complete</Text>,
+		});
+		modal.dismiss();
+	};
+
 	const handleBlockchainComplete = () => {
 		const hasWallets = Boolean(walletStatus?.walletCount);
 
 		if (hasWallets || walletStatus?.isSetup) {
-			modal.dismiss();
+			handleOnboardingDone();
 		} else {
 			setStep(OnboardStep.WalletOnboarding);
 		}
@@ -142,7 +154,7 @@ export function Onboard() {
 							if (item.value === 'yes') {
 								setStep(OnboardStep.BlockchainOnboarding);
 							} else {
-								modal.dismiss();
+								handleOnboardingDone();
 							}
 						}}
 					/>

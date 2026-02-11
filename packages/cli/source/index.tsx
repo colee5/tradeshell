@@ -131,13 +131,13 @@ export default function Index() {
 	return (
 		<Box flexDirection="column">
 			<Header />
-			<InitialOnboardingPrompt />
 			<CommandHistory />
 			<CommandInput
 				value={input}
 				onChange={setInput}
 				onSubmit={showSuggestions ? () => {} : handleSubmit}
 			/>
+			{!showSuggestions && <InitialOnboardingPrompt />}
 			{showSuggestions && (
 				<CommandSuggestions
 					input={input}

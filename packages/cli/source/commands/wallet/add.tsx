@@ -7,6 +7,9 @@ import { SetupComplete } from '../../components/onboard/setup-complete.js';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
 import { useWalletAdd } from '../../lib/hooks/wallet-hooks.js';
+import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
+import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
+import { useSetAtom } from 'jotai';
 
 type AddWalletFormValues = {
 	name: string;
@@ -36,6 +39,7 @@ export function WalletAdd() {
 
 	const { mutate: addWallet, error } = useWalletAdd();
 	const modal = useModal();
+	const pushCommandLog = useSetAtom(pushCommandLogAtom);
 
 	const handleSubmit = () => {
 		const values = getValues();
@@ -47,6 +51,10 @@ export function WalletAdd() {
 				onSuccess: () => {
 					setStep(AddStep.Complete);
 					setTimeout(() => {
+						pushCommandLog({
+							input: `${COMMANDS.wallet.label} ${WalletSubcommands.ADD}`,
+							output: <Text color="green">Wallet &quot;{values.name}&quot; Added</Text>,
+						});
 						modal.dismiss();
 					}, SETUP_COMPLETE_TIMEOUT_MS);
 				},

@@ -6,6 +6,9 @@ import { SetupComplete } from '../../components/onboard/setup-complete.js';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
 import { useGetWalletList, useWalletSetActive } from '../../lib/hooks/wallet-hooks.js';
+import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
+import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
+import { useSetAtom } from 'jotai';
 
 enum SwitchStep {
 	Select = 'select',
@@ -21,6 +24,7 @@ export function WalletSwitch() {
 	const { data: walletList, error: listError, isLoading } = useGetWalletList();
 	const { mutate: setActive, error: switchError } = useWalletSetActive();
 	const modal = useModal();
+	const pushCommandLog = useSetAtom(pushCommandLogAtom);
 
 	if (isLoading) {
 		return (
@@ -95,6 +99,10 @@ export function WalletSwitch() {
 									onSuccess: () => {
 										setStep(SwitchStep.Complete);
 										setTimeout(() => {
+											pushCommandLog({
+												input: `${COMMANDS.wallet.label} ${WalletSubcommands.SWITCH}`,
+												output: <Text color="green">Switched to &quot;{wallet?.name}&quot;</Text>,
+											});
 											modal.dismiss();
 										}, SETUP_COMPLETE_TIMEOUT_MS);
 									},
