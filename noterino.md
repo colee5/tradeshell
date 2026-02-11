@@ -67,23 +67,24 @@ STAGE 5: Wallet Operations
 
 STAGE 6: Testing & Quality
 [] Unit tests - For critical services (wallet, config, agent tools)
+[] Dev mode which spins up 3 terminals, from each /packages + the bun run logs
 [] Integration tests - Test CLI ↔ Server communication
 [] E2E tests - Test full agent flows (deploy wallet from start to finish)
 [] Security audit - Review all crypto operations, key storage, RPC interactions
 
 STAGE 7: DevOps & Deployment
+[x] Logging strategy - Structured logging (JSON) for both CLI and server
 [] Docker compose setup - With network isolation (firewalled subnet)
 [] Health check endpoints - /health endpoint for monitoring
 [] Graceful shutdown - Handle SIGTERM/SIGINT properly (save sessions, close connections)
-[] Logging strategy - Structured logging (JSON) for both CLI and server
 
 MAINTAINCE AND REFACTOR
 [x] Return formatted history entry after all modals w/ pushCommandLog
+[x] Tidy up custom pino logger
 [] Find a better structure for CLI components, too bloated
 [] Better help component, make it dynamic
 [] Client error handling standard
 [] Refactor type checks and order of operations in root package.json
-[] Tidy up custom pino logger
 [] Find a good validation layer for inputs between client/workers
 [] Linter update
 

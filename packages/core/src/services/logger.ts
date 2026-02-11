@@ -10,9 +10,20 @@ export type Logger = {
 
 fs.mkdirSync(TRADESHELL_DIR, { recursive: true });
 
+const ROTATION_SIZE = '5m'; // 5MB
+
 const rootLogger = pino(
-	{ timestamp: pino.stdTimeFunctions.isoTime },
-	pino.destination({ dest: LOGS_FILE, append: true, sync: false }),
+	{
+		timestamp: pino.stdTimeFunctions.isoTime,
+	},
+	pino.transport({
+		target: 'pino-roll',
+		options: {
+			file: LOGS_FILE,
+			size: ROTATION_SIZE,
+			mkdir: true,
+		},
+	}),
 );
 
 export function createLogger(context: string): Logger {
