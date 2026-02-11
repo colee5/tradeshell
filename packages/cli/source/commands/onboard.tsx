@@ -1,14 +1,16 @@
 import { Box, Text } from 'ink';
-import { SelectList } from '../components/select-list.js';
 import Spinner from 'ink-spinner';
 import SyntaxHighlight from 'ink-syntax-highlight';
 import React, { useEffect, useState } from 'react';
+import { SelectList } from '../components/select-list.js';
 
 import { BlockchainOnboarding } from '../components/onboard/blockchain-onboarding.js';
 import { LlmOnboarding } from '../components/onboard/llm-onboarding.js';
 import { useGetConfig, useResetConfig } from '../lib/hooks/config-hooks.js';
 import { useModal } from '../lib/hooks/use-modal.js';
+import { useGetWalletStatus } from '../lib/hooks/wallet-hooks.js';
 import { hasValidConfig } from '../lib/utils.js';
+import { WalletSetup } from './wallet/setup.js';
 
 enum OnboardStep {
 	CheckingConfig = 'checking',
@@ -16,34 +18,50 @@ enum OnboardStep {
 	Resetting = 'resetting',
 	LlmOnboarding = 'llm-onboarding',
 	AskBlockchain = 'ask-blockchain',
+	WalletOnboarding = 'wallet-onboarding',
 	BlockchainOnboarding = 'blockchain-onboarding',
 }
 
 export function Onboard() {
-	const [step, setStep] = useState<OnboardStep>(OnboardStep.CheckingConfig);
-	const [hasCheckedInitialConfig, setHasCheckedInitialConfig] = useState(false);
-	const { data: config, isLoading } = useGetConfig();
-	const { mutate: resetConfig, isPending: isResetting } = useResetConfig();
 	const modal = useModal();
+	const [step, setStep] = useState<OnboardStep>(OnboardStep.CheckingConfig);
+	const { data: config, isLoading } = useGetConfig();
+	const { data: walletStatus } = useGetWalletStatus();
+	const { mutate: resetConfig, isPending: isResetting } = useResetConfig();
 
-	// Check if config exists and is valid
 	useEffect(() => {
-		if (!isLoading && !hasCheckedInitialConfig) {
-			setHasCheckedInitialConfig(true);
+		if (!isLoading) {
 			if (hasValidConfig(config)) {
 				setStep(OnboardStep.ShowConfirmation);
 			} else {
 				setStep(OnboardStep.LlmOnboarding);
 			}
 		}
-	}, [isLoading, config, hasCheckedInitialConfig]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isLoading]);
 
 	const handleLlmComplete = () => {
 		setStep(OnboardStep.AskBlockchain);
 	};
 
 	const handleBlockchainComplete = () => {
-		modal.dismiss();
+		const hasWallets = Boolean(walletStatus?.walletCount);
+
+		if (hasWallets || walletStatus?.isSetup) {
+			modal.dismiss();
+		} else {
+			setStep(OnboardStep.WalletOnboarding);
+		}
+	};
+
+	const handleResetConfig = () => {
+		setStep(OnboardStep.Resetting);
+
+		resetConfig(undefined, {
+			onSuccess: () => {
+				setStep(OnboardStep.LlmOnboarding);
+			},
+		});
 	};
 
 	if (isLoading || step === OnboardStep.CheckingConfig) {
@@ -61,14 +79,17 @@ export function Onboard() {
 				<Text bold color="yellow">
 					You already have a configuration:
 				</Text>
+
 				<Box marginTop={1}>
 					<SyntaxHighlight code={JSON.stringify({ ...config }, null, 2)} language="json" />
 				</Box>
+
 				<Box marginTop={1}>
 					<Text bold color="cyan">
 						Do you want to reset and onboard again?
 					</Text>
 				</Box>
+
 				<Box marginTop={1}>
 					<SelectList
 						items={[
@@ -77,12 +98,7 @@ export function Onboard() {
 						]}
 						onSelect={(item) => {
 							if (item.value === 'yes') {
-								setStep(OnboardStep.Resetting);
-								resetConfig(undefined, {
-									onSuccess: () => {
-										setStep(OnboardStep.LlmOnboarding);
-									},
-								});
+								handleResetConfig();
 							} else {
 								modal.dismiss();
 							}
@@ -104,6 +120,10 @@ export function Onboard() {
 
 	if (step === OnboardStep.LlmOnboarding) {
 		return <LlmOnboarding onComplete={handleLlmComplete} />;
+	}
+
+	if (step === OnboardStep.WalletOnboarding) {
+		return <WalletSetup />;
 	}
 
 	if (step === OnboardStep.AskBlockchain) {

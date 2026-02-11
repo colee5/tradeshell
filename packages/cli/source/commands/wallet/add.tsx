@@ -40,6 +40,7 @@ export function WalletAdd() {
 	const handleSubmit = () => {
 		const values = getValues();
 		setStep(AddStep.Submitting);
+
 		addWallet(
 			{ name: values.name, privateKey: values.privateKey },
 			{

@@ -26,6 +26,7 @@ enum SetupStep {
 }
 
 export function WalletSetup() {
+	const modal = useModal();
 	const [step, setStep] = useState<SetupStep>(SetupStep.CheckingStatus);
 	const [hasCheckedStatus, setHasCheckedStatus] = useState(false);
 
@@ -41,7 +42,6 @@ export function WalletSetup() {
 
 	const { data: walletStatus, isLoading } = useGetWalletStatus();
 	const { mutate: setup, error } = useWalletSetup();
-	const modal = useModal();
 
 	if (!hasCheckedStatus && !isLoading) {
 		setHasCheckedStatus(true);
@@ -61,7 +61,7 @@ export function WalletSetup() {
 					setStep(SetupStep.Complete);
 					setTimeout(() => {
 						modal.dismiss();
-						modal.show(<WalletAdd />);
+						modal.show(<WalletAdd />, { showHeader: false });
 					}, SETUP_COMPLETE_TIMEOUT_MS);
 				},
 				onError: () => {
@@ -86,6 +86,7 @@ export function WalletSetup() {
 				<Text bold color="yellow">
 					Wallet is already set up.
 				</Text>
+
 				{!walletStatus?.isUnlocked && (
 					<Box marginTop={1}>
 						<Text dimColor>

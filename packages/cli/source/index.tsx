@@ -3,12 +3,6 @@ import { useSetAtom } from 'jotai';
 import React, { useState } from 'react';
 
 import { Chat, Config, Help, Onboard, Reload } from './commands/index.js';
-import { CommandInput } from './components/command-input.js';
-import { CommandSuggestions } from './components/command-suggestions.js';
-import { Header } from './components/header.js';
-
-import { InitialConfigPrompt } from './components/initial-config-prompt.js';
-
 import { WalletAdd } from './commands/wallet/add.js';
 import { WalletDelete } from './commands/wallet/delete.js';
 import { Wallet } from './commands/wallet/index.js';
@@ -17,7 +11,10 @@ import { WalletSetup } from './commands/wallet/setup.js';
 import { WalletSwitch } from './commands/wallet/switch.js';
 import { WalletUnlock } from './commands/wallet/unlock.js';
 import { CommandHistory } from './components/command-history.js';
-import { InitialWalletPrompt } from './components/initial-wallet-prompt.js';
+import { CommandInput } from './components/command-input.js';
+import { CommandSuggestions } from './components/command-suggestions.js';
+import { Header } from './components/header.js';
+import { InitialOnboardingPrompt } from './components/initial-onboarding-prompt.js';
 import { COMMANDS, WalletSubcommands } from './lib/commands.js';
 import { useModal } from './lib/hooks/use-modal.js';
 import { commandLogAtom, pushCommandLogAtom } from './lib/store/command-log.atom.js';
@@ -134,8 +131,7 @@ export default function Index() {
 	return (
 		<Box flexDirection="column">
 			<Header />
-			<InitialConfigPrompt />
-			<InitialWalletPrompt />
+			<InitialOnboardingPrompt />
 			<CommandHistory />
 			<CommandInput
 				value={input}
