@@ -23,6 +23,7 @@ export class BlockchainService {
 		// Wire up event listeners
 		this.emitter.on(CONFIG_EVENTS.BLOCKCHAIN_UPDATED, () => this.handleBlockchainConfigUpdated());
 		this.emitter.on(WALLET_EVENTS.UNLOCKED, () => this.handleWalletUnlocked());
+		this.emitter.on(WALLET_EVENTS.SWITCHED, () => this.handleWalletSwitched());
 		this.emitter.on(WALLET_EVENTS.LOCKED, () => this.handleWalletLocked());
 	}
 
@@ -90,6 +91,7 @@ export class BlockchainService {
 		}
 
 		const account = this.walletService.getActiveAccount();
+
 		if (!account) {
 			throw new Error('No wallet unlocked');
 		}
@@ -125,6 +127,18 @@ export class BlockchainService {
 
 	private handleWalletUnlocked() {
 		this.logger.log('Wallet unlocked, initializing wallet client...');
+
+		if (this.isInitialized()) {
+			try {
+				this.initializeWalletClient();
+			} catch (error) {
+				this.logger.error('Failed to initialize wallet client', error);
+			}
+		}
+	}
+
+	private handleWalletSwitched() {
+		this.logger.log('Active wallet switched, reinitializing wallet client...');
 
 		if (this.isInitialized()) {
 			try {
