@@ -34,7 +34,8 @@ STAGE 3: Private key storing and safety
 [x] First time user handles all onboarding cases, wallet too
 [x] Handle wallet AND blockchain/llm config being missing
 [x] Audit logging - Log all wallet operations (deploys, transactions) to ~/.tradeshell/audit.log
-[x] wallet /add command on the client should be guarded if wallet is locked.
+
+# [x] wallet /add command on the client should be guarded if wallet is locked.
 
 STAGE 4: Agent service, extensible folder structure /tools in the agent module
 [] Find a toolcall structure which the LLM can prompt user to confirm/select etc - ZOD validated
