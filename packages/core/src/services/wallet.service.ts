@@ -270,7 +270,7 @@ export class WalletService {
 			await this.saveWalletsFile(file.masterKeyData);
 		}
 
-		this.emitter.emit(WALLET_EVENTS.UNLOCKED);
+		this.emitter.emit(WALLET_EVENTS.SWITCHED);
 		this.logger.log(`Active wallet set: ${address}`);
 	}
 

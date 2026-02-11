@@ -3,6 +3,8 @@ import TextInput from 'ink-text-input';
 import React from 'react';
 import { useGetWalletStatus } from '../lib/hooks/wallet-hooks';
 import { truncateAddress } from '../lib/utils';
+import figureSet from 'figures';
+import { BORDER_COLOR } from '../lib/constants/colors';
 
 type Props = {
 	value: string;
@@ -15,20 +17,21 @@ export function CommandInput({ value, onChange, onSubmit }: Props) {
 
 	return (
 		<Box flexDirection="column">
-			<Text color="#404040">{'─'.repeat(process.stdout.columns || 80)}</Text>
+			<Text color={BORDER_COLOR}>{'─'.repeat(process.stdout.columns || 80)}</Text>
 			<Box paddingX={1}>
 				{isLoading ? (
 					<Text color="gray">... </Text>
 				) : walletStatus?.activeName && walletStatus.activeAddress ? (
 					<Text color="red">
-						{walletStatus.activeName}({truncateAddress(walletStatus.activeAddress, 3)}) ❯{' '}
+						{walletStatus.activeName}({truncateAddress(walletStatus.activeAddress, 3)}){' '}
+						{figureSet.pointer}{' '}
 					</Text>
 				) : (
-					<Text color="green">❯ </Text>
+					<Text color="green">{figureSet.pointer} </Text>
 				)}
 				<TextInput value={value} onChange={onChange} onSubmit={onSubmit} />
 			</Box>
-			<Text color="#404040">{'─'.repeat(process.stdout.columns || 80)}</Text>
+			<Text color={BORDER_COLOR}>{'─'.repeat(process.stdout.columns || 80)}</Text>
 		</Box>
 	);
 }

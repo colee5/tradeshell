@@ -1,5 +1,5 @@
 import { Box, Text } from 'ink';
-import SelectInput from 'ink-select-input';
+import { SelectList } from '../../components/select-list.js';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -7,6 +7,9 @@ import { SetupComplete } from '../../components/onboard/setup-complete.js';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
 import { useWalletAdd } from '../../lib/hooks/wallet-hooks.js';
+import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
+import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
+import { useSetAtom } from 'jotai';
 
 type AddWalletFormValues = {
 	name: string;
@@ -36,16 +39,22 @@ export function WalletAdd() {
 
 	const { mutate: addWallet, error } = useWalletAdd();
 	const modal = useModal();
+	const pushCommandLog = useSetAtom(pushCommandLogAtom);
 
 	const handleSubmit = () => {
 		const values = getValues();
 		setStep(AddStep.Submitting);
+
 		addWallet(
 			{ name: values.name, privateKey: values.privateKey },
 			{
 				onSuccess: () => {
 					setStep(AddStep.Complete);
 					setTimeout(() => {
+						pushCommandLog({
+							input: `${COMMANDS.wallet.label} ${WalletSubcommands.ADD}`,
+							output: <Text color="green">Wallet &quot;{values.name}&quot; Added</Text>,
+						});
 						modal.dismiss();
 					}, SETUP_COMPLETE_TIMEOUT_MS);
 				},
@@ -128,7 +137,7 @@ export function WalletAdd() {
 					<Text color="red">{error?.message || 'Could not connect to the server'}</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
 							modal.dismiss();

@@ -2,13 +2,7 @@ import { Box, useApp } from 'ink';
 import { useSetAtom } from 'jotai';
 import React, { useState } from 'react';
 
-import { Balance, Chat, Config, Help, Login, Onboard, Reload } from './commands/index.js';
-import { CommandInput } from './components/command-input.js';
-import { CommandSuggestions } from './components/command-suggestions.js';
-import { Header } from './components/header.js';
-
-import { InitialConfigPrompt } from './components/initial-config-prompt.js';
-
+import { Chat, Config, Help, Onboard, Reload } from './commands/index.js';
 import { WalletAdd } from './commands/wallet/add.js';
 import { WalletDelete } from './commands/wallet/delete.js';
 import { Wallet } from './commands/wallet/index.js';
@@ -17,7 +11,10 @@ import { WalletSetup } from './commands/wallet/setup.js';
 import { WalletSwitch } from './commands/wallet/switch.js';
 import { WalletUnlock } from './commands/wallet/unlock.js';
 import { CommandHistory } from './components/command-history.js';
-import { InitialWalletPrompt } from './components/initial-wallet-prompt.js';
+import { CommandInput } from './components/command-input.js';
+import { CommandSuggestions } from './components/command-suggestions.js';
+import { Header } from './components/header.js';
+import { InitialOnboardingPrompt } from './components/initial-onboarding-prompt.js';
 import { COMMANDS, WalletSubcommands } from './lib/commands.js';
 import { useModal } from './lib/hooks/use-modal.js';
 import { commandLogAtom, pushCommandLogAtom } from './lib/store/command-log.atom.js';
@@ -30,7 +27,7 @@ export default function Index() {
 	const pushCommandLog = useSetAtom(pushCommandLogAtom);
 	const resetCommandLog = useSetAtom(commandLogAtom);
 
-	const showSuggestions = input === '/';
+	const showSuggestions = input.startsWith('/');
 
 	const processCommand = (command: string) => {
 		const parts = command.split(' ');
@@ -44,10 +41,6 @@ export default function Index() {
 		}
 
 		switch (cmd) {
-			case COMMANDS.login.name:
-				return <Login args={args} />;
-			case COMMANDS.balance.name:
-				return <Balance />;
 			case COMMANDS.config.name:
 				return <Config args={args} />;
 			case COMMANDS.wallet.name:
@@ -138,17 +131,22 @@ export default function Index() {
 	return (
 		<Box flexDirection="column">
 			<Header />
-			<InitialConfigPrompt />
-			<InitialWalletPrompt />
 			<CommandHistory />
-			<CommandInput value={input} onChange={setInput} onSubmit={handleSubmit} />
-			<CommandSuggestions
-				show={showSuggestions}
-				onSelect={(command) => {
-					setInput(command);
-					handleSubmit(command);
-				}}
+			<CommandInput
+				value={input}
+				onChange={setInput}
+				onSubmit={showSuggestions ? () => {} : handleSubmit}
 			/>
+			{!showSuggestions && <InitialOnboardingPrompt />}
+			{showSuggestions && (
+				<CommandSuggestions
+					input={input}
+					onSelect={(command) => {
+						setInput(command);
+						handleSubmit(command);
+					}}
+				/>
+			)}
 		</Box>
 	);
 }

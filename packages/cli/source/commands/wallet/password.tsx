@@ -1,5 +1,5 @@
 import { Box, Text } from 'ink';
-import SelectInput from 'ink-select-input';
+import { SelectList } from '../../components/select-list.js';
 import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useEffect, useState } from 'react';
@@ -12,6 +12,9 @@ import {
 	useWalletChangePassword,
 	useWalletCheckPassword,
 } from '../../lib/hooks/wallet-hooks.js';
+import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
+import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
+import { useSetAtom } from 'jotai';
 
 type PasswordFormValues = {
 	oldPassword: string;
@@ -51,6 +54,7 @@ export function WalletPassword() {
 	const { mutate: checkPassword } = useWalletCheckPassword();
 	const { mutate: changePassword, error } = useWalletChangePassword();
 	const modal = useModal();
+	const pushCommandLog = useSetAtom(pushCommandLogAtom);
 
 	useEffect(() => {
 		if (step === PasswordStep.CheckingStatus && !isLoading) {
@@ -85,6 +89,10 @@ export function WalletPassword() {
 				onSuccess: () => {
 					setStep(PasswordStep.Complete);
 					setTimeout(() => {
+						pushCommandLog({
+							input: `${COMMANDS.wallet.label} ${WalletSubcommands.PASSWORD}`,
+							output: <Text color="green">Password Changed</Text>,
+						});
 						modal.dismiss();
 					}, SETUP_COMPLETE_TIMEOUT_MS);
 				},
@@ -120,7 +128,7 @@ export function WalletPassword() {
 					</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'OK', value: 'ok' }]}
 						onSelect={() => {
 							modal.dismiss();
@@ -170,7 +178,7 @@ export function WalletPassword() {
 					Incorrect password.
 				</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[
 							{ label: 'Try again', value: 'retry' },
 							{ label: 'Exit', value: 'exit' },
@@ -276,7 +284,7 @@ export function WalletPassword() {
 					<Text color="red">{error?.message || 'Invalid current password'}</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[
 							{ label: 'Try again', value: 'retry' },
 							{ label: 'Exit', value: 'exit' },

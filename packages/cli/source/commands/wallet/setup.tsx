@@ -1,5 +1,5 @@
 import { Box, Text } from 'ink';
-import SelectInput from 'ink-select-input';
+import { SelectList } from '../../components/select-list.js';
 import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
@@ -8,6 +8,9 @@ import { SetupComplete } from '../../components/onboard/setup-complete.js';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
 import { useGetWalletStatus, useWalletSetup } from '../../lib/hooks/wallet-hooks.js';
+import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
+import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
+import { useSetAtom } from 'jotai';
 import { WalletAdd } from './add.js';
 
 type SetupFormValues = {
@@ -26,6 +29,7 @@ enum SetupStep {
 }
 
 export function WalletSetup() {
+	const modal = useModal();
 	const [step, setStep] = useState<SetupStep>(SetupStep.CheckingStatus);
 	const [hasCheckedStatus, setHasCheckedStatus] = useState(false);
 
@@ -41,7 +45,7 @@ export function WalletSetup() {
 
 	const { data: walletStatus, isLoading } = useGetWalletStatus();
 	const { mutate: setup, error } = useWalletSetup();
-	const modal = useModal();
+	const pushCommandLog = useSetAtom(pushCommandLogAtom);
 
 	if (!hasCheckedStatus && !isLoading) {
 		setHasCheckedStatus(true);
@@ -60,8 +64,12 @@ export function WalletSetup() {
 				onSuccess: () => {
 					setStep(SetupStep.Complete);
 					setTimeout(() => {
+						pushCommandLog({
+							input: `${COMMANDS.wallet.label} ${WalletSubcommands.SETUP}`,
+							output: <Text color="green">Wallet Setup Complete</Text>,
+						});
 						modal.dismiss();
-						modal.show(<WalletAdd />);
+						modal.show(<WalletAdd />, { showHeader: false });
 					}, SETUP_COMPLETE_TIMEOUT_MS);
 				},
 				onError: () => {
@@ -86,6 +94,7 @@ export function WalletSetup() {
 				<Text bold color="yellow">
 					Wallet is already set up.
 				</Text>
+
 				{!walletStatus?.isUnlocked && (
 					<Box marginTop={1}>
 						<Text dimColor>
@@ -99,7 +108,7 @@ export function WalletSetup() {
 				)}
 
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
 							modal.dismiss();
@@ -192,7 +201,7 @@ export function WalletSetup() {
 					<Text color="red">{error?.message || 'Could not connect to the server'}</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'Exit', value: 'exit' }]}
 						onSelect={() => {
 							modal.dismiss();

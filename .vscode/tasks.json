@@ -1,0 +1,64 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Dev: CLI",
+			"type": "shell",
+			"command": "bun run dev",
+			"options": {
+				"cwd": "${workspaceFolder}/packages/cli"
+			},
+			"isBackground": true,
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			},
+			"problemMatcher": [],
+			"icon": {
+				"id": "terminal",
+				"color": "terminal.ansiMagenta"
+			}
+		},
+		{
+			"label": "Dev: Core",
+			"type": "shell",
+			"command": "bun run dev",
+			"options": {
+				"cwd": "${workspaceFolder}/packages/core"
+			},
+			"isBackground": true,
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			},
+			"problemMatcher": [],
+			"icon": {
+				"id": "package",
+				"color": "terminal.ansiBlue"
+			}
+		},
+		{
+			"label": "Dev: Logs",
+			"type": "shell",
+			"command": "bun run logs",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"isBackground": true,
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			},
+			"problemMatcher": [],
+			"icon": {
+				"id": "output",
+				"color": "terminal.ansiGreen"
+			}
+		},
+		{
+			"label": "Dev: All",
+			"dependsOn": ["Dev: CLI", "Dev: Core", "Dev: Logs"],
+			"problemMatcher": []
+		}
+	]
+}

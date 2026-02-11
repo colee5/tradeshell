@@ -1,6 +1,8 @@
-import { useAtomValue } from 'jotai';
+import figureSet from 'figures';
 import { Box, Text } from 'ink';
+import { useAtomValue } from 'jotai';
 import React from 'react';
+import { GRAY_HIGHLIGHT } from '../lib/constants/colors.js';
 import { commandLogAtom } from '../lib/store/command-log.atom.js';
 
 export function CommandHistory() {
@@ -9,12 +11,13 @@ export function CommandHistory() {
 	return (
 		<Box flexDirection="column">
 			{commandLog.map((entry, index) => (
-				<Box key={index} flexDirection="column">
-					<Text>
-						<Text color="green">&gt; </Text>
-						{entry.input}
+				<Box key={index} marginY={index > 0 ? 0.5 : 0} flexDirection="column">
+					<Text backgroundColor={GRAY_HIGHLIGHT}>
+						{' '}
+						<Text color="green">{figureSet.pointer} </Text>
+						{entry.input}{' '}
 					</Text>
-					{entry.output}
+					<Box marginTop={1}>{entry.output}</Box>
 				</Box>
 			))}
 		</Box>

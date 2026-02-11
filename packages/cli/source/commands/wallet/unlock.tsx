@@ -1,13 +1,15 @@
 import { Box, Text } from 'ink';
-import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { SetupComplete } from '../../components/onboard/setup-complete.js';
-import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
+import { SelectList } from '../../components/select-list.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
 import { useGetWalletStatus, useWalletUnlock } from '../../lib/hooks/wallet-hooks.js';
+import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
+import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
+import { useSetAtom } from 'jotai';
 
 type UnlockFormValues = {
 	password: string;
@@ -24,6 +26,7 @@ enum UnlockStep {
 
 export function WalletUnlock() {
 	const [step, setStep] = useState<UnlockStep>(UnlockStep.CheckingStatus);
+	const pushCommandLog = useSetAtom(pushCommandLogAtom);
 
 	const { watch, setValue } = useForm<UnlockFormValues>({
 		defaultValues: {
@@ -53,10 +56,11 @@ export function WalletUnlock() {
 			{ password },
 			{
 				onSuccess: () => {
-					setStep(UnlockStep.Complete);
-					setTimeout(() => {
-						modal.dismiss();
-					}, SETUP_COMPLETE_TIMEOUT_MS);
+					pushCommandLog({
+						input: `${COMMANDS.wallet.label} ${WalletSubcommands.UNLOCK}`,
+						output: <Text color="green">Wallet Unlocked</Text>,
+					});
+					modal.dismiss();
 				},
 				onError: () => {
 					setStep(UnlockStep.Error);
@@ -81,7 +85,7 @@ export function WalletUnlock() {
 					Wallets are already unlocked.
 				</Text>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[{ label: 'OK', value: 'ok' }]}
 						onSelect={() => {
 							modal.dismiss();
@@ -121,10 +125,6 @@ export function WalletUnlock() {
 		);
 	}
 
-	if (step === UnlockStep.Complete) {
-		return <SetupComplete message="✓ Wallets unlocked!" />;
-	}
-
 	if (step === UnlockStep.Error) {
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1} borderStyle="round" borderColor="red">
@@ -135,7 +135,7 @@ export function WalletUnlock() {
 					<Text color="red">{error?.message || 'Invalid password'}</Text>
 				</Box>
 				<Box marginTop={1}>
-					<SelectInput
+					<SelectList
 						items={[
 							{ label: 'Try again', value: 'retry' },
 							{ label: 'Exit', value: 'exit' },

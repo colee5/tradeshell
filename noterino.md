@@ -47,9 +47,9 @@ STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
 STAGE 3: Private key storing and safety
 [x] Private key storage - Use encrypted master wallet and support for multiple wallets
 [x] Wallet Service Client implementation
-[] Switch logic should emmit the unlocked event on the blockchainService and load that wallet into memory
-[] First time user handles all onboarding cases, wallet too
-[] We MUST keep npm packages to the minimum, All cli and api packages must be reviewed
+[x] Switch logic should emmit the unlocked event on the blockchainService and load that wallet into memory
+[x] First time user handles all onboarding cases, wallet too
+[x] Handle wallet AND blockchain/llm config being missing
 [] Audit logging - Log all wallet operations (deploys, transactions) to ~/.tradeshell/audit.log
 
 STAGE 4: Agent service, extensible folder structure /tools in the agent module
@@ -67,23 +67,25 @@ STAGE 5: Wallet Operations
 
 STAGE 6: Testing & Quality
 [] Unit tests - For critical services (wallet, config, agent tools)
+[] Dev mode which spins up 3 terminals, from each /packages + the bun run logs
 [] Integration tests - Test CLI ↔ Server communication
 [] E2E tests - Test full agent flows (deploy wallet from start to finish)
 [] Security audit - Review all crypto operations, key storage, RPC interactions
 
 STAGE 7: DevOps & Deployment
+[x] Logging strategy - Structured logging (JSON) for both CLI and server
 [] Docker compose setup - With network isolation (firewalled subnet)
 [] Health check endpoints - /health endpoint for monitoring
 [] Graceful shutdown - Handle SIGTERM/SIGINT properly (save sessions, close connections)
-[] Logging strategy - Structured logging (JSON) for both CLI and server
 
 MAINTAINCE AND REFACTOR
+[x] Return formatted history entry after all modals w/ pushCommandLog
+[x] Tidy up custom pino logger
 [] Find a better structure for CLI components, too bloated
 [] Better help component, make it dynamic
 [] Client error handling standard
-[] Return formatted history entry after all modals
 [] Refactor type checks and order of operations in root package.json
-[] Tidy up custom pino logger
+[] Find a good validation layer for inputs between client/workers
 [] Linter update
 
 ---

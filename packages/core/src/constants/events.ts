@@ -5,5 +5,6 @@ export const CONFIG_EVENTS = {
 
 export const WALLET_EVENTS = {
 	UNLOCKED: 'wallet.unlocked',
+	SWITCHED: 'wallet.switched',
 	LOCKED: 'wallet.locked',
 } as const;
