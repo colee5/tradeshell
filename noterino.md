@@ -34,6 +34,7 @@ STAGE 3: Private key storing and safety
 [x] First time user handles all onboarding cases, wallet too
 [x] Handle wallet AND blockchain/llm config being missing
 [x] Audit logging - Log all wallet operations (deploys, transactions) to ~/.tradeshell/audit.log
+[x] wallet /add command on the client should be guarded if wallet is locked.
 
 # [x] wallet /add command on the client should be guarded if wallet is locked.
 
@@ -73,8 +74,12 @@ STAGE 8: Web feature with embedded web assets in worker bundle
 MAINTAINCE AND REFACTOR
 [x] Return formatted history entry after all modals w/ pushCommandLog
 [x] Tidy up custom pino logger
+<<<<<<< HEAD
 [x] Find a good validation layer for inputs between client/workers
 [x] Render static components instead of hydrated react components in command history log
+=======
+[] Find a good validation layer for inputs between client/workers
+>>>>>>> 4e10781 (feat: worker validation layer)
 [] Find a better structure for CLI components, too bloated
 [] Better help component, make it dynamic
 [] Client error handling standard
