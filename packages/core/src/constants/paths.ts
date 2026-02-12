@@ -12,6 +12,3 @@ export const WALLETS_FILE = path.join(TRADESHELL_DIR, 'wallets.json');
 
 // ~/.tradeshell/debug.log
 export const LOGS_FILE = path.join(TRADESHELL_DIR, 'debug.log');
-
-// CONSTANTS
-export const hashRegex: RegExp = /^0x[0-9a-fA-F]{64}$/;
