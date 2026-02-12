@@ -72,7 +72,8 @@ STAGE 8: Web feature with embedded web assets in worker bundle
 MAINTAINCE AND REFACTOR
 [x] Return formatted history entry after all modals w/ pushCommandLog
 [x] Tidy up custom pino logger
-[] Find a good validation layer for inputs between client/workers
+[x] Find a good validation layer for inputs between client/workers
+[x] Render static components instead of hydrated react components in command history log
 [] Find a better structure for CLI components, too bloated
 [] Better help component, make it dynamic
 [] Client error handling standard
