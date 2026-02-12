@@ -1,0 +1,1 @@
+export const MINIMUM_PASSWORD_CHARACTERS = 4;

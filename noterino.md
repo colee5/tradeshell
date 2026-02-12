@@ -34,6 +34,7 @@ STAGE 3: Private key storing and safety
 [x] First time user handles all onboarding cases, wallet too
 [x] Handle wallet AND blockchain/llm config being missing
 [x] Audit logging - Log all wallet operations (deploys, transactions) to ~/.tradeshell/audit.log
+[x] wallet /add command on the client should be guarded if wallet is locked.
 
 STAGE 4: Agent service, extensible folder structure /tools in the agent module
 [] Find a toolcall structure which the LLM can prompt user to confirm/select etc - ZOD validated
@@ -71,11 +72,11 @@ STAGE 8: Web feature with embedded web assets in worker bundle
 MAINTAINCE AND REFACTOR
 [x] Return formatted history entry after all modals w/ pushCommandLog
 [x] Tidy up custom pino logger
+[] Find a good validation layer for inputs between client/workers
 [] Find a better structure for CLI components, too bloated
 [] Better help component, make it dynamic
 [] Client error handling standard
 [] Refactor type checks and order of operations in root package.json
-[] Find a good validation layer for inputs between client/workers
 [] Linter update
 
 ---

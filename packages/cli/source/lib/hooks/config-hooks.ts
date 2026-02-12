@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { call } from '../rpc/rpc-client.js';
+import { call } from '../rpc/rpc.client.js';
 import type { RpcMethods } from '../rpc/rpc.types.js';
 
 type Args<M extends keyof RpcMethods> = RpcMethods[M]['args'];
