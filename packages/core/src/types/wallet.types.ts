@@ -20,6 +20,19 @@ export const addWalletInputSchema = z.object({
 	setActive: z.boolean().default(true),
 });
 
+export const walletPasswordSchema = z.object({
+	password: z.string().min(1),
+});
+
+export const walletChangePasswordSchema = z.object({
+	oldPassword: z.string().min(1),
+	newPassword: z.string().min(1),
+});
+
+export const walletAddressSchema = z.object({
+	address: z.string().min(1),
+});
+
 export type WalletInfo = z.infer<typeof walletInfoSchema>;
 export type WalletStatus = z.infer<typeof walletStatusSchema>;
 export type AddWalletInput = z.infer<typeof addWalletInputSchema>;
