@@ -3,6 +3,9 @@ import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { type z } from 'zod';
+import { walletPasswordSchema } from '@tradeshell/core';
 import { SetupComplete } from '../../components/onboard/setup-complete.js';
 import { SelectList } from '../../components/select-list.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
@@ -11,9 +14,7 @@ import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
 import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
 import { useSetAtom } from 'jotai';
 
-type UnlockFormValues = {
-	password: string;
-};
+type UnlockFormValues = z.infer<typeof walletPasswordSchema>;
 
 enum UnlockStep {
 	CheckingStatus = 'checking-status',
@@ -28,7 +29,14 @@ export function WalletUnlock() {
 	const [step, setStep] = useState<UnlockStep>(UnlockStep.CheckingStatus);
 	const pushCommandLog = useSetAtom(pushCommandLogAtom);
 
-	const { watch, setValue } = useForm<UnlockFormValues>({
+	const {
+		watch,
+		setValue,
+		trigger,
+		formState: { errors },
+	} = useForm<UnlockFormValues>({
+		resolver: zodResolver(walletPasswordSchema),
+		mode: 'onChange',
 		defaultValues: {
 			password: '',
 		},
@@ -107,14 +115,20 @@ export function WalletUnlock() {
 					<TextInput
 						value={password}
 						onChange={(value) => setValue('password', value)}
-						onSubmit={() => {
-							if (password.trim() !== '') {
+						onSubmit={async () => {
+							const valid = await trigger('password');
+							if (valid) {
 								handleSubmit();
 							}
 						}}
 						mask="*"
 					/>
 				</Box>
+				{errors.password && (
+					<Box marginTop={1}>
+						<Text color="red">{errors.password.message}</Text>
+					</Box>
+				)}
 			</Box>
 		);
 	}

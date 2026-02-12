@@ -1,20 +1,20 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { addWalletInputSchema } from '@tradeshell/core';
 import { Box, Text } from 'ink';
-import { SelectList } from '../../components/select-list.js';
 import TextInput from 'ink-text-input';
-import React, { useState } from 'react';
+import { useSetAtom } from 'jotai';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { type z } from 'zod';
 import { SetupComplete } from '../../components/onboard/setup-complete.js';
+import { SelectList } from '../../components/select-list.js';
+import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
-import { useWalletAdd } from '../../lib/hooks/wallet-hooks.js';
-import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
+import { useGetWalletStatus, useWalletAdd } from '../../lib/hooks/wallet-hooks.js';
 import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
-import { useSetAtom } from 'jotai';
 
-type AddWalletFormValues = {
-	name: string;
-	privateKey: string;
-};
+type AddWalletFormValues = z.input<typeof addWalletInputSchema>;
 
 enum AddStep {
 	EnterName = 'enter-name',
@@ -23,11 +23,20 @@ enum AddStep {
 	Complete = 'complete',
 	Error = 'error',
 }
-
+// TODO: Add a prop which tells if this component is rendered after the setup, and therefor
+// We need to have a header like, "Now add your wallet" instead of just "Add a name for your wallet"
 export function WalletAdd() {
 	const [step, setStep] = useState<AddStep>(AddStep.EnterName);
 
-	const { watch, setValue, getValues } = useForm<AddWalletFormValues>({
+	const {
+		watch,
+		setValue,
+		getValues,
+		trigger,
+		formState: { errors },
+	} = useForm<AddWalletFormValues>({
+		resolver: zodResolver(addWalletInputSchema),
+		mode: 'onChange',
 		defaultValues: {
 			name: '',
 			privateKey: '',
@@ -36,10 +45,30 @@ export function WalletAdd() {
 
 	const name = watch('name');
 	const privateKey = watch('privateKey');
-
+	const { data: walletStatus } = useGetWalletStatus();
 	const { mutate: addWallet, error } = useWalletAdd();
 	const modal = useModal();
 	const pushCommandLog = useSetAtom(pushCommandLogAtom);
+
+	const isWalletUnlocked = walletStatus?.isUnlocked;
+
+	useEffect(() => {
+		if (!isWalletUnlocked) {
+			pushCommandLog({
+				input: `${COMMANDS.wallet.label} ${WalletSubcommands.ADD}`,
+				output: (
+					<Text color="red">
+						Cannot add a wallet while your wallet is locked. Please run{' '}
+						<Text bold color="white">
+							/wallet unlock
+						</Text>{' '}
+						to unlock them.
+					</Text>
+				),
+			});
+			modal.dismiss();
+		}
+	}, [isWalletUnlocked]);
 
 	const handleSubmit = () => {
 		const values = getValues();
@@ -65,6 +94,10 @@ export function WalletAdd() {
 		);
 	};
 
+	if (!isWalletUnlocked) {
+		return null;
+	}
+
 	if (step === AddStep.EnterName) {
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
@@ -76,13 +109,19 @@ export function WalletAdd() {
 					<TextInput
 						value={name}
 						onChange={(value) => setValue('name', value)}
-						onSubmit={() => {
-							if (name.trim() !== '') {
+						onSubmit={async () => {
+							const valid = await trigger('name');
+							if (valid) {
 								setStep(AddStep.EnterPrivateKey);
 							}
 						}}
 					/>
 				</Box>
+				{errors.name && (
+					<Box marginTop={1}>
+						<Text color="red">{errors.name.message}</Text>
+					</Box>
+				)}
 			</Box>
 		);
 	}
@@ -101,14 +140,21 @@ export function WalletAdd() {
 					<TextInput
 						value={privateKey}
 						onChange={(value) => setValue('privateKey', value)}
-						onSubmit={() => {
-							if (privateKey.trim() !== '') {
+						onSubmit={async () => {
+							const valid = await trigger('privateKey');
+
+							if (valid) {
 								handleSubmit();
 							}
 						}}
 						mask="*"
 					/>
 				</Box>
+				{errors.privateKey && (
+					<Box marginTop={1}>
+						<Text color="red">{errors.privateKey.message}</Text>
+					</Box>
+				)}
 			</Box>
 		);
 	}

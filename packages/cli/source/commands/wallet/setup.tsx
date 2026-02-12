@@ -4,6 +4,9 @@ import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { type z } from 'zod';
+import { walletSetupSchema } from '@tradeshell/core';
 import { SetupComplete } from '../../components/onboard/setup-complete.js';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
@@ -13,10 +16,7 @@ import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
 import { useSetAtom } from 'jotai';
 import { WalletAdd } from './add.js';
 
-type SetupFormValues = {
-	password: string;
-	confirmPassword: string;
-};
+type SetupFormValues = z.infer<typeof walletSetupSchema>;
 
 enum SetupStep {
 	CheckingStatus = 'checking-status',
@@ -33,7 +33,14 @@ export function WalletSetup() {
 	const [step, setStep] = useState<SetupStep>(SetupStep.CheckingStatus);
 	const [hasCheckedStatus, setHasCheckedStatus] = useState(false);
 
-	const { watch, setValue } = useForm<SetupFormValues>({
+	const {
+		watch,
+		setValue,
+		trigger,
+		formState: { errors },
+	} = useForm<SetupFormValues>({
+		resolver: zodResolver(walletSetupSchema),
+		mode: 'onChange',
 		defaultValues: {
 			password: '',
 			confirmPassword: '',
@@ -133,14 +140,20 @@ export function WalletSetup() {
 					<TextInput
 						value={password}
 						onChange={(value) => setValue('password', value)}
-						onSubmit={() => {
-							if (password.trim() !== '') {
+						onSubmit={async () => {
+							const valid = await trigger('password');
+							if (valid) {
 								setStep(SetupStep.ConfirmPassword);
 							}
 						}}
 						mask="*"
 					/>
 				</Box>
+				{errors.password && (
+					<Box marginTop={1}>
+						<Text color="red">{errors.password.message}</Text>
+					</Box>
+				)}
 			</Box>
 		);
 	}
@@ -156,23 +169,20 @@ export function WalletSetup() {
 					<TextInput
 						value={confirmPassword}
 						onChange={(value) => setValue('confirmPassword', value)}
-						onSubmit={() => {
-							if (confirmPassword !== password) {
-								setValue('confirmPassword', '');
-								return;
+						onSubmit={async () => {
+							const valid = await trigger();
+							if (valid) {
+								handleSubmit();
 							}
-
-							handleSubmit();
 						}}
 						mask="*"
 					/>
 				</Box>
-				{confirmPassword !== '' &&
-					confirmPassword !== password.slice(0, confirmPassword.length) && (
-						<Box marginTop={1}>
-							<Text color="red">Passwords do not match</Text>
-						</Box>
-					)}
+				{errors.confirmPassword && (
+					<Box marginTop={1}>
+						<Text color="red">{errors.confirmPassword.message}</Text>
+					</Box>
+				)}
 			</Box>
 		);
 	}

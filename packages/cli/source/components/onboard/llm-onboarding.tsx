@@ -1,14 +1,16 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { LLM_MODELS, LlmProvider, LlmType, llmSelfHostedOnboardingSchema } from '@tradeshell/core';
 import { Box, Text } from 'ink';
-import { SelectList } from '../select-list.js';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { LLM_MODELS, LlmProvider } from '../../lib/constants/llm-providers.js';
-
-import type { LlmConfig } from '@tradeshell/core';
-import { useUpdateLlmConfig } from '../../lib/hooks/config-hooks.js';
-import { SetupComplete } from './setup-complete.js';
+import { z } from 'zod';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
+import { useUpdateLlmConfig } from '../../lib/hooks/config-hooks.js';
+import { SelectList } from '../select-list.js';
+import { SetupComplete } from './setup-complete.js';
+
+type LlmFormValues = z.infer<typeof llmSelfHostedOnboardingSchema>;
 
 enum LlmOnboardingStep {
 	LlmType = 'llm-type',
@@ -24,9 +26,17 @@ export function LlmOnboarding({ onComplete }: { onComplete: () => void }) {
 	const [step, setStep] = useState<LlmOnboardingStep>(LlmOnboardingStep.LlmType);
 	const { mutate: updateLlmConfig, error } = useUpdateLlmConfig();
 
-	const { watch, setValue, getValues } = useForm<LlmConfig>({
+	const {
+		watch,
+		setValue,
+		getValues,
+		trigger,
+		formState: { errors },
+	} = useForm<LlmFormValues>({
+		resolver: zodResolver(llmSelfHostedOnboardingSchema),
+		mode: 'onChange',
 		defaultValues: {
-			type: 'cloud',
+			type: LlmType.Cloud,
 			provider: undefined,
 			model: undefined,
 			baseURL: undefined,
@@ -41,17 +51,6 @@ export function LlmOnboarding({ onComplete }: { onComplete: () => void }) {
 
 	const saveConfig = async () => {
 		const data = getValues();
-
-		// Validation checks
-		if (data.type === 'cloud') {
-			if (!data.provider || !data.model || !data.apiKey || data.apiKey.trim() === '') {
-				return;
-			}
-		}
-
-		if (data.type === 'self-hosted' && (!data.baseURL || data.baseURL.trim() === '')) {
-			return;
-		}
 
 		setStep(LlmOnboardingStep.Complete);
 
@@ -76,12 +75,12 @@ export function LlmOnboarding({ onComplete }: { onComplete: () => void }) {
 				<Box marginTop={1}>
 					<SelectList
 						items={[
-							{ label: 'Cloud (Anthropic, OpenAI, etc.)', value: 'cloud' },
-							{ label: 'Self-hosted', value: 'self-hosted' },
+							{ label: 'Cloud (Anthropic, OpenAI, etc.)', value: LlmType.Cloud },
+							{ label: 'Self-hosted', value: LlmType.SelfHosted },
 						]}
 						onSelect={(item) => {
-							setValue('type', item.value as 'cloud' | 'self-hosted');
-							if (item.value === 'cloud') {
+							setValue('type', item.value as LlmType);
+							if (item.value === LlmType.Cloud) {
 								setStep(LlmOnboardingStep.Provider);
 							} else {
 								setStep(LlmOnboardingStep.BaseUrl);
@@ -152,18 +151,26 @@ export function LlmOnboarding({ onComplete }: { onComplete: () => void }) {
 				<Box marginTop={1}>
 					<Text dimColor>Example: http://localhost:11434</Text>
 				</Box>
+
 				<Box marginTop={1} flexDirection="row">
 					<Text>Base URL: </Text>
 					<TextInput
 						value={baseURL || ''}
 						onChange={(value) => setValue('baseURL', value)}
-						onSubmit={() => {
-							if (baseURL && baseURL.trim() !== '') {
+						onSubmit={async () => {
+							const valid = await trigger('baseURL');
+							if (valid) {
 								saveConfig();
 							}
 						}}
 					/>
 				</Box>
+
+				{errors.baseURL && (
+					<Box marginTop={1}>
+						<Text color="red">{errors.baseURL.message || 'Invalid URL'}</Text>
+					</Box>
+				)}
 			</Box>
 		);
 	}
@@ -176,7 +183,7 @@ export function LlmOnboarding({ onComplete }: { onComplete: () => void }) {
 				</Text>
 				<Box marginTop={1}>
 					<Text dimColor>
-						{llmType === 'cloud'
+						{llmType === LlmType.Cloud
 							? 'This will be used to authenticate with your cloud provider'
 							: 'This will be used to authenticate with your self-hosted instance'}
 					</Text>

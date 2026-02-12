@@ -4,6 +4,9 @@ import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { type z } from 'zod';
+import { walletChangePasswordFormSchema } from '@tradeshell/core';
 import { SetupComplete } from '../../components/onboard/setup-complete.js';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
@@ -16,11 +19,7 @@ import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
 import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
 import { useSetAtom } from 'jotai';
 
-type PasswordFormValues = {
-	oldPassword: string;
-	newPassword: string;
-	confirmPassword: string;
-};
+type PasswordFormValues = z.infer<typeof walletChangePasswordFormSchema>;
 
 enum PasswordStep {
 	CheckingStatus = 'checking-status',
@@ -38,7 +37,14 @@ enum PasswordStep {
 export function WalletPassword() {
 	const [step, setStep] = useState<PasswordStep>(PasswordStep.CheckingStatus);
 
-	const { watch, setValue } = useForm<PasswordFormValues>({
+	const {
+		watch,
+		setValue,
+		trigger,
+		formState: { errors },
+	} = useForm<PasswordFormValues>({
+		resolver: zodResolver(walletChangePasswordFormSchema),
+		mode: 'onChange',
 		defaultValues: {
 			oldPassword: '',
 			newPassword: '',
@@ -150,14 +156,20 @@ export function WalletPassword() {
 					<TextInput
 						value={oldPassword}
 						onChange={(value) => setValue('oldPassword', value)}
-						onSubmit={() => {
-							if (oldPassword.trim() !== '') {
+						onSubmit={async () => {
+							const valid = await trigger('oldPassword');
+							if (valid) {
 								verifyOldPassword();
 							}
 						}}
 						mask="*"
 					/>
 				</Box>
+				{errors.oldPassword && (
+					<Box marginTop={1}>
+						<Text color="red">{errors.oldPassword.message}</Text>
+					</Box>
+				)}
 			</Box>
 		);
 	}
@@ -203,25 +215,23 @@ export function WalletPassword() {
 				<Text bold color="cyan">
 					Enter your new password:
 				</Text>
-				<Box marginTop={1}>
-					<Text dimColor>Must be at least 4 characters.</Text>
-				</Box>
 				<Box marginTop={1} flexDirection="row">
 					<Text>New password: </Text>
 					<TextInput
 						value={newPassword}
 						onChange={(value) => setValue('newPassword', value)}
-						onSubmit={() => {
-							if (newPassword.trim().length >= 4) {
+						onSubmit={async () => {
+							const valid = await trigger('newPassword');
+							if (valid) {
 								setStep(PasswordStep.ConfirmNewPassword);
 							}
 						}}
 						mask="*"
 					/>
 				</Box>
-				{newPassword.trim() !== '' && newPassword.trim().length < 4 && (
+				{errors.newPassword && (
 					<Box marginTop={1}>
-						<Text color="red">Password must be at least 4 characters</Text>
+						<Text color="red">{errors.newPassword.message}</Text>
 					</Box>
 				)}
 			</Box>
@@ -239,23 +249,20 @@ export function WalletPassword() {
 					<TextInput
 						value={confirmPassword}
 						onChange={(value) => setValue('confirmPassword', value)}
-						onSubmit={() => {
-							if (confirmPassword !== newPassword) {
-								setValue('confirmPassword', '');
-								return;
+						onSubmit={async () => {
+							const valid = await trigger();
+							if (valid) {
+								handleSubmit();
 							}
-
-							handleSubmit();
 						}}
 						mask="*"
 					/>
 				</Box>
-				{confirmPassword !== '' &&
-					confirmPassword !== newPassword.slice(0, confirmPassword.length) && (
-						<Box marginTop={1}>
-							<Text color="red">Passwords do not match</Text>
-						</Box>
-					)}
+				{errors.confirmPassword && (
+					<Box marginTop={1}>
+						<Text color="red">{errors.confirmPassword.message}</Text>
+					</Box>
+				)}
 			</Box>
 		);
 	}
