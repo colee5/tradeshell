@@ -1,11 +1,11 @@
 import { Box } from 'ink';
 import { useAtomValue } from 'jotai';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { activeModalAtom, hasActivemodalAtom } from '../lib/store/modal.atom.js';
 import { Header } from './header.js';
 
 type Props = {
-	children: React.ReactNode;
+	children: ReactNode;
 };
 
 export function DialogManager({ children }: Props) {

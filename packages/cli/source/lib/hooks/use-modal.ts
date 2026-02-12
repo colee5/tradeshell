@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai';
-import React from 'react';
+import { ReactElement } from 'react';
 import {
 	clearModalsAtom,
 	ModalComponent,
@@ -12,7 +12,7 @@ export function useModal() {
 	const pop = useSetAtom(popModalAtom);
 	const clear = useSetAtom(clearModalsAtom);
 
-	const show = (component: React.ReactElement, config?: ModalComponent['config']) => {
+	const show = (component: ReactElement, config?: ModalComponent['config']) => {
 		push({
 			id: `modal-${Date.now()}`,
 			component,

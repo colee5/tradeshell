@@ -1,9 +1,9 @@
 import { atom } from 'jotai';
-import React from 'react';
+import { ReactElement } from 'react';
 
 export type ModalComponent = {
 	id: string;
-	component: React.ReactElement;
+	component: ReactElement;
 	config?: {
 		showHeader?: boolean;
 	};

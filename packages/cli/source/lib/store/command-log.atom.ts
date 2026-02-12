@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import React from 'react';
+import { ReactElement } from 'react';
 
 // Command log entries start as live React components (loading state, spinner) and get
 // replaced with static snapshots once data resolves. This ensures history
@@ -8,7 +8,7 @@ import React from 'react';
 export type CommandLogEntry = {
 	id: string;
 	input: string;
-	output: React.ReactElement;
+	output: ReactElement;
 };
 
 export const commandLogAtom = atom<CommandLogEntry[]>([]);
@@ -27,7 +27,7 @@ export const pushCommandLogAtom = atom(
 // Swap a live entry's output with a static snapshot by id.
 export const replaceCommandLogEntryAtom = atom(
 	null,
-	(get, set, { id, output }: { id: string; output: React.ReactElement }) => {
+	(get, set, { id, output }: { id: string; output: ReactElement }) => {
 		const current = get(commandLogAtom);
 
 		set(
