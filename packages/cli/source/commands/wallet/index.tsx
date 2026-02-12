@@ -7,9 +7,11 @@ import { WalletStatus } from './status.js';
 
 type Props = {
 	args: string[];
+	input: string;
+	entryId: string;
 };
 
-export function Wallet({ args }: Props) {
+export function Wallet({ args, input, entryId }: Props) {
 	const subcommand = args[0];
 
 	// If no subcommand, show help message
@@ -26,15 +28,15 @@ export function Wallet({ args }: Props) {
 	}
 
 	if (subcommand === WalletSubcommands.LIST) {
-		return <WalletList />;
+		return <WalletList input={input} entryId={entryId} />;
 	}
 
 	if (subcommand === WalletSubcommands.LOCK) {
-		return <WalletLock />;
+		return <WalletLock input={input} entryId={entryId} />;
 	}
 
 	if (subcommand === WalletSubcommands.STATUS) {
-		return <WalletStatus />;
+		return <WalletStatus input={input} entryId={entryId} />;
 	}
 
 	// if (subcommand === WalletSubcommands.SWITCH) {

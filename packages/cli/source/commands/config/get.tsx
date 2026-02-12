@@ -1,38 +1,55 @@
 import { Box, Text } from 'ink';
 import Spinner from 'ink-spinner';
 import SyntaxHighlight from 'ink-syntax-highlight';
-import React from 'react';
+import { useSetAtom } from 'jotai';
+import React, { useEffect, useRef } from 'react';
 import { useGetConfig } from '../../lib/hooks/config-hooks.js';
+import { replaceCommandLogEntryAtom } from '../../lib/store/command-log.atom.js';
 
-export function ConfigGet() {
-	const { data: config, error, isLoading } = useGetConfig();
-	const stringifiedConfig = JSON.stringify(config, null, 2);
+type Props = {
+	input: string;
+	entryId: string;
+};
 
-	if (isLoading) {
-		return (
-			<Box flexDirection="row" gap={1}>
-				<Spinner />
-				<Text>Loading config...</Text>
-			</Box>
-		);
-	}
+export function ConfigGet({ entryId }: Props) {
+	const { data: config, error } = useGetConfig();
+	const replaceEntry = useSetAtom(replaceCommandLogEntryAtom);
+	const hasReplaced = useRef(false);
 
-	if (error) {
-		return (
-			<Text color="red">
-				Failed to fetch config from server:{' '}
-				{error instanceof Error ? error.message : 'Unknown error'}
-			</Text>
-		);
-	}
+	useEffect(() => {
+		if (hasReplaced.current) return;
 
-	if (!config) {
-		return <Text>No config data available</Text>;
-	}
+		if (config) {
+			hasReplaced.current = true;
+			const stringifiedConfig = JSON.stringify(config, null, 2);
+			replaceEntry({
+				id: entryId,
+				output: (
+					<Text>
+						<SyntaxHighlight code={stringifiedConfig} />
+					</Text>
+				),
+			});
+		}
+
+		if (error) {
+			hasReplaced.current = true;
+			replaceEntry({
+				id: entryId,
+				output: (
+					<Text color="red">
+						Failed to fetch config from server:{' '}
+						{error instanceof Error ? error.message : 'Unknown error'}
+					</Text>
+				),
+			});
+		}
+	}, [config, error]);
 
 	return (
-		<Text>
-			<SyntaxHighlight code={stringifiedConfig} />
-		</Text>
+		<Box flexDirection="row" gap={1}>
+			<Spinner />
+			<Text>Loading config...</Text>
+		</Box>
 	);
 }

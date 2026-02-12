@@ -18,12 +18,13 @@ import { InitialOnboardingPrompt } from './components/initial-onboarding-prompt.
 import { COMMANDS, WalletSubcommands } from './lib/commands.js';
 import { useModal } from './lib/hooks/use-modal.js';
 import { commandLogAtom, pushCommandLogAtom } from './lib/store/command-log.atom.js';
-import { isCommand } from './lib/utils.js';
+import { isCommand, nextEntryId } from './lib/utils.js';
 
 export default function Index() {
 	const [input, setInput] = useState('');
 	const modal = useModal();
 	const { exit } = useApp();
+
 	const pushCommandLog = useSetAtom(pushCommandLogAtom);
 	const resetCommandLog = useSetAtom(commandLogAtom);
 
@@ -31,6 +32,7 @@ export default function Index() {
 
 	const processCommand = (command: string) => {
 		const parts = command.split(' ');
+
 		let cmd = parts[0];
 		const args = parts.slice(1);
 
@@ -40,17 +42,19 @@ export default function Index() {
 			cmd = cmd?.slice(1);
 		}
 
+		const id = nextEntryId();
+
 		switch (cmd) {
 			case COMMANDS.config.name:
-				return <Config args={args} />;
+				return { id, output: <Config args={args} input={command} entryId={id} /> };
 			case COMMANDS.wallet.name:
-				return <Wallet args={args} />;
+				return { id, output: <Wallet args={args} input={command} entryId={id} /> };
 			case COMMANDS.help.name:
-				return <Help />;
+				return { id, output: <Help /> };
 			case COMMANDS.r.name:
-				return <Reload />;
+				return { id, output: <Reload /> };
 			default:
-				return <Chat message={[cmd, ...args].join(' ')} />;
+				return { id, output: <Chat message={[cmd, ...args].join(' ')} /> };
 		}
 	};
 
@@ -119,10 +123,10 @@ export default function Index() {
 			return;
 		}
 
-		const output = processCommand(command);
+		const result = processCommand(command);
 
-		if (output) {
-			pushCommandLog({ input: command, output });
+		if (result) {
+			pushCommandLog({ id: result.id, input: command, output: result.output });
 		}
 
 		setInput('');
