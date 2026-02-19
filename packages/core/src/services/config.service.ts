@@ -9,8 +9,6 @@ import { createLogger } from './logger.js';
 export class ConfigService {
 	private readonly logger = createLogger(ConfigService.name);
 	private config: Config = {};
-	private readonly configDir = TRADESHELL_DIR;
-	private readonly configPath = CONFIG_PATH;
 
 	constructor(private readonly emitter: EventEmitter) {}
 
@@ -28,7 +26,7 @@ export class ConfigService {
 
 	private async exists(): Promise<boolean> {
 		try {
-			await fs.access(this.configPath);
+			await fs.access(CONFIG_PATH);
 			return true;
 		} catch {
 			return false;
@@ -37,7 +35,7 @@ export class ConfigService {
 
 	async load(): Promise<Config> {
 		try {
-			const data = await fs.readFile(this.configPath, 'utf-8');
+			const data = await fs.readFile(CONFIG_PATH, 'utf-8');
 			const parsed = JSON.parse(data);
 
 			this.config = parsed;
@@ -50,8 +48,8 @@ export class ConfigService {
 
 	async save(config: Config): Promise<void> {
 		try {
-			await fs.mkdir(this.configDir, { recursive: true });
-			await fs.writeFile(this.configPath, JSON.stringify(config, null, 2), 'utf-8');
+			await fs.mkdir(TRADESHELL_DIR, { recursive: true });
+			await fs.writeFile(CONFIG_PATH, JSON.stringify(config, null, 2), 'utf-8');
 
 			this.config = config;
 		} catch (error) {
