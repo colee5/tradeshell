@@ -1,25 +1,8 @@
-Would be best if we could run it somehow w/o a hosted server - it should be a standalone server AND possibly we need to make it so it's easy enough to attach your own running LLM - self hosted. On startup we'll need to have an onboarding sequence where the user is asked if he wants to overwrite the default RPC urls n such - which chains he wants to have supported, and most importantly if he wants to choose a cloud based LLM or a self hosted LLM. ALSO - the user needs to specify his own API keys for data streams like codex etc...
-
-When running his CLI, for example when he writes tradeshell in his terminal - the server needs to run aswell.
-
-What we need to overwrite is the baseURL of the langchain configuration - NO API Key needed for self hosted models.
-
-How can some MEV & Arbitrage tools be integrated within this interface?
-
-What's the best way to have this type of a configurable setup - do we just save the configuration in his own machine somewhere in a file OR it would be a database?
-
-Regarding wallet interface - we'll need to show some kind of a self contained web interface, it could be a view coming from the nestjs standard way
-
-Make a class which would load the config from a file. Then on the client we'll need to check If the user has the config AND what does it contain - This config would need to be accessible from both the server & the client
-
-TODO:
-
-<!-- https://github.com/Kadajett/agent-nestjs-skills/tree/main/rules -->
-
 STAGE 0: Agent and skills setup
 [x] Standard for error handling
 [x] Standard for DTO and typing
 [x] Redundant return types on methods
+[x] Standard for not spamming freaking useEffects everywhere
 [x] Comments pattern
 
 STAGE 1: Monorepo and architecture
@@ -50,7 +33,8 @@ STAGE 3: Private key storing and safety
 [x] Switch logic should emmit the unlocked event on the blockchainService and load that wallet into memory
 [x] First time user handles all onboarding cases, wallet too
 [x] Handle wallet AND blockchain/llm config being missing
-[] Audit logging - Log all wallet operations (deploys, transactions) to ~/.tradeshell/audit.log
+[x] Audit logging - Log all wallet operations (deploys, transactions) to ~/.tradeshell/audit.log
+[x] wallet /add command on the client should be guarded if wallet is locked.
 
 STAGE 4: Agent service, extensible folder structure /tools in the agent module
 [] Find a toolcall structure which the LLM can prompt user to confirm/select etc - ZOD validated
@@ -59,43 +43,53 @@ STAGE 4: Agent service, extensible folder structure /tools in the agent module
 [] Tool execution confirmation - For dangerous operations (deploy, transfer), require explicit user confirmation
 
 STAGE 5: Wallet Operations
-[] Wallet list command - List all deployed/imported wallets
-[] Wallet import - Import existing wallet via private key
-[] Transaction history - Query and display transaction history for a wallet
+[x] Wallet list command - List all deployed/imported wallets
+[x] Wallet import - Import existing wallet via private key
 [] Balance checking - Multi-chain balance display
 [] Gas estimation - Before any transaction, show estimated gas costs
+[] Transaction history - Query and display transaction history for a wallet
 
 STAGE 6: Testing & Quality
+[x] Dev mode which spins up 3 terminals, from each /packages + the bun run logs
 [] Unit tests - For critical services (wallet, config, agent tools)
-[] Dev mode which spins up 3 terminals, from each /packages + the bun run logs
 [] Integration tests - Test CLI ↔ Server communication
 [] E2E tests - Test full agent flows (deploy wallet from start to finish)
 [] Security audit - Review all crypto operations, key storage, RPC interactions
 
 STAGE 7: DevOps & Deployment
 [x] Logging strategy - Structured logging (JSON) for both CLI and server
-[] Docker compose setup - With network isolation (firewalled subnet)
-[] Health check endpoints - /health endpoint for monitoring
+[] Two-file binary distribution, the workers with worker.bundle.js AND the CLi with bun run --compile
 [] Graceful shutdown - Handle SIGTERM/SIGINT properly (save sessions, close connections)
+
+STAGE 8: Web feature with embedded web assets in worker bundle
+[] Create packages/web structure
+[] React + Vite + TanStack Query
+[] Add Bun.serve() to worker with API routes
+[] RPC Methods to start/stop dashboard, controller through the CLI via
+[] /dashboard command that opens browser
+[] Build Process - Update script to embed web assets
 
 MAINTAINCE AND REFACTOR
 [x] Return formatted history entry after all modals w/ pushCommandLog
 [x] Tidy up custom pino logger
+[x] Find a good validation layer for inputs between client/workers
+[x] Render static components instead of hydrated react components in command history log
 [] Find a better structure for CLI components, too bloated
 [] Better help component, make it dynamic
 [] Client error handling standard
 [] Refactor type checks and order of operations in root package.json
-[] Find a good validation layer for inputs between client/workers
 [] Linter update
 
 ---
+
+<!-- BELOW CAN BE SKIPPED WITH, cmd + shift + p -> run task -> Dev: All -->
 
 <!-- WORKFLOW -->
 <!-- Terminal 1:  cd packages/core && bun run dev     # watches & rebuilds dist/ continuously
 Terminal 2:  cd packages/cli && bun run dev      # runs the CLI restart loop -->
 
 <!-- LOGS -->
-<!-- tail -f ~/.tradeshell/debug.log | bunx pino-pretty -->
+<!-- bun run logs -->
 
 CONFIG BRAINSTORM
 What will we need in the config?

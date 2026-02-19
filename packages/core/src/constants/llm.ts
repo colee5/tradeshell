@@ -1,3 +1,10 @@
+export enum LlmType {
+	Cloud = 'cloud',
+	SelfHosted = 'self-hosted',
+}
+
+export const LLM_TYPES = [LlmType.Cloud, LlmType.SelfHosted] as const;
+
 export enum LlmProvider {
 	Anthropic = 'anthropic',
 	OpenAI = 'openai',

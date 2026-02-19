@@ -1,6 +1,7 @@
 import { BlockchainService, ConfigService, WalletService } from '@tradeshell/core';
 import { EventEmitter } from 'events';
 import type { RpcHandlers, RpcRequest } from './rpc.types.js';
+import { validateRpcArgs } from './validation.js';
 
 const emitter = new EventEmitter();
 const configService = new ConfigService(emitter);
@@ -58,8 +59,11 @@ self.onmessage = async (event: MessageEvent<RpcRequest>) => {
 	}
 
 	try {
+		// Validate incoming arguments (throws BadRequestError if invalid)
+		const validatedArgs = validateRpcArgs(method, args);
+
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		const result = await handler(args as any);
+		const result = await handler(validatedArgs as any);
 		self.postMessage({ id, result });
 	} catch (error: unknown) {
 		const err = error as Error & { code?: string };

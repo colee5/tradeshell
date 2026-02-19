@@ -6,9 +6,11 @@ import { ConfigReset } from './reset.js';
 
 type Props = {
 	args: string[];
+	input: string;
+	entryId: string;
 };
 
-export function Config({ args }: Props) {
+export function Config({ args, input, entryId }: Props) {
 	const subcommand = args[0];
 
 	// If no subcommand, show help message
@@ -25,11 +27,11 @@ export function Config({ args }: Props) {
 	}
 
 	if (subcommand === ConfigSubcommands.GET) {
-		return <ConfigGet />;
+		return <ConfigGet input={input} entryId={entryId} />;
 	}
 
 	if (subcommand === ConfigSubcommands.RESET) {
-		return <ConfigReset />;
+		return <ConfigReset input={input} entryId={entryId} />;
 	}
 
 	return (

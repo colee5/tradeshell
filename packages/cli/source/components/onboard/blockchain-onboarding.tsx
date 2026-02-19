@@ -4,11 +4,14 @@ import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-
+import { zodResolver } from '@hookform/resolvers/zod';
+import { type z } from 'zod';
+import { blockchainOnboardingSchema, type BlockchainConfig } from '@tradeshell/core';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
-import type { BlockchainConfig } from '@tradeshell/core';
 import { useGetChains, useUpdateBlockchainConfig } from '../../lib/hooks/config-hooks.js';
 import { SetupComplete } from './setup-complete.js';
+
+type BlockchainFormValues = z.infer<typeof blockchainOnboardingSchema>;
 
 enum BlockchainOnboardingStep {
 	ChainSelect = 'chain-select',
@@ -22,7 +25,15 @@ export function BlockchainOnboarding({ onComplete }: { onComplete: () => void })
 	const { data: supportedChains, isLoading } = useGetChains();
 	const { mutate: updateBlockchainConfig, error } = useUpdateBlockchainConfig();
 
-	const { watch, setValue, getValues } = useForm<BlockchainConfig>({
+	const {
+		watch,
+		setValue,
+		getValues,
+		trigger,
+		formState: { errors },
+	} = useForm<BlockchainFormValues>({
+		resolver: zodResolver(blockchainOnboardingSchema),
+		mode: 'onChange',
 		defaultValues: {
 			chainId: undefined,
 			rpcUrl: undefined,
@@ -34,10 +45,6 @@ export function BlockchainOnboarding({ onComplete }: { onComplete: () => void })
 
 	const saveConfig = async () => {
 		const data = getValues();
-
-		if (!data.chainId) {
-			return;
-		}
 
 		setStep(BlockchainOnboardingStep.Complete);
 
@@ -91,19 +98,26 @@ export function BlockchainOnboarding({ onComplete }: { onComplete: () => void })
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
 				<Text bold color="cyan">
-					Enter a custom RPC URL for {selectedChain?.name}:
+					Enter an RPC URL for {selectedChain?.name}:
 				</Text>
-				<Box marginTop={1}>
-					<Text dimColor>Press Enter to skip and use the default RPC</Text>
-				</Box>
 				<Box marginTop={1} flexDirection="row">
 					<Text>RPC URL: </Text>
 					<TextInput
 						value={rpcUrl || ''}
 						onChange={(value) => setValue('rpcUrl', value)}
-						onSubmit={saveConfig}
+						onSubmit={async () => {
+							const valid = await trigger('rpcUrl');
+							if (valid) {
+								saveConfig();
+							}
+						}}
 					/>
 				</Box>
+				{errors.rpcUrl && (
+					<Box marginTop={1}>
+						<Text color="red">{errors.rpcUrl.message || 'Invalid URL'}</Text>
+					</Box>
+				)}
 			</Box>
 		);
 	}

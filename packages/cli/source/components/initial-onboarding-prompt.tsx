@@ -57,20 +57,6 @@ export function InitialOnboardingPrompt() {
 		);
 	}
 
-	if (noWallet) {
-		return (
-			<Box>
-				<Text dimColor>
-					No wallets found. Run{' '}
-					<Text bold color="cyan">
-						/wallet add
-					</Text>{' '}
-					to add one.
-				</Text>
-			</Box>
-		);
-	}
-
 	if (!isUnlocked) {
 		return (
 			<Box>
@@ -85,5 +71,18 @@ export function InitialOnboardingPrompt() {
 		);
 	}
 
+	if (noWallet) {
+		return (
+			<Box>
+				<Text dimColor>
+					No wallets found. Run{' '}
+					<Text bold color="cyan">
+						/wallet add
+					</Text>{' '}
+					to add one.
+				</Text>
+			</Box>
+		);
+	}
 	return null;
 }
