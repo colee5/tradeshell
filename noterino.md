@@ -40,6 +40,7 @@ STAGE 3: Private key storing and safety
 
 STAGE 4: Agent service, extensible folder structure /tools in the agent module
 [] Find a toolcall structure which the LLM can prompt user to confirm/select etc - ZOD validated
+[] llm.service which will store the model initialization and revalidate on update config event
 [] Tool response schemas - Zod validation for tool outputs (not just inputs)
 [] Agent streaming - Real-time agent thinking/progress display in CLI
 [] Tool execution confirmation - For dangerous operations (deploy, transfer), require explicit user confirmation
