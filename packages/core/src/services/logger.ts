@@ -46,4 +46,4 @@ export function createLogger(context: string): Logger {
 	};
 }
 
-// tail -f ~/.tradeshell/debug.log | bunx pino-pretty
+// bun run logs
