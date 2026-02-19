@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import pino from 'pino';
-import { LOGS_FILE, TRADESHELL_DIR } from '../constants/paths.js';
+import { LOGS_PATH, TRADESHELL_DIR } from '../constants/paths.js';
 
 export type Logger = {
 	log: (message: string) => void;
@@ -19,7 +19,7 @@ const rootLogger = pino(
 	pino.transport({
 		target: 'pino-roll',
 		options: {
-			file: LOGS_FILE,
+			file: LOGS_PATH,
 			size: ROTATION_SIZE,
 			mkdir: true,
 		},

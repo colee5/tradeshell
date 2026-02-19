@@ -4,7 +4,7 @@ import type { Hash } from 'viem';
 import type { PrivateKeyAccount } from 'viem/accounts';
 import { privateKeyToAccount } from 'viem/accounts';
 import { WALLET_EVENTS } from '../constants/events.js';
-import { TRADESHELL_DIR, WALLETS_FILE } from '../constants/paths.js';
+import { TRADESHELL_DIR, WALLETS_PATH } from '../constants/paths.js';
 import type { EncryptedData, MasterKeyData } from '../utils/crypto.utils.js';
 import {
 	decryptMasterKey,
@@ -81,12 +81,12 @@ export class WalletService {
 			wallets: currentWallets,
 		};
 
-		await fs.writeFile(WALLETS_FILE, JSON.stringify(file, null, 2), 'utf-8');
+		await fs.writeFile(WALLETS_PATH, JSON.stringify(file, null, 2), 'utf-8');
 	}
 
 	private async readWalletsFile(): Promise<WalletsFile | null> {
 		try {
-			const data = await fs.readFile(WALLETS_FILE, 'utf-8');
+			const data = await fs.readFile(WALLETS_PATH, 'utf-8');
 			return JSON.parse(data);
 		} catch {
 			return null;
