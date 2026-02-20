@@ -1,20 +1,21 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { blockchainOnboardingSchema, type BlockchainConfig } from '@tradeshell/core';
 import { Box, Text } from 'ink';
-import { SelectList } from '../select-list.js';
 import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { type z } from 'zod';
-import { blockchainOnboardingSchema, type BlockchainConfig } from '@tradeshell/core';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 import { useGetChains, useUpdateBlockchainConfig } from '../../lib/hooks/config-hooks.js';
+import { SelectList } from '../select-list.js';
 import { SetupComplete } from './setup-complete.js';
 
 type BlockchainFormValues = z.infer<typeof blockchainOnboardingSchema>;
 
 enum BlockchainOnboardingStep {
 	ChainSelect = 'chain-select',
+	RpcChoice = 'rpc-choice',
 	RpcUrl = 'rpc-url',
 	Complete = 'complete',
 	Error = 'error',
@@ -85,7 +86,33 @@ export function BlockchainOnboarding({ onComplete }: { onComplete: () => void })
 						items={chainOptions}
 						onSelect={(item) => {
 							setValue('chainId', item.value as BlockchainConfig['chainId']);
-							setStep(BlockchainOnboardingStep.RpcUrl);
+							setStep(BlockchainOnboardingStep.RpcChoice);
+						}}
+					/>
+				</Box>
+			</Box>
+		);
+	}
+
+	if (step === BlockchainOnboardingStep.RpcChoice) {
+		const selectedChain = supportedChains?.chains.find((c) => c.id === chainId);
+		return (
+			<Box flexDirection="column" paddingX={2} paddingY={1}>
+				<Text bold color="cyan">
+					RPC configuration for {selectedChain?.name}:
+				</Text>
+				<Box marginTop={1}>
+					<SelectList
+						items={[
+							{ label: 'Use default public RPC', value: 'default' },
+							{ label: 'Enter custom RPC URL', value: 'custom' },
+						]}
+						onSelect={(item) => {
+							if (item.value === 'default') {
+								saveConfig();
+							} else {
+								setStep(BlockchainOnboardingStep.RpcUrl);
+							}
 						}}
 					/>
 				</Box>
@@ -104,8 +131,12 @@ export function BlockchainOnboarding({ onComplete }: { onComplete: () => void })
 					<Text>RPC URL: </Text>
 					<TextInput
 						value={rpcUrl || ''}
-						onChange={(value) => setValue('rpcUrl', value)}
+						onChange={(value) => setValue('rpcUrl', value || undefined)}
 						onSubmit={async () => {
+							if (!rpcUrl) {
+								return;
+							}
+
 							const valid = await trigger('rpcUrl');
 							if (valid) {
 								saveConfig();

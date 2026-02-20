@@ -22,7 +22,7 @@ export const configSchema = z.object({
 
 // Client side schemas
 export const blockchainOnboardingSchema = blockchainConfigSchema.extend({
-	rpcUrl: z.url('Invalid URL'),
+	rpcUrl: z.url('Invalid URL').optional(),
 });
 
 export const llmSelfHostedOnboardingSchema = llmConfigSchema.extend({

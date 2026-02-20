@@ -1,12 +1,12 @@
 import { EventEmitter } from 'events';
-import { createPublicClient, createWalletClient, http } from 'viem';
 import type { PublicClient, WalletClient } from 'viem';
+import { createPublicClient, createWalletClient, http } from 'viem';
 import { CHAIN_BY_ID } from '../constants/chains.js';
 import { CONFIG_EVENTS, WALLET_EVENTS } from '../constants/events.js';
 import type { Config } from '../types/config.types.js';
 import type { ConfigService } from './config.service.js';
-import type { WalletService } from './wallet.service.js';
 import { createLogger } from './logger.js';
+import type { WalletService } from './wallet.service.js';
 
 export class BlockchainService {
 	private readonly logger = createLogger(BlockchainService.name);
@@ -29,7 +29,7 @@ export class BlockchainService {
 	async tryInitialize(): Promise<boolean> {
 		const savedConfig = await this.configService.get();
 
-		if (!savedConfig?.blockchain?.chainId || !savedConfig?.blockchain?.rpcUrl) {
+		if (!savedConfig?.blockchain?.chainId) {
 			return false;
 		}
 
@@ -48,9 +48,11 @@ export class BlockchainService {
 			throw new Error(`Unsupported chainId: ${chainId}`);
 		}
 
+		const transport = http(rpcUrl || undefined);
+
 		this.publicClient = createPublicClient({
 			chain,
-			transport: http(rpcUrl),
+			transport,
 		});
 
 		// Initialize wallet client if a wallet is unlocked
@@ -59,12 +61,14 @@ export class BlockchainService {
 			this.walletClient = createWalletClient({
 				account,
 				chain,
-				transport: http(rpcUrl),
+				transport,
 			});
 			this.logger.log(`Wallet client initialized for account: ${account.address}`);
 		}
 
-		this.logger.log(`Blockchain clients initialized (chainId: ${chainId}, rpcUrl: ${rpcUrl})`);
+		this.logger.log(
+			`Blockchain clients initialized (chainId: ${chainId}, rpcUrl: ${rpcUrl ?? 'default'})`,
+		);
 	}
 
 	getPublicClient(): PublicClient {
@@ -85,7 +89,7 @@ export class BlockchainService {
 
 	// Initialize or update the wallet client when a wallet is unlocked
 	initializeWalletClient(): void {
-		if (!this.config?.blockchain?.chainId || !this.config?.blockchain?.rpcUrl) {
+		if (!this.config?.blockchain?.chainId) {
 			throw new Error('Blockchain not configured');
 		}
 
@@ -101,7 +105,7 @@ export class BlockchainService {
 		this.walletClient = createWalletClient({
 			account,
 			chain,
-			transport: http(rpcUrl),
+			transport: http(rpcUrl || undefined),
 		});
 
 		this.logger.log(`Wallet client initialized for account: ${account.address}`);
