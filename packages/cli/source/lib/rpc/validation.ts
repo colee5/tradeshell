@@ -1,7 +1,9 @@
 import {
 	addWalletInputSchema,
+	agentProcessMessageSchema,
 	BadRequestError,
 	blockchainConfigSchema,
+	chatIdSchema,
 	llmConfigSchema,
 	walletAddressSchema,
 	walletChangePasswordSchema,
@@ -25,6 +27,11 @@ export const rpcValidationSchemas: Partial<Record<keyof RpcMethods, z.ZodType>> 
 	walletAdd: addWalletInputSchema,
 	walletSetActive: walletAddressSchema,
 	walletDelete: walletAddressSchema,
+
+	// Agent
+	agentProcessMessage: agentProcessMessageSchema,
+	agentGetChat: chatIdSchema,
+	agentDeleteChat: chatIdSchema,
 };
 
 // Validates RPC method arguments against their schema.
