@@ -76,22 +76,8 @@ STAGE 8: Web feature with embedded web assets in worker bundle
 MAINTAINCE AND REFACTOR
 [x] Return formatted history entry after all modals w/ pushCommandLog
 [x] Tidy up custom pino logger
-<<<<<<< HEAD
-<<<<<<< HEAD
 [x] Find a good validation layer for inputs between client/workers
 [x] Render static components instead of hydrated react components in command history log
-=======
-[] Find a good validation layer for inputs between client/workers
->>>>>>> 4e10781 (feat: worker validation layer)
-=======
-[x] Find a good validation layer for inputs between client/workers
-[x] Render static components instead of hydrated react components in command history log
->>>>>>> 52c41a8 (docs: noterino)
-[] Find a better structure for CLI components, too bloated
-[] Better help component, make it dynamic
-[] Client error handling standard
-[] Refactor type checks and order of operations in root package.json
-[] Linter update
 
 ---
 
