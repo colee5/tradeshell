@@ -26,6 +26,7 @@ STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
 -- [✓] Handle initialPrompt error case
 -- [✓] Handle onboarding error case, it just stops and runs infinitely
 -- [✓] Refactor command autocomplete component
+-- [] separate setup commands for the LLM and Blockchain - apart from /onboard
 
 STAGE 3: Private key storing and safety
 [x] Private key storage - Use encrypted master wallet and support for multiple wallets
