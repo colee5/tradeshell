@@ -29,8 +29,6 @@ export const addWalletInputSchema = z.object({
 });
 
 export const walletPasswordSchema = z.object({
-<<<<<<< HEAD
-<<<<<<< HEAD
 	password: z.string().min(MINIMUM_PASSWORD_CHARACTERS, 'Password must be at least 4 characters'),
 });
 
@@ -66,49 +64,6 @@ export const walletSetupSchema = walletPasswordSchema
 		path: ['confirmPassword'],
 	});
 
-=======
-	password: z.string().min(1),
-=======
-	password: z.string().min(MINIMUM_PASSWORD_CHARACTERS, 'Password must be at least 4 characters'),
->>>>>>> 4e10781 (feat: worker validation layer)
-});
-
-export const walletChangePasswordSchema = z.object({
-	oldPassword: z
-		.string()
-		.min(MINIMUM_PASSWORD_CHARACTERS, 'Password must be at least 4 characters'),
-	newPassword: z
-		.string()
-		.min(MINIMUM_PASSWORD_CHARACTERS, 'Password must be at least 4 characters'),
-});
-
-export const walletAddressSchema = z.object({
-	address: z.string().refine(isAddress, 'Invalid Ethereum address'),
-});
-
-<<<<<<< HEAD
->>>>>>> 60e7e0d (feat: add more wallet types)
-=======
-// Client side schemas
-export const walletChangePasswordFormSchema = walletChangePasswordSchema
-	.extend({
-		confirmPassword: z.string(),
-	})
-	.refine((data) => data.newPassword === data.confirmPassword, {
-		message: 'Passwords do not match',
-		path: ['confirmPassword'],
-	});
-
-export const walletSetupSchema = walletPasswordSchema
-	.extend({
-		confirmPassword: z.string(),
-	})
-	.refine((data) => data.password === data.confirmPassword, {
-		message: 'Passwords do not match',
-		path: ['confirmPassword'],
-	});
-
->>>>>>> 4e10781 (feat: worker validation layer)
 export type WalletInfo = z.infer<typeof walletInfoSchema>;
 export type WalletStatus = z.infer<typeof walletStatusSchema>;
 export type AddWalletInput = z.infer<typeof addWalletInputSchema>;
