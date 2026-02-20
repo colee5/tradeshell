@@ -13,5 +13,5 @@ export const WALLETS_PATH = path.join(TRADESHELL_DIR, 'wallets.json');
 // ~/.tradeshell/debug.log
 export const LOGS_PATH = path.join(TRADESHELL_DIR, 'debug.log');
 
-// ~/.tradeshell/chats.log
-export const CHATS_PATH = path.join(TRADESHELL_DIR, 'chats.log');
+// ~/.tradeshell/chats/
+export const CHATS_DIR = path.join(TRADESHELL_DIR, 'chats');
