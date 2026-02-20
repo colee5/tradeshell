@@ -1,5 +1,6 @@
 import type {
 	BlockchainConfig,
+	Chat,
 	Config,
 	LlmConfig,
 	SerializableChain,
@@ -29,6 +30,12 @@ export type RpcMethods = {
 	walletGetStatus: { args: void; return: WalletStatus };
 	walletSetActive: { args: { address: string }; return: void };
 	walletDelete: { args: { address: string }; return: void };
+
+	// Agent
+	agentProcessMessage: { args: { input: string; chatId: string }; return: { text: string } };
+	agentGetChats: { args: void; return: { chats: Chat[] } };
+	agentGetChat: { args: { chatId: string }; return: Chat | undefined };
+	agentDeleteChat: { args: { chatId: string }; return: void };
 };
 
 export type RpcHandlers = {

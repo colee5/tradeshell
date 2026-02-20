@@ -8,7 +8,10 @@ export const TRADESHELL_DIR = path.join(os.homedir(), '.tradeshell');
 export const CONFIG_PATH = path.join(TRADESHELL_DIR, 'config.json');
 
 // ~/.tradeshell/wallets.json
-export const WALLETS_FILE = path.join(TRADESHELL_DIR, 'wallets.json');
+export const WALLETS_PATH = path.join(TRADESHELL_DIR, 'wallets.json');
 
 // ~/.tradeshell/debug.log
-export const LOGS_FILE = path.join(TRADESHELL_DIR, 'debug.log');
+export const LOGS_PATH = path.join(TRADESHELL_DIR, 'debug.log');
+
+// ~/.tradeshell/chats/
+export const CHATS_DIR = path.join(TRADESHELL_DIR, 'chats');

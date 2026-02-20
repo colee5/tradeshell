@@ -1,7 +1,9 @@
 import {
 	addWalletInputSchema,
+	agentProcessMessageSchema,
 	BadRequestError,
 	blockchainConfigSchema,
+	chatIdSchema,
 	llmConfigSchema,
 	walletAddressSchema,
 	walletChangePasswordSchema,
@@ -12,7 +14,7 @@ import type { RpcMethods } from './rpc.types.js';
 
 // Map each RPC method to its Zod validation schema
 // Methods without schemas are allowed to pass through unvalidated
-export const rpcValidationSchemas: Partial<Record<keyof RpcMethods, z.ZodSchema>> = {
+export const rpcValidationSchemas: Partial<Record<keyof RpcMethods, z.ZodType>> = {
 	// Config
 	updateLlmConfig: llmConfigSchema,
 	updateBlockchainConfig: blockchainConfigSchema,
@@ -25,6 +27,11 @@ export const rpcValidationSchemas: Partial<Record<keyof RpcMethods, z.ZodSchema>
 	walletAdd: addWalletInputSchema,
 	walletSetActive: walletAddressSchema,
 	walletDelete: walletAddressSchema,
+
+	// Agent
+	agentProcessMessage: agentProcessMessageSchema,
+	agentGetChat: chatIdSchema,
+	agentDeleteChat: chatIdSchema,
 };
 
 // Validates RPC method arguments against their schema.
@@ -43,7 +50,7 @@ export function validateRpcArgs<M extends keyof RpcMethods>(
 	const result = schema.safeParse(args);
 
 	if (!result.success) {
-		const errorMessages = result.error.errors.map((error) => {
+		const errorMessages = result.error.issues.map((error) => {
 			const fieldPath = error.path.join('.');
 
 			return `${fieldPath}: ${error.message}`;

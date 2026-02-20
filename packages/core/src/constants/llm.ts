@@ -13,17 +13,24 @@ export enum LlmProvider {
 
 export const LLM_MODELS: Record<LlmProvider, string[]> = {
 	[LlmProvider.Anthropic]: [
-		'claude-3-5-sonnet-20241022',
-		'claude-3-5-haiku-20241022',
-		'claude-3-opus-20240229',
-		'claude-3-sonnet-20240229',
-		'claude-3-haiku-20240307',
+		'claude-opus-4-6',
+		'claude-sonnet-4-6',
+		'claude-haiku-4-5-20251001',
+		'claude-sonnet-4-5-20250929',
+		'claude-opus-4-5-20251101',
 	],
-	[LlmProvider.OpenAI]: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'],
+	[LlmProvider.OpenAI]: [
+		'gpt-5.2',
+		'gpt-5.2-pro',
+		'gpt-5-mini',
+		'gpt-5-nano',
+		'gpt-4.1',
+	],
 	[LlmProvider.Groq]: [
 		'llama-3.3-70b-versatile',
-		'llama-3.1-70b-versatile',
 		'llama-3.1-8b-instant',
-		'mixtral-8x7b-32768',
+		'meta-llama/llama-4-maverick-17b-128e-instruct',
+		'meta-llama/llama-4-scout-17b-16e-instruct',
+		'qwen/qwen-3-32b',
 	],
 };

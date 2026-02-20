@@ -26,6 +26,7 @@ STAGE 2: Configure config - FE Onboarding & CLI subcommands /config
 -- [✓] Handle initialPrompt error case
 -- [✓] Handle onboarding error case, it just stops and runs infinitely
 -- [✓] Refactor command autocomplete component
+-- [] separate setup commands for the LLM and Blockchain - apart from /onboard
 
 STAGE 3: Private key storing and safety
 [x] Private key storage - Use encrypted master wallet and support for multiple wallets
@@ -36,8 +37,11 @@ STAGE 3: Private key storing and safety
 [x] Audit logging - Log all wallet operations (deploys, transactions) to ~/.tradeshell/audit.log
 [x] wallet /add command on the client should be guarded if wallet is locked.
 
+# [x] wallet /add command on the client should be guarded if wallet is locked.
+
 STAGE 4: Agent service, extensible folder structure /tools in the agent module
 [] Find a toolcall structure which the LLM can prompt user to confirm/select etc - ZOD validated
+[] llm.service which will store the model initialization and revalidate on update config event
 [] Tool response schemas - Zod validation for tool outputs (not just inputs)
 [] Agent streaming - Real-time agent thinking/progress display in CLI
 [] Tool execution confirmation - For dangerous operations (deploy, transfer), require explicit user confirmation
@@ -74,11 +78,6 @@ MAINTAINCE AND REFACTOR
 [x] Tidy up custom pino logger
 [x] Find a good validation layer for inputs between client/workers
 [x] Render static components instead of hydrated react components in command history log
-[] Find a better structure for CLI components, too bloated
-[] Better help component, make it dynamic
-[] Client error handling standard
-[] Refactor type checks and order of operations in root package.json
-[] Linter update
 
 ---
 

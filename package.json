@@ -10,7 +10,7 @@
 		"format": "prettier --write .",
 		"check-types": "bun run --filter '*' check-types",
 		"build": "bun run --filter '*' build",
-		"logs": "tail -f ~/.tradeshell/debug.log | bunx pino-pretty -t 'HH:MM:ss' --ignore pid,hostname,context --messageFormat '({context}) {msg}'"
+		"logs": "tail -F ~/.tradeshell/debug.1.log | bunx pino-pretty -t 'HH:MM:ss' --ignore pid,hostname,context --messageFormat '({context}) {msg}'"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^20.3.1",

@@ -1,4 +1,10 @@
-import { BlockchainService, ConfigService, WalletService } from '@tradeshell/core';
+import {
+	AgentService,
+	BlockchainService,
+	ChatsService,
+	ConfigService,
+	WalletService,
+} from '@tradeshell/core';
 import { EventEmitter } from 'events';
 import type { RpcHandlers, RpcRequest } from './rpc.types.js';
 import { validateRpcArgs } from './validation.js';
@@ -6,11 +12,14 @@ import { validateRpcArgs } from './validation.js';
 const emitter = new EventEmitter();
 const configService = new ConfigService(emitter);
 const walletService = new WalletService(emitter);
-
-// cole: we list all services which are purely for event-driven logic this way
-void new BlockchainService(configService, walletService, emitter);
+const chatsService = new ChatsService();
+const blockchainService = new BlockchainService(configService, walletService, emitter);
+const agentService = new AgentService(chatsService, configService, blockchainService, emitter);
 
 await configService.init();
+await chatsService.init();
+await blockchainService.tryInitialize();
+await agentService.tryInitialize();
 
 const handlers: RpcHandlers = {
 	// Config
@@ -47,6 +56,15 @@ const handlers: RpcHandlers = {
 	}),
 	walletSetActive: (args) => walletService.setActiveWallet(args.address),
 	walletDelete: (args) => walletService.deleteWallet(args.address),
+
+	// Agent
+	agentProcessMessage: async (args) => {
+		const text = await agentService.processMessage(args.input, args.chatId);
+		return { text };
+	},
+	agentGetChats: () => chatsService.getChats().then((chats) => ({ chats })),
+	agentGetChat: (args) => chatsService.getChat(args.chatId),
+	agentDeleteChat: (args) => chatsService.deleteChat(args.chatId),
 };
 
 self.onmessage = async (event: MessageEvent<RpcRequest>) => {

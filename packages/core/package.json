@@ -17,9 +17,14 @@
 		"check-types": "tsc --noEmit"
 	},
 	"dependencies": {
+		"@ai-sdk/anthropic": "^3.0.45",
+		"@ai-sdk/groq": "^3.0.24",
+		"@ai-sdk/openai": "^3.0.30",
+		"ai": "^6.0.92",
+		"dotenv": "^17.3.1",
 		"pino": "^10.3.1",
 		"viem": "^2.44.4",
-		"zod": "^3.21.4"
+		"zod": "^4.3.6"
 	},
 	"devDependencies": {
 		"@types/node": "^22.10.7",

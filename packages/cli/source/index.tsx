@@ -54,7 +54,7 @@ export default function Index() {
 			case COMMANDS.r.name:
 				return { id, output: <Reload /> };
 			default:
-				return { id, output: <Chat message={[cmd, ...args].join(' ')} /> };
+				return { id, output: <Chat message={[cmd, ...args].join(' ')} entryId={id} /> };
 		}
 	};
 
