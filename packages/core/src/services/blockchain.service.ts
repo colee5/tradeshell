@@ -21,15 +21,21 @@ export class BlockchainService {
 		noWalletUnlocked: () => new NotInitializedError('No wallet unlocked'),
 	};
 
+	private readonly configService: ConfigService;
+	private readonly walletService: WalletService;
+	private readonly emitter: EventEmitter;
 	private publicClient: PublicClient | null = null;
 	private walletClient: WalletClient | null = null;
 	private config: Config | null = null;
 
-	constructor(
-		private readonly configService: ConfigService,
-		private readonly walletService: WalletService,
-		private readonly emitter: EventEmitter,
-	) {
+	constructor(deps: {
+		configService: ConfigService;
+		walletService: WalletService;
+		emitter: EventEmitter;
+	}) {
+		this.configService = deps.configService;
+		this.walletService = deps.walletService;
+		this.emitter = deps.emitter;
 		this.emitter.on(CONFIG_EVENTS.BLOCKCHAIN_UPDATED, () => this.handleBlockchainConfigUpdated());
 		this.emitter.on(WALLET_EVENTS.UNLOCKED, () => this.handleWalletUnlocked());
 		this.emitter.on(WALLET_EVENTS.SWITCHED, () => this.handleWalletSwitched());

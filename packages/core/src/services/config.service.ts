@@ -15,9 +15,12 @@ export class ConfigService {
 		saveFailed: (cause: unknown) => new BadRequestError(`Failed to save config: ${cause}`),
 	};
 
+	private readonly emitter: EventEmitter;
 	private config: Config = {};
 
-	constructor(private readonly emitter: EventEmitter) {}
+	constructor(deps: { emitter: EventEmitter }) {
+		this.emitter = deps.emitter;
+	}
 
 	async init(): Promise<void> {
 		const exists = await this.exists();

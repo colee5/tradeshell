@@ -21,16 +21,22 @@ export class AgentService {
 			new LlmError(error instanceof Error ? error.message : 'Unknown error'),
 	};
 
+	private readonly chatsService: ChatsService;
+	private readonly configService: ConfigService;
+	private readonly emitter: EventEmitter;
 	private readonly tools;
 	private model: LanguageModel | undefined;
 
-	constructor(
-		private readonly chatsService: ChatsService,
-		private readonly configService: ConfigService,
-		private readonly emitter: EventEmitter,
-		blockchainService: BlockchainService,
-	) {
-		this.tools = createTools({ blockchainService });
+	constructor(deps: {
+		chatsService: ChatsService;
+		configService: ConfigService;
+		blockchainService: BlockchainService;
+		emitter: EventEmitter;
+	}) {
+		this.chatsService = deps.chatsService;
+		this.configService = deps.configService;
+		this.emitter = deps.emitter;
+		this.tools = createTools({ blockchainService: deps.blockchainService });
 		this.emitter.on(CONFIG_EVENTS.LLM_UPDATED, () => this.handleLlmConfigUpdated());
 	}
 
