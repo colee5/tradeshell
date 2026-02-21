@@ -79,6 +79,12 @@ export class ConfigService {
 		return emptyConfig;
 	}
 
+	async reset(): Promise<Config> {
+		this.logger.log('Resetting config');
+		await this.save({});
+		return this.config;
+	}
+
 	async updateLlm(llm: LlmConfig): Promise<Config> {
 		this.logger.log('Updating LLM config');
 		this.config.llm = llm;

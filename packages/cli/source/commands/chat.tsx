@@ -27,7 +27,7 @@ export function Chat({ message, entryId }: Props) {
 				onSuccess: (data) => {
 					replaceEntry({
 						id: entryId,
-						output: <Text>{data.text}</Text>,
+						output: <Text>{data}</Text>,
 					});
 				},
 				onError: (error) => {

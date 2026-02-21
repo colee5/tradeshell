@@ -10,11 +10,11 @@ import type { RpcHandlers, RpcRequest } from './rpc.types.js';
 import { validateRpcArgs } from './validation.js';
 
 const emitter = new EventEmitter();
-const configService = new ConfigService(emitter);
-const walletService = new WalletService(emitter);
 const chatsService = new ChatsService();
-const blockchainService = new BlockchainService(configService, walletService, emitter);
-const agentService = new AgentService(chatsService, configService, blockchainService, emitter);
+const configService = new ConfigService({ emitter });
+const walletService = new WalletService({ emitter });
+const blockchainService = new BlockchainService({ configService, walletService, emitter });
+const agentService = new AgentService({ chatsService, configService, blockchainService, emitter });
 
 await configService.init();
 await chatsService.init();
@@ -26,10 +26,7 @@ const handlers: RpcHandlers = {
 	getConfig: () => configService.get(),
 	updateLlmConfig: (args) => configService.updateLlm(args),
 	updateBlockchainConfig: (args) => configService.updateBlockchain(args),
-	resetConfig: async () => {
-		await configService.save({});
-		return configService.get();
-	},
+	resetConfig: () => configService.reset(),
 	getChains: () => configService.getChains(),
 
 	// Wallet
@@ -38,31 +35,15 @@ const handlers: RpcHandlers = {
 	walletLock: () => walletService.lock(),
 	walletCheckPassword: (args) => walletService.checkPassword(args.password),
 	walletChangePassword: (args) => walletService.changePassword(args.oldPassword, args.newPassword),
-	walletAdd: async (args) => {
-		const address = await walletService.addWallet(
-			args.privateKey,
-			args.name,
-			args.setActive ?? true,
-		);
-		return { address };
-	},
-	walletList: () => ({ wallets: walletService.getWallets() }),
-	walletGetStatus: () => ({
-		isSetup: walletService.isSetup(),
-		isUnlocked: walletService.isUnlocked(),
-		activeAddress: walletService.getActiveAccountInfo()?.address ?? null,
-		activeName: walletService.getActiveAccountInfo()?.name ?? null,
-		walletCount: walletService.getWalletCount(),
-	}),
+	walletAdd: (args) => walletService.addWallet(args.privateKey, args.name, args.setActive ?? true),
+	walletList: () => walletService.getWallets(),
+	walletGetStatus: () => walletService.getStatus(),
 	walletSetActive: (args) => walletService.setActiveWallet(args.address),
 	walletDelete: (args) => walletService.deleteWallet(args.address),
 
 	// Agent
-	agentProcessMessage: async (args) => {
-		const text = await agentService.processMessage(args.input, args.chatId);
-		return { text };
-	},
-	agentGetChats: () => chatsService.getChats().then((chats) => ({ chats })),
+	agentProcessMessage: (args) => agentService.processMessage(args.input, args.chatId),
+	agentGetChats: () => chatsService.getChats(),
 	agentGetChat: (args) => chatsService.getChat(args.chatId),
 	agentDeleteChat: (args) => chatsService.deleteChat(args.chatId),
 };

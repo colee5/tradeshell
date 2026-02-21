@@ -5,6 +5,7 @@ import type { PrivateKeyAccount } from 'viem/accounts';
 import { privateKeyToAccount } from 'viem/accounts';
 import { WALLET_EVENTS } from '../constants/events.js';
 import { TRADESHELL_DIR, WALLETS_PATH } from '../constants/paths.js';
+import type { WalletStatus } from '../types/wallet.types.js';
 import type { EncryptedData, MasterKeyData } from '../utils/crypto.utils.js';
 import {
 	decryptMasterKey,
@@ -174,7 +175,7 @@ export class WalletService {
 		this.logger.log('Master password changed successfully');
 	}
 
-	async addWallet(privateKey: string, name: string, setActive = true): Promise<string> {
+	async addWallet(privateKey: string, name: string, setActive = true): Promise<void> {
 		if (!this.isUnlocked()) {
 			throw this.errors.walletsLocked();
 		}
@@ -215,8 +216,6 @@ export class WalletService {
 
 		this.emitter.emit(WALLET_EVENTS.UNLOCKED);
 		this.logger.log(`Wallet added: ${account.address} (${name})`);
-
-		return account.address;
 	}
 
 	async deleteWallet(address: string): Promise<void> {
@@ -295,6 +294,18 @@ export class WalletService {
 		return null;
 	}
 
+	getStatus(): WalletStatus {
+		const activeInfo = this.getActiveAccountInfo();
+
+		return {
+			isSetup: this.walletsFileExists,
+			isUnlocked: this.masterKey !== null,
+			activeAddress: activeInfo?.address ?? null,
+			activeName: activeInfo?.name ?? null,
+			walletCount: this.wallets.size,
+		};
+	}
+
 	getWallets(): Array<{ address: string; name: string; isActive: boolean }> {
 		const wallets = Array.from(this.wallets.values()).map((w) => ({
 			address: w.address,
@@ -305,15 +316,7 @@ export class WalletService {
 		return wallets;
 	}
 
-	getWalletCount(): number {
-		return this.wallets.size;
-	}
-
-	isSetup(): boolean {
-		return this.walletsFileExists;
-	}
-
-	isUnlocked(): boolean {
+	private isUnlocked(): boolean {
 		return this.masterKey !== null;
 	}
 }
