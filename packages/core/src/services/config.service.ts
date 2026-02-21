@@ -4,10 +4,17 @@ import { CHAIN_BY_ID, type SerializableChain } from '../constants/chains.js';
 import { CONFIG_EVENTS } from '../constants/events.js';
 import { CONFIG_PATH, TRADESHELL_DIR } from '../constants/paths.js';
 import type { BlockchainConfig, Config, LlmConfig } from '../types/config.types.js';
+import { BadRequestError } from './errors.js';
 import { createLogger } from './logger.js';
 
 export class ConfigService {
 	private readonly logger = createLogger(ConfigService.name);
+
+	private readonly errors = {
+		loadFailed: (cause: unknown) => new BadRequestError(`Failed to load config: ${cause}`),
+		saveFailed: (cause: unknown) => new BadRequestError(`Failed to save config: ${cause}`),
+	};
+
 	private config: Config = {};
 
 	constructor(private readonly emitter: EventEmitter) {}
@@ -42,7 +49,7 @@ export class ConfigService {
 			return this.config;
 		} catch (error) {
 			this.logger.error('Failed to load config', error);
-			throw new Error(`Failed to load config: ${error}`);
+			throw this.errors.loadFailed(error);
 		}
 	}
 
@@ -54,7 +61,7 @@ export class ConfigService {
 			this.config = config;
 		} catch (error) {
 			this.logger.error('Failed to save config', error);
-			throw new Error(`Failed to save config: ${error}`);
+			throw this.errors.saveFailed(error);
 		}
 	}
 

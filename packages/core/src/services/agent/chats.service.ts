@@ -24,6 +24,10 @@ export type Chat = {
 export class ChatsService {
 	private readonly logger = createLogger(ChatsService.name);
 
+	private readonly errors = {
+		chatNotFound: (chatId: string) => new NotFoundError(`Chat not found: ${chatId}`),
+	};
+
 	async init(): Promise<void> {
 		await fs.mkdir(CHATS_DIR, { recursive: true });
 	}
@@ -74,7 +78,7 @@ export class ChatsService {
 		const chat = await this.getChat(chatId);
 
 		if (!chat) {
-			throw new NotFoundError(`Chat with ID: ${chatId} is not found, please use createChat first`);
+			throw this.errors.chatNotFound(chatId);
 		}
 
 		chat.messages.push({ role, content });
@@ -86,7 +90,7 @@ export class ChatsService {
 			await fs.unlink(this.chatPath(chatId));
 			this.logger.log(`Deleted chat: ${chatId}`);
 		} catch {
-			throw new NotFoundError(`Chat not found: ${chatId}`);
+			throw this.errors.chatNotFound(chatId);
 		}
 	}
 
