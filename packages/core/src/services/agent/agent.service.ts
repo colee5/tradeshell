@@ -12,16 +12,31 @@ import { createTools } from './tools/index.js';
 
 export class AgentService {
 	private readonly logger = createLogger(AgentService.name);
+
+	private readonly errors = {
+		notConfigured: () =>
+			new NotInitializedError('LLM is not configured. Please set up your LLM provider first.'),
+		apiCallFailed: (message: string, statusCode?: number) => new LlmError(message, statusCode),
+		unknown: (error: unknown) =>
+			new LlmError(error instanceof Error ? error.message : 'Unknown error'),
+	};
+
+	private readonly chatsService: ChatsService;
+	private readonly configService: ConfigService;
+	private readonly emitter: EventEmitter;
 	private readonly tools;
 	private model: LanguageModel | undefined;
 
-	constructor(
-		private readonly chatsService: ChatsService,
-		private readonly configService: ConfigService,
-		private readonly blockchainService: BlockchainService,
-		private readonly emitter: EventEmitter,
-	) {
-		this.tools = createTools({ blockchainService });
+	constructor(deps: {
+		chatsService: ChatsService;
+		configService: ConfigService;
+		blockchainService: BlockchainService;
+		emitter: EventEmitter;
+	}) {
+		this.chatsService = deps.chatsService;
+		this.configService = deps.configService;
+		this.emitter = deps.emitter;
+		this.tools = createTools({ blockchainService: deps.blockchainService });
 		this.emitter.on(CONFIG_EVENTS.LLM_UPDATED, () => this.handleLlmConfigUpdated());
 	}
 
@@ -40,9 +55,7 @@ export class AgentService {
 
 	async processMessage(input: string, chatId: string): Promise<string> {
 		if (!this.model) {
-			throw new NotInitializedError(
-				'LLM is not configured. Please set up your LLM provider first.',
-			);
+			throw this.errors.notConfigured();
 		}
 
 		const chat = await this.chatsService.getChat(chatId);
@@ -72,10 +85,10 @@ export class AgentService {
 		} catch (error) {
 			if (APICallError.isInstance(error)) {
 				this.logger.log(`API call failed (${error.statusCode}): ${error.message}`);
-				throw new LlmError(error.message, error.statusCode);
+				throw this.errors.apiCallFailed(error.message, error.statusCode);
 			}
 
-			throw new LlmError(error instanceof Error ? error.message : 'Unknown error');
+			throw this.errors.unknown(error);
 		}
 	}
 

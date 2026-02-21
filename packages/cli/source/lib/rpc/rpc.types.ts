@@ -22,18 +22,15 @@ export type RpcMethods = {
 	walletLock: { args: void; return: void };
 	walletCheckPassword: { args: { password: string }; return: void };
 	walletChangePassword: { args: { oldPassword: string; newPassword: string }; return: void };
-	walletAdd: {
-		args: { privateKey: string; name: string; setActive?: boolean };
-		return: { address: string };
-	};
-	walletList: { args: void; return: { wallets: WalletInfo[] } };
+	walletAdd: { args: { privateKey: string; name: string; setActive?: boolean }; return: void };
+	walletList: { args: void; return: WalletInfo[] };
 	walletGetStatus: { args: void; return: WalletStatus };
 	walletSetActive: { args: { address: string }; return: void };
 	walletDelete: { args: { address: string }; return: void };
 
 	// Agent
-	agentProcessMessage: { args: { input: string; chatId: string }; return: { text: string } };
-	agentGetChats: { args: void; return: { chats: Chat[] } };
+	agentProcessMessage: { args: { input: string; chatId: string }; return: string };
+	agentGetChats: { args: void; return: Chat[] };
 	agentGetChat: { args: { chatId: string }; return: Chat | undefined };
 	agentDeleteChat: { args: { chatId: string }; return: void };
 };

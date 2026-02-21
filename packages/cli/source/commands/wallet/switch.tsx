@@ -1,14 +1,14 @@
 import { Box, Text } from 'ink';
-import { SelectList } from '../../components/select-list.js';
 import Spinner from 'ink-spinner';
+import { useSetAtom } from 'jotai';
 import React, { useState } from 'react';
 import { SetupComplete } from '../../components/onboard/setup-complete.js';
+import { SelectList } from '../../components/select-list.js';
+import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
 import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
 import { useGetWalletList, useWalletSetActive } from '../../lib/hooks/wallet-hooks.js';
-import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
 import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
-import { useSetAtom } from 'jotai';
 
 enum SwitchStep {
 	Select = 'select',
@@ -54,7 +54,7 @@ export function WalletSwitch() {
 		);
 	}
 
-	if (!walletList?.wallets.length) {
+	if (!walletList?.length) {
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
 				<Text dimColor>No wallets found. Use /wallet add to add one.</Text>
@@ -71,7 +71,7 @@ export function WalletSwitch() {
 	}
 
 	if (step === SwitchStep.Select) {
-		const items = walletList.wallets.map((wallet) => ({
+		const items = walletList.map((wallet) => ({
 			label: `${wallet.name} ${wallet.address}${wallet.isActive ? ' (active)' : ''}`,
 			value: wallet.address,
 		}));
@@ -85,7 +85,7 @@ export function WalletSwitch() {
 					<SelectList
 						items={items}
 						onSelect={(item) => {
-							const wallet = walletList.wallets.find((w) => w.address === item.value);
+							const wallet = walletList.find((w) => w.address === item.value);
 							if (wallet?.isActive) {
 								modal.dismiss();
 								return;

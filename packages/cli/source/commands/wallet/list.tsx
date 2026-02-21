@@ -22,7 +22,7 @@ export function WalletList({ entryId }: Props) {
 			hasReplaced.current = true;
 			replaceEntry({
 				id: entryId,
-				output: walletList.wallets.length ? (
+				output: walletList.length ? (
 					<Box
 						flexDirection="column"
 						borderStyle="round"
@@ -30,7 +30,7 @@ export function WalletList({ entryId }: Props) {
 						paddingX={2}
 						paddingY={1}
 					>
-						{walletList.wallets.map((wallet) => (
+						{walletList.map((wallet) => (
 							<Box key={wallet.address} flexDirection="row" gap={1}>
 								<Text color="white">{wallet.name}</Text>
 								<Text dimColor>{wallet.address}</Text>

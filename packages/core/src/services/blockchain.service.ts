@@ -5,21 +5,37 @@ import { CHAIN_BY_ID } from '../constants/chains.js';
 import { CONFIG_EVENTS, WALLET_EVENTS } from '../constants/events.js';
 import type { Config } from '../types/config.types.js';
 import type { ConfigService } from './config.service.js';
+import { BadRequestError, NotInitializedError } from './errors.js';
 import { createLogger } from './logger.js';
 import type { WalletService } from './wallet.service.js';
 
 export class BlockchainService {
 	private readonly logger = createLogger(BlockchainService.name);
+
+	private readonly errors = {
+		unsupportedChain: (chainId: number) => new BadRequestError(`Unsupported chainId: ${chainId}`),
+		notInitialized: () => new NotInitializedError('Blockchain not initialized yet'),
+		notConfigured: () => new NotInitializedError('Blockchain not configured'),
+		walletNotReady: () =>
+			new NotInitializedError('Wallet client not initialized. Please unlock a wallet first.'),
+		noWalletUnlocked: () => new NotInitializedError('No wallet unlocked'),
+	};
+
+	private readonly configService: ConfigService;
+	private readonly walletService: WalletService;
+	private readonly emitter: EventEmitter;
 	private publicClient: PublicClient | null = null;
 	private walletClient: WalletClient | null = null;
 	private config: Config | null = null;
 
-	constructor(
-		private readonly configService: ConfigService,
-		private readonly walletService: WalletService,
-		private readonly emitter: EventEmitter,
-	) {
-		// Wire up event listeners
+	constructor(deps: {
+		configService: ConfigService;
+		walletService: WalletService;
+		emitter: EventEmitter;
+	}) {
+		this.configService = deps.configService;
+		this.walletService = deps.walletService;
+		this.emitter = deps.emitter;
 		this.emitter.on(CONFIG_EVENTS.BLOCKCHAIN_UPDATED, () => this.handleBlockchainConfigUpdated());
 		this.emitter.on(WALLET_EVENTS.UNLOCKED, () => this.handleWalletUnlocked());
 		this.emitter.on(WALLET_EVENTS.SWITCHED, () => this.handleWalletSwitched());
@@ -45,7 +61,7 @@ export class BlockchainService {
 		const chain = CHAIN_BY_ID[chainId];
 
 		if (!chain) {
-			throw new Error(`Unsupported chainId: ${chainId}`);
+			throw this.errors.unsupportedChain(chainId);
 		}
 
 		const transport = http(rpcUrl || undefined);
@@ -73,7 +89,7 @@ export class BlockchainService {
 
 	getPublicClient(): PublicClient {
 		if (!this.publicClient) {
-			throw new Error('Blockchain not initialized yet');
+			throw this.errors.notInitialized();
 		}
 
 		return this.publicClient;
@@ -81,7 +97,7 @@ export class BlockchainService {
 
 	getWalletClient(): WalletClient {
 		if (!this.walletClient) {
-			throw new Error('Wallet client not initialized. Please unlock a wallet first.');
+			throw this.errors.walletNotReady();
 		}
 
 		return this.walletClient;
@@ -90,13 +106,13 @@ export class BlockchainService {
 	// Initialize or update the wallet client when a wallet is unlocked
 	initializeWalletClient(): void {
 		if (!this.config?.blockchain?.chainId) {
-			throw new Error('Blockchain not configured');
+			throw this.errors.notConfigured();
 		}
 
 		const account = this.walletService.getActiveAccount();
 
 		if (!account) {
-			throw new Error('No wallet unlocked');
+			throw this.errors.noWalletUnlocked();
 		}
 
 		const { chainId, rpcUrl } = this.config.blockchain;

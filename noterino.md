@@ -37,14 +37,14 @@ STAGE 3: Private key storing and safety
 [x] Audit logging - Log all wallet operations (deploys, transactions) to ~/.tradeshell/audit.log
 [x] wallet /add command on the client should be guarded if wallet is locked.
 
-# [x] wallet /add command on the client should be guarded if wallet is locked.
-
 STAGE 4: Agent service, extensible folder structure /tools in the agent module
+[x] Agent architecture with chats service
+[x] Tool call setup
+[x] llm.service which will store the model initialization and revalidate on update config event
+[] Tool execution confirmation - For dangerous operations (deploy, transfer), require explicit user confirmation
 [] Find a toolcall structure which the LLM can prompt user to confirm/select etc - ZOD validated
-[] llm.service which will store the model initialization and revalidate on update config event
 [] Tool response schemas - Zod validation for tool outputs (not just inputs)
 [] Agent streaming - Real-time agent thinking/progress display in CLI
-[] Tool execution confirmation - For dangerous operations (deploy, transfer), require explicit user confirmation
 
 STAGE 5: Wallet Operations
 [x] Wallet list command - List all deployed/imported wallets

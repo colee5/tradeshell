@@ -56,7 +56,7 @@ export function WalletDelete() {
 		);
 	}
 
-	if (!walletList?.wallets.length) {
+	if (!walletList?.length) {
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
 				<Text dimColor>No wallets found. Use /wallet add to add one.</Text>
@@ -74,7 +74,7 @@ export function WalletDelete() {
 
 	if (step === DeleteStep.Select) {
 		const items = [
-			...walletList.wallets.map((wallet) => ({
+			...walletList.map((wallet) => ({
 				label: `${wallet.name} ${wallet.address}${wallet.isActive ? ' (active)' : ''}`,
 				value: wallet.address,
 			})),
@@ -95,7 +95,7 @@ export function WalletDelete() {
 								return;
 							}
 
-							const wallet = walletList.wallets.find((w) => w.address === item.value);
+							const wallet = walletList.find((w) => w.address === item.value);
 							setSelectedAddress(item.value);
 							setSelectedName(wallet?.name || '');
 							setStep(DeleteStep.Confirm);
