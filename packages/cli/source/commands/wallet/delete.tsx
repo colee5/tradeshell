@@ -56,7 +56,7 @@ export function WalletDelete() {
 		);
 	}
 
-	if (!walletList?.wallets.length) {
+	if (!walletList?.length) {
 		return (
 			<Box flexDirection="column" paddingX={2} paddingY={1}>
 				<Text dimColor>No wallets found. Use /wallet add to add one.</Text>
