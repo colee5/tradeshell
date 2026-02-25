@@ -14,6 +14,7 @@ const schema = {
 	}),
 };
 
+// TODO: add a prop to control where the current agent is spawned at
 export function executeCommandTool() {
 	return tool({
 		...schema,
