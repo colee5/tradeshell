@@ -1,5 +1,6 @@
 import {
 	addWalletInputSchema,
+	agentDecideToolCallsSchema,
 	agentProcessMessageSchema,
 	BadRequestError,
 	blockchainConfigSchema,
@@ -30,6 +31,7 @@ export const rpcValidationSchemas: Partial<Record<keyof RpcMethods, z.ZodType>> 
 
 	// Agent
 	agentProcessMessage: agentProcessMessageSchema,
+	agentDecideToolCalls: agentDecideToolCallsSchema,
 	agentGetChat: chatIdSchema,
 	agentDeleteChat: chatIdSchema,
 };

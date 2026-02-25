@@ -38,7 +38,8 @@ export function WalletStatus({ entryId }: Props) {
 				id: entryId,
 				output: (
 					<Text color="red">
-						Failed to fetch wallet status: {error instanceof Error ? error.message : 'Unknown error'}
+						Failed to fetch wallet status:{' '}
+						{error instanceof Error ? error.message : 'Unknown error'}
 					</Text>
 				),
 			});

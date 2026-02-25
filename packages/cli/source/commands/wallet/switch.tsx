@@ -5,9 +5,9 @@ import React, { useState } from 'react';
 import { SetupComplete } from '../../components/onboard/setup-complete.js';
 import { SelectList } from '../../components/select-list.js';
 import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
-import { SETUP_COMPLETE_TIMEOUT_MS } from '../../lib/constants/index.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
 import { useGetWalletList, useWalletSetActive } from '../../lib/hooks/wallet-hooks.js';
+import { resetChatIdAtom } from '../../lib/store/chat.atom.js';
 import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
 
 enum SwitchStep {
@@ -25,6 +25,7 @@ export function WalletSwitch() {
 	const { mutate: setActive, error: switchError } = useWalletSetActive();
 	const modal = useModal();
 	const pushCommandLog = useSetAtom(pushCommandLogAtom);
+	const resetChatId = useSetAtom(resetChatIdAtom);
 
 	if (isLoading) {
 		return (
@@ -97,14 +98,14 @@ export function WalletSwitch() {
 								{ address: item.value },
 								{
 									onSuccess: () => {
+										resetChatId();
 										setStep(SwitchStep.Complete);
-										setTimeout(() => {
-											pushCommandLog({
-												input: `${COMMANDS.wallet.label} ${WalletSubcommands.SWITCH}`,
-												output: <Text color="green">Switched to &quot;{wallet?.name}&quot;</Text>,
-											});
-											modal.dismiss();
-										}, SETUP_COMPLETE_TIMEOUT_MS);
+
+										pushCommandLog({
+											input: `${COMMANDS.wallet.label} ${WalletSubcommands.SWITCH}`,
+											output: <Text color="green">Switched to &quot;{wallet?.name}&quot;</Text>,
+										});
+										modal.dismiss();
 									},
 									onError: () => {
 										setStep(SwitchStep.Error);

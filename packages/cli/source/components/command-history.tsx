@@ -12,7 +12,7 @@ export function CommandHistory() {
 		<Box flexDirection="column">
 			{commandLog.map((entry, index) => (
 				<Box key={entry.id} marginY={index > 0 ? 0.5 : 0} flexDirection="column">
-					<Text backgroundColor={GRAY_HIGHLIGHT}>
+					<Text dimColor backgroundColor={GRAY_HIGHLIGHT}>
 						{' '}
 						<Text color="green">{figureSet.pointer} </Text>
 						{entry.input}{' '}

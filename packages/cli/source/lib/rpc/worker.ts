@@ -14,7 +14,13 @@ const chatsService = new ChatsService();
 const configService = new ConfigService({ emitter });
 const walletService = new WalletService({ emitter });
 const blockchainService = new BlockchainService({ configService, walletService, emitter });
-const agentService = new AgentService({ chatsService, configService, blockchainService, emitter });
+const agentService = new AgentService({
+	chatsService,
+	configService,
+	blockchainService,
+	walletService,
+	emitter,
+});
 
 await configService.init();
 await chatsService.init();
@@ -43,6 +49,7 @@ const handlers: RpcHandlers = {
 
 	// Agent
 	agentProcessMessage: (args) => agentService.processMessage(args.input, args.chatId),
+	agentDecideToolCalls: (args) => agentService.decideToolCalls(args.chatId, args.decisions),
 	agentGetChats: () => chatsService.getChats(),
 	agentGetChat: (args) => chatsService.getChat(args.chatId),
 	agentDeleteChat: (args) => chatsService.deleteChat(args.chatId),
