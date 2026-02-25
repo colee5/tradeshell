@@ -180,8 +180,8 @@ export class WalletService {
 			throw this.errors.walletsLocked();
 		}
 
-		// Create account to get address
-		const account = privateKeyToAccount(privateKey as Hash);
+		const normalizedKey = privateKey.startsWith('0x') ? privateKey : `0x${privateKey}`;
+		const account = privateKeyToAccount(normalizedKey as Hash);
 		const address = account.address.toLowerCase();
 
 		if (this.wallets.has(address)) {
@@ -195,8 +195,7 @@ export class WalletService {
 			}
 		}
 
-		// Encrypt and store
-		const encryptedPrivateKey = encryptPrivateKey(privateKey, this.masterKey!);
+		const encryptedPrivateKey = encryptPrivateKey(normalizedKey, this.masterKey!);
 
 		const wallet = {
 			address: account.address,
@@ -279,7 +278,8 @@ export class WalletService {
 		const activeInfo = this.getActiveAccountInfo();
 		if (!activeInfo) return null;
 
-		const privateKey = decryptPrivateKey(activeInfo.encryptedPrivateKey, this.masterKey!);
+		const raw = decryptPrivateKey(activeInfo.encryptedPrivateKey, this.masterKey!);
+		const privateKey = raw.startsWith('0x') ? raw : `0x${raw}`;
 		return privateKeyToAccount(privateKey as Hash);
 	}
 
@@ -316,7 +316,7 @@ export class WalletService {
 		return wallets;
 	}
 
-	private isUnlocked(): boolean {
+	isUnlocked(): boolean {
 		return this.masterKey !== null;
 	}
 }
