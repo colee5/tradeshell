@@ -61,6 +61,8 @@
 		]
 	},
 	"dependencies": {
+		"@trpc/client": "^11.10.0",
+		"@trpc/server": "^11.10.0",
 		"pino-roll": "^4.0.0"
 	}
 }

@@ -1,25 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { call } from '../rpc/rpc.client.js';
-import type { RpcMethods } from '../rpc/rpc.types.js';
-
-type Args<M extends keyof RpcMethods> = RpcMethods[M]['args'];
+import { trpc } from '../rpc/rpc.client.js';
 
 export const useGetWalletStatus = () =>
 	useQuery({
 		queryKey: ['wallet', 'status'],
-		queryFn: () => call('walletGetStatus', undefined),
+		queryFn: () => trpc.walletGetStatus.query(),
 	});
 
 export const useGetWalletList = () =>
 	useQuery({
 		queryKey: ['wallet', 'list'],
-		queryFn: () => call('walletList', undefined),
+		queryFn: () => trpc.walletList.query(),
 	});
 
 export const useWalletSetup = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (data: Args<'walletSetup'>) => call('walletSetup', data),
+		mutationFn: (data: Parameters<typeof trpc.walletSetup.mutate>[0]) =>
+			trpc.walletSetup.mutate(data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'status'] });
 		},
@@ -29,7 +27,8 @@ export const useWalletSetup = () => {
 export const useWalletUnlock = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (data: Args<'walletUnlock'>) => call('walletUnlock', data),
+		mutationFn: (data: Parameters<typeof trpc.walletUnlock.mutate>[0]) =>
+			trpc.walletUnlock.mutate(data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'status'] });
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'list'] });
@@ -40,7 +39,7 @@ export const useWalletUnlock = () => {
 export const useWalletLock = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: () => call('walletLock', undefined),
+		mutationFn: () => trpc.walletLock.mutate(),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'status'] });
 		},
@@ -50,7 +49,7 @@ export const useWalletLock = () => {
 export const useWalletAdd = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (data: Args<'walletAdd'>) => call('walletAdd', data),
+		mutationFn: (data: Parameters<typeof trpc.walletAdd.mutate>[0]) => trpc.walletAdd.mutate(data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'list'] });
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'status'] });
@@ -61,7 +60,8 @@ export const useWalletAdd = () => {
 export const useWalletDelete = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (data: Args<'walletDelete'>) => call('walletDelete', data),
+		mutationFn: (data: Parameters<typeof trpc.walletDelete.mutate>[0]) =>
+			trpc.walletDelete.mutate(data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'list'] });
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'status'] });
@@ -72,7 +72,8 @@ export const useWalletDelete = () => {
 export const useWalletSetActive = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (data: Args<'walletSetActive'>) => call('walletSetActive', data),
+		mutationFn: (data: Parameters<typeof trpc.walletSetActive.mutate>[0]) =>
+			trpc.walletSetActive.mutate(data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'list'] });
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'status'] });
@@ -82,10 +83,12 @@ export const useWalletSetActive = () => {
 
 export const useWalletCheckPassword = () =>
 	useMutation({
-		mutationFn: (data: Args<'walletCheckPassword'>) => call('walletCheckPassword', data),
+		mutationFn: (data: Parameters<typeof trpc.walletCheckPassword.mutate>[0]) =>
+			trpc.walletCheckPassword.mutate(data),
 	});
 
 export const useWalletChangePassword = () =>
 	useMutation({
-		mutationFn: (data: Args<'walletChangePassword'>) => call('walletChangePassword', data),
+		mutationFn: (data: Parameters<typeof trpc.walletChangePassword.mutate>[0]) =>
+			trpc.walletChangePassword.mutate(data),
 	});
