@@ -1,7 +1,9 @@
 import type {
+	AgentResponse,
 	BlockchainConfig,
 	Chat,
 	Config,
+	ErrorCode,
 	LlmConfig,
 	SerializableChain,
 	WalletInfo,
@@ -29,7 +31,14 @@ export type RpcMethods = {
 	walletDelete: { args: { address: string }; return: void };
 
 	// Agent
-	agentProcessMessage: { args: { input: string; chatId: string }; return: string };
+	agentProcessMessage: { args: { input: string; chatId: string }; return: AgentResponse };
+	agentDecideToolCalls: {
+		args: {
+			chatId: string;
+			decisions: Array<{ approvalId: string; approved: boolean }>;
+		};
+		return: AgentResponse;
+	};
 	agentGetChats: { args: void; return: Chat[] };
 	agentGetChat: { args: { chatId: string }; return: Chat | undefined };
 	agentDeleteChat: { args: { chatId: string }; return: void };
@@ -50,5 +59,5 @@ export type RpcRequest = {
 export type RpcResponse = {
 	id: number;
 	result?: unknown;
-	error?: { message: string; code: string };
+	error?: { message: string; code: ErrorCode | 'UNKNOWN' };
 };

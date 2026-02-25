@@ -27,6 +27,11 @@ export const useProcessMessage = () => {
 	});
 };
 
+export const useDecideToolCalls = () =>
+	useMutation({
+		mutationFn: (data: Args<'agentDecideToolCalls'>) => call('agentDecideToolCalls', data),
+	});
+
 export const useDeleteChat = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
