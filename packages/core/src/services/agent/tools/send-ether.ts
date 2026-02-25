@@ -1,11 +1,11 @@
 import { tool } from 'ai';
-import { Address, formatEther } from 'viem';
+import { formatEther } from 'viem';
 import { isAddress, isHash, parseEther } from 'viem/utils';
 import { z } from 'zod';
 import type { BlockchainService } from '../../blockchain.service.js';
 
 const schema = {
-	description: 'Send ether to a provider address',
+	description: 'Send ether to a provided address.',
 	inputSchema: z.object({
 		address: z
 			.string()
@@ -20,6 +20,7 @@ const schema = {
 			.string()
 			.refine(isHash, 'Invalid transaction hash')
 			.describe('The transaction hash'),
+		explorerUrl: z.string().nullable().describe('Block explorer URL for the transaction'),
 	}),
 };
 
@@ -44,6 +45,7 @@ export function sendEtherTool(blockchainService: BlockchainService) {
 				address: wallet.account.address,
 				newBalance: formatEther(newBalance),
 				transactionHash: hash,
+				explorerUrl: blockchainService.getExplorerUrl(hash),
 			};
 		},
 	});
