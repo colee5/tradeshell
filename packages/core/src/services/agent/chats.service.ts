@@ -1,22 +1,17 @@
 import * as crypto from 'crypto';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import type { ModelMessage } from 'ai';
 import { MAX_CHATS } from '../../constants/agent.js';
 import { CHATS_DIR } from '../../constants/paths.js';
-import { AGENT_ROLES } from '../../types/agent.types.js';
 import { NotFoundError } from '../errors.js';
 import { createLogger } from '../logger.js';
-
-export type Message = {
-	role: AGENT_ROLES;
-	content: string;
-};
 
 export type Chat = {
 	id: string;
 	name: string;
 	createdAt: number;
-	messages: Message[];
+	messages: ModelMessage[];
 };
 
 // Each chat is a single JSON file: ~/.tradeshell/chats/{id}.json
@@ -74,14 +69,14 @@ export class ChatsService {
 		return chats.sort((a, b) => b.createdAt - a.createdAt);
 	}
 
-	async addMessage(chatId: string, role: AGENT_ROLES, content: string): Promise<void> {
+	async addMessages(chatId: string, messages: ModelMessage[]): Promise<void> {
 		const chat = await this.getChat(chatId);
 
 		if (!chat) {
 			throw this.errors.chatNotFound(chatId);
 		}
 
-		chat.messages.push({ role, content });
+		chat.messages.push(...messages);
 		await fs.writeFile(this.chatPath(chatId), JSON.stringify(chat, null, 2), 'utf-8');
 	}
 
