@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import type { PublicClient, WalletClient } from 'viem';
+import type { Account, Chain, PublicClient, Transport, WalletClient } from 'viem';
 import { createPublicClient, createWalletClient, http } from 'viem';
 import { CHAIN_BY_ID } from '../constants/chains.js';
 import { CONFIG_EVENTS, WALLET_EVENTS } from '../constants/events.js';
@@ -25,7 +25,7 @@ export class BlockchainService {
 	private readonly walletService: WalletService;
 	private readonly emitter: EventEmitter;
 	private publicClient: PublicClient | null = null;
-	private walletClient: WalletClient | null = null;
+	private walletClient: WalletClient<Transport, Chain, Account> | null = null;
 	private config: Config | null = null;
 
 	constructor(deps: {
@@ -95,7 +95,7 @@ export class BlockchainService {
 		return this.publicClient;
 	}
 
-	getWalletClient(): WalletClient {
+	getWalletClient(): WalletClient<Transport, Chain, Account> {
 		if (!this.walletClient) {
 			throw this.errors.walletNotReady();
 		}
@@ -134,6 +134,11 @@ export class BlockchainService {
 
 	isInitialized(): boolean {
 		return !!this.publicClient;
+	}
+
+	getExplorerUrl(hash: string): string | null {
+		const explorer = this.publicClient?.chain?.blockExplorers?.default;
+		return explorer ? `${explorer.url}/tx/${hash}` : null;
 	}
 
 	private handleBlockchainConfigUpdated() {
