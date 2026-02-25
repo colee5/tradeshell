@@ -41,31 +41,36 @@ STAGE 4: Agent service, extensible folder structure /tools in the agent module
 [x] Agent architecture with chats service
 [x] Tool call setup
 [x] llm.service which will store the model initialization and revalidate on update config event
-[] Tool execution confirmation - For dangerous operations (deploy, transfer), require explicit user confirmation
-[] Find a toolcall structure which the LLM can prompt user to confirm/select etc - ZOD validated
-[] Tool response schemas - Zod validation for tool outputs (not just inputs)
-[] Agent streaming - Real-time agent thinking/progress display in CLI
+[x] Add client md support
+[x] Tool execution confirmation - For dangerous operations (deploy, transfer), require explicit user confirmation
+[x] Find a toolcall structure which the LLM can prompt user to confirm/select etc - ZOD validated
+[x] Tool response schemas - Zod validation for tool outputs (not just inputs)
+[] /switch wallet should not reset the whole chat
 
-STAGE 5: Wallet Operations
+STAGE 5
+[] CowSwap Service which handles spot and limit trades
+[] DCA Architecture with self-managed scheduling service - needs additional arch setup
+
+STAGE 6: Wallet Operations
 [x] Wallet list command - List all deployed/imported wallets
 [x] Wallet import - Import existing wallet via private key
-[] Balance checking - Multi-chain balance display
+[x] Balance checking - Multi-chain balance display
 [] Gas estimation - Before any transaction, show estimated gas costs
 [] Transaction history - Query and display transaction history for a wallet
 
-STAGE 6: Testing & Quality
+STAGE 7: Testing & Quality
 [x] Dev mode which spins up 3 terminals, from each /packages + the bun run logs
 [] Unit tests - For critical services (wallet, config, agent tools)
 [] Integration tests - Test CLI ↔ Server communication
 [] E2E tests - Test full agent flows (deploy wallet from start to finish)
 [] Security audit - Review all crypto operations, key storage, RPC interactions
 
-STAGE 7: DevOps & Deployment
+STAGE 8: DevOps & Deployment
 [x] Logging strategy - Structured logging (JSON) for both CLI and server
 [] Two-file binary distribution, the workers with worker.bundle.js AND the CLi with bun run --compile
 [] Graceful shutdown - Handle SIGTERM/SIGINT properly (save sessions, close connections)
 
-STAGE 8: Web feature with embedded web assets in worker bundle
+STAGE 9: Web feature with embedded web assets in worker bundle
 [] Create packages/web structure
 [] React + Vite + TanStack Query
 [] Add Bun.serve() to worker with API routes
