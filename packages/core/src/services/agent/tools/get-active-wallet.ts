@@ -3,8 +3,7 @@ import { z } from 'zod';
 import type { WalletService } from '../../wallet.service.js';
 
 const schema = {
-	description:
-		'Get the currently active wallet address and name.',
+	description: 'Get the currently active wallet address and name.',
 	inputSchema: z.object({}),
 	outputSchema: z.object({
 		address: z.string().describe('The active wallet address'),

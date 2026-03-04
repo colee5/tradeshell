@@ -3,6 +3,9 @@ import { formatEther } from 'viem';
 import { isAddress, isHash, parseEther } from 'viem/utils';
 import { z } from 'zod';
 import type { BlockchainService } from '../../blockchain.service.js';
+import { createLogger } from '../../logger.js';
+
+const logger = createLogger('BatchSendEther');
 
 const recipientSchema = z.object({
 	address: z
@@ -59,6 +62,8 @@ export function batchSendEtherTool(blockchainService: BlockchainService) {
 			const newBalance = await blockchainService
 				.getPublicClient()
 				.getBalance({ address: wallet.account.address });
+
+			logger.log(`Batch sent ${recipients.length} transactions from ${wallet.account.address}`);
 
 			return {
 				senderAddress: wallet.account.address,

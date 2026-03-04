@@ -19,13 +19,7 @@ export const LLM_MODELS: Record<LlmProvider, string[]> = {
 		'claude-sonnet-4-5-20250929',
 		'claude-opus-4-5-20251101',
 	],
-	[LlmProvider.OpenAI]: [
-		'gpt-5.2',
-		'gpt-5.2-pro',
-		'gpt-5-mini',
-		'gpt-5-nano',
-		'gpt-4.1',
-	],
+	[LlmProvider.OpenAI]: ['gpt-5.2', 'gpt-5.2-pro', 'gpt-5-mini', 'gpt-5-nano', 'gpt-4.1'],
 	[LlmProvider.Groq]: [
 		'llama-3.3-70b-versatile',
 		'llama-3.1-8b-instant',
