@@ -9,6 +9,7 @@ import { createLogger } from '../logger.js';
 import type { WalletService } from '../wallet.service.js';
 import { ChatsService } from './chats.service.js';
 import { createModel } from './providers.js';
+import { createSimulations } from './tools/simulations.js';
 import { createTools } from './tools/index.js';
 
 const SYSTEM_PROMPT = [
@@ -47,6 +48,7 @@ export class AgentService {
 	private readonly pendingApprovals = new Map<string, PendingApproval>();
 	private model: LanguageModel | undefined;
 	private readonly tools;
+	private readonly simulations;
 
 	constructor(deps: {
 		chatsService: ChatsService;
@@ -63,6 +65,7 @@ export class AgentService {
 			configService: deps.configService,
 			walletService: deps.walletService,
 		});
+		this.simulations = createSimulations(deps.blockchainService);
 		this.emitter.on(CONFIG_EVENTS.LLM_UPDATED, () => this.handleLlmConfigUpdated());
 	}
 
@@ -176,20 +179,32 @@ export class AgentService {
 			);
 
 			if (approvalRequests.length > 0) {
-				const requests = approvalRequests.map((part) => {
-					if (part.type !== ContentPartType.TOOL_APPROVAL_REQUEST) {
-						throw new Error('Unexpected content part type');
-					}
+				const config = await this.configService.get();
+				const shouldSimulate = config.simulateTransactions;
 
-					const toolDef = this.tools[part.toolCall.toolName as keyof typeof this.tools];
+				// Intercept approval requests to enrich them with simulation data (gas estimates, bridge costs).
+				// When simulateTransactions is enabled, looks up each tool in the simulations registry
+				// and merges the result into the approval args so the CLI can display it before the user confirms.
+				const requests = await Promise.all(
+					approvalRequests.map(async (part) => {
+						if (part.type !== ContentPartType.TOOL_APPROVAL_REQUEST) {
+							throw new Error('Unexpected content part type');
+						}
 
-					return {
-						approvalId: part.approvalId,
-						toolName: part.toolCall.toolName,
-						description: toolDef?.description ?? '',
-						args: part.toolCall.input as Record<string, unknown>,
-					};
-				});
+						const toolDef = this.tools[part.toolCall.toolName as keyof typeof this.tools];
+						const args = part.toolCall.input as Record<string, unknown>;
+						const simulate = this.simulations[part.toolCall.toolName];
+
+						const simulationData = shouldSimulate && simulate ? await simulate(args) : undefined;
+
+						return {
+							approvalId: part.approvalId,
+							toolName: part.toolCall.toolName,
+							description: toolDef?.description ?? '',
+							args: simulationData ? { ...args, ...simulationData } : args,
+						};
+					}),
+				);
 
 				const toolsCalled = result.steps
 					.flatMap((step) => step.toolCalls.map((tc) => tc.toolName))
