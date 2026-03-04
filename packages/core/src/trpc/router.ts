@@ -1,21 +1,24 @@
+import type { AgentService } from '../services/agent/agent.service.js';
+import { type Chat, type ChatsService } from '../services/agent/chats.service.js';
+import type { ConfigService } from '../services/config.service.js';
+import type { WalletService } from '../services/wallet.service.js';
 import {
 	agentDecideToolCallsSchema,
 	agentProcessMessageSchema,
 	chatIdSchema,
 	type AgentResponse,
 } from '../types/agent.types.js';
-import type { Chat } from '../services/agent/chats.service.js';
-import { blockchainConfigSchema, llmConfigSchema } from '../types/config.types.js';
+import {
+	blockchainConfigSchema,
+	llmConfigSchema,
+	simulateTransactionsSchema,
+} from '../types/config.types.js';
 import {
 	addWalletInputSchema,
 	walletAddressSchema,
 	walletChangePasswordSchema,
 	walletPasswordSchema,
 } from '../types/wallet.types.js';
-import type { AgentService } from '../services/agent/agent.service.js';
-import type { ChatsService } from '../services/agent/chats.service.js';
-import type { ConfigService } from '../services/config.service.js';
-import type { WalletService } from '../services/wallet.service.js';
 import { procedure, router } from './trpc.js';
 
 export type RouterDeps = {
@@ -40,6 +43,10 @@ export function createAppRouter(deps: RouterDeps) {
 			.input(blockchainConfigSchema)
 			.mutation(({ input }) => configService.updateBlockchain(input)),
 
+		updateSimulateTransactions: procedure
+			.input(simulateTransactionsSchema)
+			.mutation(({ input }) => configService.updateSimulateTransactions(input.enabled)),
+
 		resetConfig: procedure.mutation(() => configService.reset()),
 
 		getChains: procedure.query(() => configService.getChains()),
@@ -53,7 +60,9 @@ export function createAppRouter(deps: RouterDeps) {
 			.input(walletPasswordSchema)
 			.mutation(({ input }) => walletService.unlock(input.password)),
 
-		walletLock: procedure.mutation(() => walletService.lock()),
+		walletLock: procedure.mutation(() => {
+			walletService.lock();
+		}),
 
 		walletCheckPassword: procedure
 			.input(walletPasswordSchema)

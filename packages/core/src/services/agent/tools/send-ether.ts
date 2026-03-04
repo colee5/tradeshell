@@ -3,6 +3,9 @@ import { formatEther } from 'viem';
 import { isAddress, isHash, parseEther } from 'viem/utils';
 import { z } from 'zod';
 import type { BlockchainService } from '../../blockchain.service.js';
+import { createLogger } from '../../logger.js';
+
+const logger = createLogger('SendEther');
 
 const schema = {
 	description: 'Send ether to a provided address.',
@@ -28,8 +31,9 @@ export function sendEtherTool(blockchainService: BlockchainService) {
 	return tool({
 		...schema,
 		needsApproval: true,
-		execute: async ({ address, amount }) => {
+		async execute({ address, amount }) {
 			const wallet = blockchainService.getWalletClient();
+			const publicClient = blockchainService.getPublicClient();
 			const amountWei = parseEther(amount);
 
 			const hash = await wallet.sendTransaction({
@@ -37,16 +41,18 @@ export function sendEtherTool(blockchainService: BlockchainService) {
 				value: amountWei,
 			});
 
-			const newBalance = await blockchainService
-				.getPublicClient()
-				.getBalance({ address: wallet.account.address });
+			const newBalance = await publicClient.getBalance({ address: wallet.account.address });
 
-			return {
+			const result = {
 				address: wallet.account.address,
 				newBalance: formatEther(newBalance),
 				transactionHash: hash,
 				explorerUrl: blockchainService.getExplorerUrl(hash),
 			};
+
+			logger.log(`Sent ${amount} ETH to ${address} (tx: ${hash})`);
+
+			return result;
 		},
 	});
 }

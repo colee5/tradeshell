@@ -102,6 +102,13 @@ export class ConfigService {
 		return this.config;
 	}
 
+	async updateSimulateTransactions(enabled: boolean): Promise<Config> {
+		this.logger.log(`Setting simulateTransactions to ${enabled}`);
+		this.config.simulateTransactions = enabled;
+		await this.save(this.config);
+		return this.config;
+	}
+
 	getChains(): { chains: SerializableChain[] } {
 		const chains = Object.values(CHAIN_BY_ID).map((chain) => ({
 			id: chain.id,

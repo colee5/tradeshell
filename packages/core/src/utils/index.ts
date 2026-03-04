@@ -6,3 +6,4 @@ export {
 	decryptPrivateKey,
 } from './crypto.utils.js';
 export type { EncryptedData, MasterKeyData } from './crypto.utils.js';
+export { extractSimulationError } from './simulation.utils.js';

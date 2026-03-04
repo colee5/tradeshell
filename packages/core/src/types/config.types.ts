@@ -18,6 +18,11 @@ export const blockchainConfigSchema = z.object({
 export const configSchema = z.object({
 	llm: llmConfigSchema.optional(),
 	blockchain: blockchainConfigSchema.optional(),
+	simulateTransactions: z.boolean().optional(),
+});
+
+export const simulateTransactionsSchema = z.object({
+	enabled: z.boolean(),
 });
 
 // Client side schemas

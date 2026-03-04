@@ -4,6 +4,9 @@ import { isHash, parseEther } from 'viem/utils';
 import { z } from 'zod';
 import { CHAIN_BY_ID, ChainId } from '../../../constants/chains.js';
 import type { BlockchainService } from '../../blockchain.service.js';
+import { createLogger } from '../../logger.js';
+
+const logger = createLogger('BridgeEther');
 
 const LIFI_API = 'https://li.quest/v1';
 const NATIVE_TOKEN = '0x0000000000000000000000000000000000000000';
@@ -95,7 +98,7 @@ export function bridgeEtherTool(blockchainService: BlockchainService) {
 			const fromChain = CHAIN_BY_ID[fromChainId as ChainId];
 			const toChain = CHAIN_BY_ID[toChainId as ChainId];
 
-			return {
+			const result = {
 				fromChain: fromChain?.name ?? String(fromChainId),
 				toChain: toChain?.name ?? String(toChainId),
 				amount,
@@ -105,6 +108,12 @@ export function bridgeEtherTool(blockchainService: BlockchainService) {
 				transactionHash: hash,
 				explorerUrl: blockchainService.getExplorerUrl(hash),
 			};
+
+			logger.log(
+				`Bridged ${amount} ETH from ${result.fromChain} to ${result.toChain} (tx: ${hash})`,
+			);
+
+			return result;
 		},
 	});
 }

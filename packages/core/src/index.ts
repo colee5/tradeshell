@@ -22,7 +22,11 @@ export {
 	chatIdSchema,
 	type AgentResponse,
 } from './types/agent.types.js';
-export { blockchainConfigSchema, llmConfigSchema } from './types/config.types.js';
+export {
+	blockchainConfigSchema,
+	llmConfigSchema,
+	simulateTransactionsSchema,
+} from './types/config.types.js';
 export {
 	addWalletInputSchema,
 	walletAddressSchema,
@@ -38,9 +42,12 @@ export {
 } from './types/config.types.js';
 export { walletChangePasswordFormSchema, walletSetupSchema } from './types/wallet.types.js';
 
-// tRPC
+// TRPC
 export { createAppRouter } from './trpc/router.js';
 export type { AppRouter } from './trpc/router.js';
+
+// Simulation Types
+export { SimulationType, type SimulationResult } from './types/simulation.types.js';
 
 // Error Types
 export { BadRequestError, ErrorCode, LlmError, NotInitializedError } from './services/errors.js';

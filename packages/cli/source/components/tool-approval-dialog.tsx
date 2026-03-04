@@ -1,3 +1,4 @@
+import { SimulationType } from '@tradeshell/core';
 import { Box, Text } from 'ink';
 import React from 'react';
 import { BORDER_COLOR } from '../lib/constants/colors.js';
@@ -20,7 +21,8 @@ function formatValue(value: unknown): string {
 }
 
 export function ToolApprovalDialog({ toolName, description, args, onDecision, counter }: Props) {
-	const entries = Object.entries(args);
+	const isSimulationError = args['type'] === SimulationType.ERROR;
+	const entries = Object.entries(args).filter(([key]) => key !== 'type');
 	const maxKeyLength = Math.max(0, ...entries.map(([key]) => key.length));
 
 	const hasArgs = entries.length > 0;
@@ -28,7 +30,12 @@ export function ToolApprovalDialog({ toolName, description, args, onDecision, co
 
 	return (
 		<Box flexDirection="column">
-			<Box flexDirection="column" borderStyle="round" borderColor={BORDER_COLOR} paddingX={2}>
+			<Box
+				flexDirection="column"
+				borderStyle="round"
+				borderColor={isSimulationError ? 'red' : BORDER_COLOR}
+				paddingX={2}
+			>
 				{showHeader && (
 					<Text>
 						<Text bold>{toolName}</Text>
@@ -40,9 +47,9 @@ export function ToolApprovalDialog({ toolName, description, args, onDecision, co
 
 				{entries.map(([key, value]) => (
 					<Box key={key} gap={1}>
-						<Text color="gray">{key.padEnd(maxKeyLength)}</Text>
+						<Text color={isSimulationError ? 'red' : 'gray'}>{key.padEnd(maxKeyLength)}</Text>
 						<Text dimColor>→</Text>
-						<Text>{formatValue(value)}</Text>
+						<Text color={isSimulationError ? 'red' : undefined}>{formatValue(value)}</Text>
 					</Box>
 				))}
 
