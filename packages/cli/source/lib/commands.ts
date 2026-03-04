@@ -1,6 +1,7 @@
 export enum ConfigSubcommands {
 	RESET = 'reset',
 	GET = 'get',
+	SIMULATE = 'simulate',
 }
 
 export enum WalletSubcommands {
@@ -23,6 +24,11 @@ export const COMMANDS = {
 		subcommands: [
 			{ name: ConfigSubcommands.GET, label: 'get', description: 'Show current config' },
 			{ name: ConfigSubcommands.RESET, label: 'reset', description: 'Reset config to defaults' },
+			{
+				name: ConfigSubcommands.SIMULATE,
+				label: 'simulate',
+				description: 'Toggle transaction simulation mode',
+			},
 		],
 	},
 	wallet: {

@@ -3,6 +3,7 @@ import React from 'react';
 import { ConfigSubcommands } from '../../lib/commands.js';
 import { ConfigGet } from './get.js';
 import { ConfigReset } from './reset.js';
+import { ConfigSimulate } from './simulate.js';
 
 type Props = {
 	args: string[];
@@ -32,6 +33,10 @@ export function Config({ args, input, entryId }: Props) {
 
 	if (subcommand === ConfigSubcommands.RESET) {
 		return <ConfigReset input={input} entryId={entryId} />;
+	}
+
+	if (subcommand === ConfigSubcommands.SIMULATE) {
+		return <ConfigSimulate entryId={entryId} />;
 	}
 
 	return (

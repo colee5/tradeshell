@@ -23,6 +23,17 @@ export const useUpdateBlockchainConfig = () => {
 	return useMutation({
 		mutationFn: (data: Parameters<typeof trpc.updateBlockchainConfig.mutate>[0]) =>
 			trpc.updateBlockchainConfig.mutate(data),
+		onSuccess() {
+			void queryClient.invalidateQueries({ queryKey: ['config'] });
+		},
+	});
+};
+
+export const useUpdateSimulateTransactions = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (data: Parameters<typeof trpc.updateSimulateTransactions.mutate>[0]) =>
+			trpc.updateSimulateTransactions.mutate(data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['config'] });
 		},
