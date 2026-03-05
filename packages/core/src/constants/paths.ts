@@ -15,3 +15,6 @@ export const LOGS_PATH = path.join(TRADESHELL_DIR, 'debug.log');
 
 // ~/.tradeshell/chats/
 export const CHATS_DIR = path.join(TRADESHELL_DIR, 'chats');
+
+// ~/.tradeshell/transactions/
+export const TRANSACTIONS_DIR = path.join(TRADESHELL_DIR, 'transactions');

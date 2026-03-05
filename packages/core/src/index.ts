@@ -3,6 +3,7 @@ export { AgentService } from './services/agent/agent.service.js';
 export { ChatsService } from './services/agent/chats.service.js';
 export { BlockchainService } from './services/blockchain.service.js';
 export { ConfigService } from './services/config.service.js';
+export { TransactionService } from './services/transaction.service.js';
 export { WalletService } from './services/wallet.service.js';
 
 // Types

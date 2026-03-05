@@ -4,6 +4,7 @@ import { isAddress, isHash, parseEther } from 'viem/utils';
 import { z } from 'zod';
 import type { BlockchainService } from '../../blockchain.service.js';
 import { createLogger } from '../../logger.js';
+import { TransactionService } from '../../transaction.service.js';
 
 const logger = createLogger('BatchSendEther');
 
@@ -37,12 +38,16 @@ const schema = {
 	}),
 };
 
-export function batchSendEtherTool(blockchainService: BlockchainService) {
+export function batchSendEtherTool(
+	blockchainService: BlockchainService,
+	transactionService: TransactionService,
+) {
 	return tool({
 		...schema,
 		needsApproval: true,
 		execute: async ({ recipients }) => {
 			const wallet = blockchainService.getWalletClient();
+			const publicClient = blockchainService.getPublicClient();
 			const results = [];
 
 			for (const recipient of recipients) {
@@ -58,6 +63,13 @@ export function batchSendEtherTool(blockchainService: BlockchainService) {
 					explorerUrl: blockchainService.getExplorerUrl(hash),
 				});
 			}
+
+			await Promise.all(
+				results.map(async ({ transactionHash }) => {
+					const transaction = await publicClient.getTransaction({ hash: transactionHash });
+					await transactionService.saveTransaction(wallet.account.address, transaction);
+				}),
+			);
 
 			const newBalance = await blockchainService
 				.getPublicClient()

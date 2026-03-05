@@ -4,6 +4,7 @@ import { isAddress, isHash, parseEther } from 'viem/utils';
 import { z } from 'zod';
 import type { BlockchainService } from '../../blockchain.service.js';
 import { createLogger } from '../../logger.js';
+import { TransactionService } from '../../transaction.service.js';
 
 const logger = createLogger('SendEther');
 
@@ -27,7 +28,10 @@ const schema = {
 	}),
 };
 
-export function sendEtherTool(blockchainService: BlockchainService) {
+export function sendEtherTool(
+	blockchainService: BlockchainService,
+	transactionService: TransactionService,
+) {
 	return tool({
 		...schema,
 		needsApproval: true,
@@ -40,6 +44,9 @@ export function sendEtherTool(blockchainService: BlockchainService) {
 				to: address,
 				value: amountWei,
 			});
+
+			const transaction = await publicClient.getTransaction({ hash });
+			await transactionService.saveTransaction(wallet.account.address, transaction);
 
 			const newBalance = await publicClient.getBalance({ address: wallet.account.address });
 

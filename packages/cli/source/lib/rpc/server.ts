@@ -3,6 +3,7 @@ import {
 	BlockchainService,
 	ChatsService,
 	ConfigService,
+	TransactionService,
 	WalletService,
 	createAppRouter,
 } from '@tradeshell/core';
@@ -13,16 +14,19 @@ const chatsService = new ChatsService();
 const configService = new ConfigService({ emitter });
 const walletService = new WalletService({ emitter });
 const blockchainService = new BlockchainService({ configService, walletService, emitter });
+const transactionService = new TransactionService();
 const agentService = new AgentService({
 	chatsService,
 	configService,
 	blockchainService,
 	walletService,
+	transactionService,
 	emitter,
 });
 
 await configService.init();
 await chatsService.init();
+await transactionService.init();
 await blockchainService.tryInitialize();
 await agentService.tryInitialize();
 
