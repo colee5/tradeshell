@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { CHAIN_BY_ID, ChainId } from '../../../constants/chains.js';
 import type { BlockchainService } from '../../blockchain.service.js';
 import { createLogger } from '../../logger.js';
+import { TransactionService } from '../../transaction.service.js';
 
 const logger = createLogger('BridgeEther');
 
@@ -54,12 +55,16 @@ type LifiQuoteResponse = {
 	};
 };
 
-export function bridgeEtherTool(blockchainService: BlockchainService) {
+export function bridgeEtherTool(
+	blockchainService: BlockchainService,
+	transactionService: TransactionService,
+) {
 	return tool({
 		...schema,
 		needsApproval: true,
 		execute: async ({ toChainId, amount }) => {
 			const wallet = blockchainService.getWalletClient();
+			const publicClient = blockchainService.getPublicClient();
 			const fromChainId = wallet.chain.id;
 
 			if (fromChainId === toChainId) {
@@ -94,6 +99,9 @@ export function bridgeEtherTool(blockchainService: BlockchainService) {
 					? BigInt(quote.transactionRequest.gasLimit)
 					: undefined,
 			});
+
+			const transaction = await publicClient.getTransaction({ hash });
+			await transactionService.saveTransaction(wallet.account.address, transaction);
 
 			const fromChain = CHAIN_BY_ID[fromChainId as ChainId];
 			const toChain = CHAIN_BY_ID[toChainId as ChainId];

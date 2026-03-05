@@ -6,11 +6,12 @@ import type { BlockchainService } from '../blockchain.service.js';
 import type { ConfigService } from '../config.service.js';
 import { BadRequestError, LlmError, NotInitializedError } from '../errors.js';
 import { createLogger } from '../logger.js';
+import { TransactionService } from '../transaction.service.js';
 import type { WalletService } from '../wallet.service.js';
 import { ChatsService } from './chats.service.js';
 import { createModel } from './providers.js';
-import { createSimulations } from './tools/simulations.js';
 import { createTools } from './tools/index.js';
+import { createSimulations } from './tools/simulations.js';
 
 const SYSTEM_PROMPT = [
 	'You are a helpful trading assistant.',
@@ -54,6 +55,7 @@ export class AgentService {
 		chatsService: ChatsService;
 		configService: ConfigService;
 		blockchainService: BlockchainService;
+		transactionService: TransactionService;
 		walletService: WalletService;
 		emitter: EventEmitter;
 	}) {
@@ -64,6 +66,7 @@ export class AgentService {
 			blockchainService: deps.blockchainService,
 			configService: deps.configService,
 			walletService: deps.walletService,
+			transactionService: deps.transactionService,
 		});
 		this.simulations = createSimulations(deps.blockchainService);
 		this.emitter.on(CONFIG_EVENTS.LLM_UPDATED, () => this.handleLlmConfigUpdated());
