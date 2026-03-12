@@ -45,7 +45,7 @@ STAGE 4: Agent service, extensible folder structure /tools in the agent module
 [x] Tool execution confirmation - For dangerous operations (deploy, transfer), require explicit user confirmation
 [x] Find a toolcall structure which the LLM can prompt user to confirm/select etc - ZOD validated
 [x] Tool response schemas - Zod validation for tool outputs (not just inputs)
-[xØ] /switch wallet should not reset the whole chat
+[x] /switch wallet should not reset the whole chat
 
 STAGE 5
 [] CowSwap Service which handles spot and limit trades
