@@ -7,7 +7,6 @@ import { SelectList } from '../../components/select-list.js';
 import { COMMANDS, WalletSubcommands } from '../../lib/commands.js';
 import { useModal } from '../../lib/hooks/use-modal.js';
 import { useGetWalletList, useWalletSetActive } from '../../lib/hooks/wallet-hooks.js';
-import { resetChatIdAtom } from '../../lib/store/chat.atom.js';
 import { pushCommandLogAtom } from '../../lib/store/command-log.atom.js';
 
 enum SwitchStep {
@@ -25,7 +24,7 @@ export function WalletSwitch() {
 	const { mutate: setActive, error: switchError } = useWalletSetActive();
 	const modal = useModal();
 	const pushCommandLog = useSetAtom(pushCommandLogAtom);
-	const resetChatId = useSetAtom(resetChatIdAtom);
+	// const resetChatId = useSetAtom(resetChatIdAtom);
 
 	if (isLoading) {
 		return (
@@ -98,7 +97,7 @@ export function WalletSwitch() {
 								{ address: item.value },
 								{
 									onSuccess: () => {
-										resetChatId();
+										// resetChatId();
 										setStep(SwitchStep.Complete);
 
 										pushCommandLog({

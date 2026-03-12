@@ -45,7 +45,7 @@ STAGE 4: Agent service, extensible folder structure /tools in the agent module
 [x] Tool execution confirmation - For dangerous operations (deploy, transfer), require explicit user confirmation
 [x] Find a toolcall structure which the LLM can prompt user to confirm/select etc - ZOD validated
 [x] Tool response schemas - Zod validation for tool outputs (not just inputs)
-[] /switch wallet should not reset the whole chat
+[xØ] /switch wallet should not reset the whole chat
 
 STAGE 5
 [] CowSwap Service which handles spot and limit trades
@@ -55,7 +55,7 @@ STAGE 6: Wallet Operations
 [x] Wallet list command - List all deployed/imported wallets
 [x] Wallet import - Import existing wallet via private key
 [x] Balance checking - Multi-chain balance display
-[] Gas estimation - Before any transaction, show estimated gas costs
+[x] Gas estimation - Before any transaction, show estimated gas costs
 [] Transaction history - Query and display transaction history for a wallet
 
 STAGE 7: Testing & Quality
@@ -127,3 +127,5 @@ From written notes:
 - What's a firewalled subnet? How can my app be ran in this contanirized mode in which only the server can send requests to the configured AI Api & the RPCs provided.
 
 - Possibly make it easy for the user to add his own tool implementations of protocols. Like interacting with Uniswap/Aave Protocol. He would need to input the contract ABI into the CLI and it would save it on his local machine from which the agent can then call tools? This might be a good idea and its greatly modular.
+
+0xDB4860778D6dFC341cad27252aC2bCc9ED3d120B
