@@ -1,7 +1,12 @@
 import { APICallError, generateText, stepCountIs, type LanguageModel, type ModelMessage } from 'ai';
 import { type EventEmitter } from 'events';
-import { CONFIG_EVENTS } from '../../constants/events.js';
-import { AgentResponseType, ContentPartType, type AgentResponse } from '../../types/agent.types.js';
+import { CONFIG_EVENTS, WALLET_EVENTS } from '../../constants/events.js';
+import {
+	AgentResponseType,
+	ContentPartType,
+	MessageRole,
+	type AgentResponse,
+} from '../../types/agent.types.js';
 import type { BlockchainService } from '../blockchain.service.js';
 import type { ConfigService } from '../config.service.js';
 import { BadRequestError, LlmError, NotInitializedError } from '../errors.js';
@@ -50,6 +55,7 @@ export class AgentService {
 	private model: LanguageModel | undefined;
 	private readonly tools;
 	private readonly simulations;
+	currentChatId: string | undefined = undefined;
 
 	constructor(deps: {
 		chatsService: ChatsService;
@@ -70,6 +76,7 @@ export class AgentService {
 		});
 		this.simulations = createSimulations(deps.blockchainService);
 		this.emitter.on(CONFIG_EVENTS.LLM_UPDATED, () => this.handleLlmConfigUpdated());
+		this.emitter.on(WALLET_EVENTS.SWITCHED, () => this.handleWalletSwitched());
 	}
 
 	async tryInitialize(): Promise<boolean> {
@@ -91,13 +98,14 @@ export class AgentService {
 		}
 
 		const chat = await this.chatsService.getChat(chatId);
+		this.currentChatId = chatId;
 
 		if (!chat) {
 			const name = await this.generateChatName(input);
 			await this.chatsService.createChat(name, chatId);
 		}
 
-		const userMessage: ModelMessage = { role: 'user', content: input };
+		const userMessage: ModelMessage = { role: MessageRole.USER, content: input };
 		const messages: ModelMessage[] = [...(chat?.messages ?? []), userMessage];
 
 		await this.chatsService.addMessages(chatId, [userMessage]);
@@ -144,7 +152,7 @@ export class AgentService {
 		}
 
 		const approvalMessage: ModelMessage = {
-			role: 'tool',
+			role: MessageRole.TOOL,
 			content: finalDecisions.map((decision) => ({
 				type: ContentPartType.TOOL_APPROVAL_RESPONSE,
 				approvalId: decision.approvalId,
@@ -258,5 +266,22 @@ export class AgentService {
 		this.model = undefined;
 
 		await this.tryInitialize();
+	}
+
+	private async handleWalletSwitched() {
+		if (!this.currentChatId) {
+			return;
+		}
+
+		const message: ModelMessage = {
+			role: MessageRole.USER,
+			content: 'The user has switched his active wallet',
+		};
+
+		this.logger.log(
+			`Wallet switched, pushing an informational message to the currentChatId: ${this.currentChatId}`,
+		);
+
+		await this.chatsService.addMessages(this.currentChatId, [message]);
 	}
 }
