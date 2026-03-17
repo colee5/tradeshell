@@ -10,6 +10,7 @@ export {
 	walletInfoSchema,
 	walletStatusSchema,
 	addWalletInputSchema,
+	addWalletFromMnemonicInputSchema,
 	deployWalletInputSchema,
 	type WalletInfo,
 	type WalletStatus,
