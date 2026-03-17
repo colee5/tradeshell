@@ -81,6 +81,18 @@ export const useWalletSetActive = () => {
 	});
 };
 
+export const useWalletDeploy = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (data: Parameters<typeof trpc.walletDeploy.mutate>[0]) =>
+			trpc.walletDeploy.mutate(data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['wallet', 'list'] });
+			queryClient.invalidateQueries({ queryKey: ['wallet', 'status'] });
+		},
+	});
+};
+
 export const useWalletCheckPassword = () =>
 	useMutation({
 		mutationFn: (data: Parameters<typeof trpc.walletCheckPassword.mutate>[0]) =>

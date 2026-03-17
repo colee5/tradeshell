@@ -15,6 +15,7 @@ import {
 } from '../types/config.types.js';
 import {
 	addWalletInputSchema,
+	deployWalletInputSchema,
 	walletAddressSchema,
 	walletChangePasswordSchema,
 	walletPasswordSchema,
@@ -76,6 +77,12 @@ export function createAppRouter(deps: RouterDeps) {
 			.input(addWalletInputSchema)
 			.mutation(({ input }) =>
 				walletService.addWallet(input.privateKey, input.name, input.setActive ?? true),
+			),
+
+		walletDeploy: procedure
+			.input(deployWalletInputSchema)
+			.mutation(({ input }) =>
+				walletService.deployWallet(input.setActive ?? true, input.name),
 			),
 
 		walletList: procedure.query(() => walletService.getWallets()),
