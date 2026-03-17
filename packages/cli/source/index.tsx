@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 
 import { Chat, Config, Help, Onboard, Reload } from './commands/index.js';
 import { WalletAdd } from './commands/wallet/add.js';
+import { WalletDeploy } from './commands/wallet/deploy.js';
 import { WalletDelete } from './commands/wallet/delete.js';
 import { Wallet } from './commands/wallet/index.js';
 import { WalletPassword } from './commands/wallet/password.js';
@@ -95,6 +96,12 @@ export default function Index() {
 
 		if (cmd === COMMANDS.wallet.name && subCommand === WalletSubcommands.ADD) {
 			modal.show(<WalletAdd />);
+			setInput('');
+			return;
+		}
+
+		if (cmd === COMMANDS.wallet.name && subCommand === WalletSubcommands.DEPLOY) {
+			modal.show(<WalletDeploy />);
 			setInput('');
 			return;
 		}

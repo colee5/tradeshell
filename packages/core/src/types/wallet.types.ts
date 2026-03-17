@@ -28,6 +28,17 @@ export const addWalletInputSchema = z.object({
 	setActive: z.boolean().default(true),
 });
 
+export const addWalletFromMnemonicInputSchema = z.object({
+	mnemonic: z.string().min(1, 'Mnemonic is required'),
+	name: z.string().min(1, 'Name is required'),
+	setActive: z.boolean().default(true),
+});
+
+export const deployWalletInputSchema = z.object({
+	name: z.string().min(1, 'Name is required'),
+	setActive: z.boolean().default(true),
+});
+
 export const walletPasswordSchema = z.object({
 	password: z.string().min(MINIMUM_PASSWORD_CHARACTERS, 'Password must be at least 4 characters'),
 });

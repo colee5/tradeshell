@@ -46,10 +46,11 @@ export const useWalletLock = () => {
 	});
 };
 
-export const useWalletAdd = () => {
+export const useWalletAddFromPrivateKey = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (data: Parameters<typeof trpc.walletAdd.mutate>[0]) => trpc.walletAdd.mutate(data),
+		mutationFn: (data: Parameters<typeof trpc.walletAddFromPrivateKey.mutate>[0]) =>
+			trpc.walletAddFromPrivateKey.mutate(data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'list'] });
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'status'] });
@@ -74,6 +75,30 @@ export const useWalletSetActive = () => {
 	return useMutation({
 		mutationFn: (data: Parameters<typeof trpc.walletSetActive.mutate>[0]) =>
 			trpc.walletSetActive.mutate(data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['wallet', 'list'] });
+			queryClient.invalidateQueries({ queryKey: ['wallet', 'status'] });
+		},
+	});
+};
+
+export const useWalletAddFromMnemonic = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (data: Parameters<typeof trpc.walletAddFromMnemonic.mutate>[0]) =>
+			trpc.walletAddFromMnemonic.mutate(data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['wallet', 'list'] });
+			queryClient.invalidateQueries({ queryKey: ['wallet', 'status'] });
+		},
+	});
+};
+
+export const useWalletDeploy = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (data: Parameters<typeof trpc.walletDeploy.mutate>[0]) =>
+			trpc.walletDeploy.mutate(data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'list'] });
 			queryClient.invalidateQueries({ queryKey: ['wallet', 'status'] });
