@@ -55,8 +55,10 @@ STAGE 6: Wallet Operations
 [x] Wallet list command - List all deployed/imported wallets
 [x] Wallet import - Import existing wallet via private key
 [x] Balance checking - Multi-chain balance display
+[x] Deployment of a brand new wallet
+[x] Importing a wallet by mnemonic
 [x] Gas estimation - Before any transaction, show estimated gas costs
-[] Transaction history - Query and display transaction history for a wallet
+[x] Transaction history - Query and display transaction history for a wallet
 
 STAGE 7: Testing & Quality
 [x] Dev mode which spins up 3 terminals, from each /packages + the bun run logs
