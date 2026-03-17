@@ -14,6 +14,7 @@ import {
 	simulateTransactionsSchema,
 } from '../types/config.types.js';
 import {
+	addWalletFromMnemonicInputSchema,
 	addWalletInputSchema,
 	deployWalletInputSchema,
 	walletAddressSchema,
@@ -73,17 +74,25 @@ export function createAppRouter(deps: RouterDeps) {
 			.input(walletChangePasswordSchema)
 			.mutation(({ input }) => walletService.changePassword(input.oldPassword, input.newPassword)),
 
-		walletAdd: procedure
+		walletAddFromPrivateKey: procedure
 			.input(addWalletInputSchema)
 			.mutation(({ input }) =>
-				walletService.addWallet(input.privateKey, input.name, input.setActive ?? true),
+				walletService.addWalletFromPrivateKey(
+					input.privateKey,
+					input.name,
+					input.setActive ?? true,
+				),
+			),
+
+		walletAddFromMnemonic: procedure
+			.input(addWalletFromMnemonicInputSchema)
+			.mutation(({ input }) =>
+				walletService.addWalletFromMnemonic(input.mnemonic, input.name, input.setActive ?? true),
 			),
 
 		walletDeploy: procedure
 			.input(deployWalletInputSchema)
-			.mutation(({ input }) =>
-				walletService.deployWallet(input.setActive ?? true, input.name),
-			),
+			.mutation(({ input }) => walletService.deployWallet(input.setActive ?? true, input.name)),
 
 		walletList: procedure.query(() => walletService.getWallets()),
 

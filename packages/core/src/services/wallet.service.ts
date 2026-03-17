@@ -178,7 +178,7 @@ export class WalletService {
 		this.logger.log('Master password changed successfully');
 	}
 
-	async addWallet(privateKey: string, name: string, setActive = true): Promise<void> {
+	async addWalletFromPrivateKey(privateKey: string, name: string, setActive = true): Promise<void> {
 		if (!this.isUnlocked()) {
 			throw this.errors.walletsLocked();
 		}
@@ -218,6 +218,46 @@ export class WalletService {
 
 		this.emitter.emit(WALLET_EVENTS.UNLOCKED);
 		this.logger.log(`Wallet added: ${account.address} (${name})`);
+	}
+
+	async addWalletFromMnemonic(mnemonic: string, name: string, setActive = true): Promise<void> {
+		if (!this.isUnlocked()) {
+			throw this.errors.walletsLocked();
+		}
+
+		const seed = mnemonicToSeedSync(mnemonic);
+		const hd = HDKey.fromMasterSeed(seed);
+		const child = hd.derive("m/44'/60'/0'/0/0");
+		const privateKey = `0x${Buffer.from(child.privateKey!).toString('hex')}` as Hash;
+		const account = privateKeyToAccount(privateKey);
+		const address = account.address.toLowerCase();
+
+		if (this.wallets.has(address)) {
+			throw this.errors.walletExists();
+		}
+
+		if (setActive) {
+			for (const wallet of this.wallets.values()) {
+				wallet.isActive = false;
+			}
+		}
+
+		const encryptedPrivateKey = encryptPrivateKey(privateKey, this.masterKey!);
+
+		this.wallets.set(address, {
+			address: account.address,
+			name,
+			isActive: setActive,
+			encryptedPrivateKey,
+		});
+
+		const file = await this.readWalletsFile();
+		if (file) {
+			await this.saveWalletsFile(file.masterKeyData);
+		}
+
+		this.emitter.emit(WALLET_EVENTS.UNLOCKED);
+		this.logger.log(`Wallet added from mnemonic: ${account.address} (${name})`);
 	}
 
 	async deployWallet(
