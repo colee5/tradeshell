@@ -2,6 +2,8 @@ export enum ConfigSubcommands {
 	RESET = 'reset',
 	GET = 'get',
 	SIMULATE = 'simulate',
+	SET_LLM = 'set-llm',
+	SET_BLOCKCHAIN = 'set-blockchain',
 }
 
 export enum WalletSubcommands {
@@ -30,6 +32,16 @@ export const COMMANDS = {
 				label: 'simulate',
 				description: 'Toggle transaction simulation mode',
 			},
+			{
+				name: ConfigSubcommands.SET_LLM,
+				label: 'set-llm',
+				description: 'Update LLM provider and model',
+			},
+			{
+				name: ConfigSubcommands.SET_BLOCKCHAIN,
+				label: 'set-blockchain',
+				description: 'Update blockchain network',
+			},
 		],
 	},
 	wallet: {
@@ -46,7 +58,11 @@ export const COMMANDS = {
 			{ name: WalletSubcommands.LOCK, label: 'lock', description: 'Lock the wallet' },
 			{ name: WalletSubcommands.STATUS, label: 'status', description: 'Show wallet status' },
 			{ name: WalletSubcommands.ADD, label: 'add', description: 'Add a new wallet' },
-		{ name: WalletSubcommands.DEPLOY, label: 'deploy', description: 'Generate a new wallet with seed phrase' },
+			{
+				name: WalletSubcommands.DEPLOY,
+				label: 'deploy',
+				description: 'Generate a new wallet with seed phrase',
+			},
 			{ name: WalletSubcommands.LIST, label: 'list', description: 'List all wallets' },
 			{ name: WalletSubcommands.DELETE, label: 'delete', description: 'Remove a wallet' },
 			{ name: WalletSubcommands.SWITCH, label: 'switch', description: 'Switch active wallet' },
