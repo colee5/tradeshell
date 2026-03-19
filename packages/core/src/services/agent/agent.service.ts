@@ -44,9 +44,9 @@ export class AgentService {
 	private readonly configService: ConfigService;
 	private readonly emitter: EventEmitter;
 	private readonly pendingApprovals = new Map<string, PendingApproval>();
-	private model: LanguageModel | undefined;
 	private readonly tools;
 	private readonly simulations;
+	private model: LanguageModel | undefined;
 	currentChatId: string | undefined = undefined;
 
 	constructor(deps: {
