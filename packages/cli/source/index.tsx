@@ -3,6 +3,8 @@ import { useSetAtom } from 'jotai';
 import React, { useState } from 'react';
 
 import { Chat, Config, Help, Onboard, Reload } from './commands/index.js';
+import { SetBlockchain } from './components/config/set-blockchain.js';
+import { SetLlm } from './components/config/set-llm.js';
 import { WalletAdd } from './commands/wallet/add.js';
 import { WalletDeploy } from './commands/wallet/deploy.js';
 import { WalletDelete } from './commands/wallet/delete.js';
@@ -16,7 +18,7 @@ import { CommandInput } from './components/command-input.js';
 import { CommandSuggestions } from './components/command-suggestions.js';
 import { Header } from './components/header.js';
 import { InitialOnboardingPrompt } from './components/initial-onboarding-prompt.js';
-import { COMMANDS, WalletSubcommands } from './lib/commands.js';
+import { COMMANDS, ConfigSubcommands, WalletSubcommands } from './lib/commands.js';
 import { useModal } from './lib/hooks/use-modal.js';
 import { commandLogAtom, pushCommandLogAtom } from './lib/store/command-log.atom.js';
 import { isCommand, nextEntryId } from './lib/utils.js';
@@ -126,6 +128,18 @@ export default function Index() {
 
 		if (cmd === COMMANDS.wallet.name && subCommand === WalletSubcommands.PASSWORD) {
 			modal.show(<WalletPassword />);
+			setInput('');
+			return;
+		}
+
+		if (cmd === COMMANDS.config.name && subCommand === ConfigSubcommands.SET_LLM) {
+			modal.show(<SetLlm />);
+			setInput('');
+			return;
+		}
+
+		if (cmd === COMMANDS.config.name && subCommand === ConfigSubcommands.SET_BLOCKCHAIN) {
+			modal.show(<SetBlockchain />);
 			setInput('');
 			return;
 		}
